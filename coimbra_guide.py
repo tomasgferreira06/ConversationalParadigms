@@ -11,8 +11,9 @@
 #   - If the question is outside its domain, it says so explicitly.
 #   - If the message is ambiguous, it asks the user to reformulate.
 #
-# The agent is intentionally simple and stateless, following the same
-# pattern as the original NLTK ELIZA implementation.
+# The agent is intentionally simple, following the same pattern as the
+# original NLTK ELIZA implementation, with only a very small context:
+# the last tourist place and its category.
 
 import re
 
@@ -332,9 +333,9 @@ pairs = (
     # Ambiguous expressions
     # ------------------------------------------------------------------
     #
-    # There is no conversational context in this version.
-    # Expressions such as "outro" or "esse museu" do not contain enough
-    # information on their own, so the bot asks the user to reformulate.
+    # Some vague expressions are resolved later using the minimal context.
+    # If they reach these rules, there was not enough information to resolve
+    # them safely.
     # ------------------------------------------------------------------
 
     (
@@ -347,7 +348,7 @@ pairs = (
     (
         r"(.*)\b(esse museu|esse monumento|esse jardim|esse local|essa zona|outro jardim|outro museu|outro monumento)\b(.*)",
         (
-            "Como não guardo contexto da conversa, não consigo saber exatamente a que local te referes. Podes escrever o nome do ponto turístico ou indicar a categoria que procuras?",
+            "Não consegui perceber com segurança a que local te referes. Podes escrever o nome do ponto turístico ou indicar a categoria que procuras?",
         ),
     ),
 
@@ -468,49 +469,149 @@ coimbra_chatbot = Chat(pairs, reflections)
 # Minimal conversational context
 # ------------------------------------------------------------------
 #
-# We only remember the last clearly identified tourist place.
-# This allows simple references such as:
-#   "ele", "esse museu", "isso", "lá", "fica onde?"
+# We remember only:
+#   - the last clearly identified tourist place;
+#   - the category of that place.
+#
+# This is enough to resolve simple references such as:
+#   "ele", "esse museu", "fica onde?", "há outro jardim?"
 #
 # No conversation history is stored.
 
 last_place = None
+last_category = None
 
 
 KNOWN_PLACES = (
-    (r"\bbiblioteca joanina\b", "Biblioteca Joanina"),
-    (r"\b(?:universidade de coimbra|universidade|pa[cç]o das escolas)\b", "Universidade de Coimbra"),
-    (r"\bs[eé] velha\b", "Sé Velha"),
-    (r"\bs[eé] nova\b", "Sé Nova"),
-    (r"\bjardim bot[aâ]nico\b", "Jardim Botânico"),
-    (r"\b(?:museu nacional )?machado de castro\b", "Museu Nacional Machado de Castro"),
-    (r"\bquinta das l[aá]grimas\b", "Quinta das Lágrimas"),
-    (r"\bsanta clara\b", "Santa Clara"),
-    (r"\bportugal dos pequenitos\b", "Portugal dos Pequenitos"),
-    (r"\bparque verde(?: do mondego)?\b", "Parque Verde do Mondego"),
+    (r"\bbiblioteca joanina\b", "Biblioteca Joanina", "monumentos"),
+    (r"\b(?:universidade de coimbra|universidade|pa[cç]o das escolas)\b", "Universidade de Coimbra", "monumentos"),
+    (r"\bs[eé] velha\b", "Sé Velha", "monumentos"),
+    (r"\bs[eé] nova\b", "Sé Nova", "monumentos"),
+    (r"\bjardim bot[aâ]nico\b", "Jardim Botânico", "jardins"),
+    (r"\b(?:museu nacional )?machado de castro\b", "Museu Nacional Machado de Castro", "museus"),
+    (r"\bquinta das l[aá]grimas\b", "Quinta das Lágrimas", "locais históricos"),
+    (r"\bsanta clara\b", "Santa Clara", "locais históricos"),
+    (r"\bportugal dos pequenitos\b", "Portugal dos Pequenitos", "locais históricos"),
+    (r"\bparque verde(?: do mondego)?\b", "Parque Verde do Mondego", "jardins"),
 )
+
+
+CATEGORY_PLACES = {
+    "jardins": (
+        "Jardim Botânico",
+        "Parque Verde do Mondego",
+    ),
+    "museus": (
+        "Museu Nacional Machado de Castro",
+    ),
+    "monumentos": (
+        "Universidade de Coimbra",
+        "Sé Velha",
+        "Sé Nova",
+    ),
+    "locais históricos": (
+        "Quinta das Lágrimas",
+        "Santa Clara",
+        "Portugal dos Pequenitos",
+    ),
+}
 
 
 def find_places(text):
     """Return the tourist places clearly mentioned in a text."""
     places = []
 
-    for pattern, place in KNOWN_PLACES:
+    for pattern, place, category in KNOWN_PLACES:
         if re.search(pattern, text, re.IGNORECASE):
             if place not in places:
-                places.append(place)
+                places.append((place, category))
 
     return places
 
 
+def get_place_category(place):
+    """Return the category of a known tourist place."""
+    for _, known_place, category in KNOWN_PLACES:
+        if known_place == place:
+            return category
+
+    return None
+
+
+def detect_category(text):
+    """Detect a broad tourist category in the user's message."""
+    patterns = (
+        (r"\b(?:jardim|jardins|parque|parques|espa[cç]os verdes|natureza)\b", "jardins"),
+        (r"\b(?:museu|museus)\b", "museus"),
+        (r"\b(?:monumento|monumentos|patrim[oó]nio)\b", "monumentos"),
+        (r"\b(?:local hist[oó]rico|locais hist[oó]ricos|hist[oó]ria|hist[oó]rico|hist[oó]ricos)\b", "locais históricos"),
+    )
+
+    for pattern, category in patterns:
+        if re.search(pattern, text, re.IGNORECASE):
+            return category
+
+    return None
+
+
 def is_main_category(text):
-    """Return True when the user goes back to a broad tourist category."""
+    """Return True when the user asks directly for a broad tourist category."""
     return bool(
-        re.search(
-            r"\b(?:monumentos?|museus?|jardins?|locais? hist[oó]ricos?)\b",
+        re.fullmatch(
+            r"\s*(?:monumentos?|museus?|jardins?|locais? hist[oó]ricos?)\s*",
             text,
             re.IGNORECASE,
         )
+    )
+
+
+def asks_for_alternative(text):
+    """Detect requests for another place in the same category."""
+    return bool(
+        re.search(
+            r"\b(?:outro|outra|outros|outras|mais)\b.*"
+            r"\b(?:jardim|jardins|parque|parques|museu|museus|monumento|monumentos|"
+            r"local hist[oó]rico|locais hist[oó]ricos)\b",
+            text,
+            re.IGNORECASE,
+        )
+        or re.search(
+            r"\b(?:h[aá]|ha)\s+(?:mais|outro|outra|outros|outras)\b",
+            text,
+            re.IGNORECASE,
+        )
+    )
+
+
+def alternative_response(category, current_place):
+    """Suggest another known place from the same category."""
+    places = CATEGORY_PLACES.get(category, ())
+    alternatives = [place for place in places if place != current_place]
+
+    if not alternatives:
+        category_name = {
+            "museus": "museus",
+            "monumentos": "monumentos",
+            "jardins": "jardins e parques",
+            "locais históricos": "locais históricos",
+        }.get(category, category)
+
+        return (
+            f"Neste momento, dentro da categoria de {category_name}, não tenho outro local definido além de "
+            f"{current_place}. Queres saber mais sobre monumentos, museus, jardins ou locais históricos?"
+        )
+
+    if len(alternatives) == 1:
+        other = alternatives[0]
+        return (
+            f"Sim. Dentro da mesma categoria também conheço {other}. "
+            f"Queres saber mais sobre {other}?"
+        )
+
+    options = ", ".join(alternatives[:-1]) + f" ou {alternatives[-1]}"
+    return (
+        f"Sim. Dentro da mesma categoria também conheço {options}. "
+        f"Sobre qual destes locais queres saber mais?"
     )
 
 
@@ -562,33 +663,50 @@ def resolve_reference(text):
 
 
 def get_response(user_input):
-    """Generate a response and update only the last-place context."""
-    global last_place
+    """Generate a response and update the minimal conversational context."""
+    global last_place, last_category
 
     text = user_input.strip()
+
+    # If the user explicitly asks for another place in the same category,
+    # use the current category and previous place before any generic rule.
+    if asks_for_alternative(text):
+        requested_category = detect_category(text)
+
+        if requested_category:
+            last_category = requested_category
+
+        if last_category is not None:
+            response = alternative_response(last_category, last_place)
+
+            places_in_response = find_places(response)
+            if len(places_in_response) == 1:
+                last_place, last_category = places_in_response[0]
+
+            return response
 
     # Going back to a broad category cancels the previous place reference.
     if is_main_category(text):
         last_place = None
+        last_category = detect_category(text)
 
-    # Resolve simple references using the previous place.
+    # Resolve simple pronouns and vague references using the previous place.
     resolved_text = resolve_reference(text)
 
-    # If the current message explicitly names one place, that place becomes
-    # the reference for the next turn.
+    # If the current message explicitly names one place, remember it.
     explicit_places = find_places(resolved_text)
 
     response = coimbra_chatbot.respond(resolved_text)
 
     if len(explicit_places) == 1:
-        last_place = explicit_places[0]
+        last_place, last_category = explicit_places[0]
     else:
         # A category response may introduce exactly one place.
         # Example: "museus" -> Museu Nacional Machado de Castro.
         places_in_response = find_places(response or "")
 
         if len(places_in_response) == 1:
-            last_place = places_in_response[0]
+            last_place, last_category = places_in_response[0]
         elif len(places_in_response) > 1:
             # Several places were proposed, so a pronoun would be ambiguous.
             last_place = None
@@ -597,9 +715,10 @@ def get_response(user_input):
 
 
 def coimbra_chat():
-    global last_place
+    global last_place, last_category
 
     last_place = None
+    last_category = None
 
     print("Coimbra Guide")
     print("-------------")
