@@ -13,7 +13,7 @@
 #
 # The agent is intentionally simple, following the same pattern as the
 # original NLTK ELIZA implementation, with only a very small context:
-# the last tourist place and its category.
+# the last tourist place, its category and a pending action.
 
 import re
 
@@ -121,7 +121,7 @@ pairs = (
     ),
 
     (
-        r"(.*)(onde fica|onde [ée]|onde encontro|como chego (a|ao|[aà]))(.*)(museu nacional )?machado de castro(.*)",
+        r"(.*)(onde fica|onde [ée]|onde encontro|como chego (a|ao|[aà]))(.*)(museu(?: nacional)? )?machado de castro(.*)",
         (
             "O Museu Nacional Machado de Castro fica na Alta, muito perto da Universidade. Queres saber mais sobre monumentos, museus, jardins ou locais históricos?",
         ),
@@ -195,7 +195,7 @@ pairs = (
     ),
 
     (
-        r"(.*)(fala[- ]?me (de|da|do|sobre)|o que sabes sobre|o que [ée]|quero saber mais sobre|vale a pena visitar)(.*)(museu nacional )?machado de castro(.*)",
+        r"(.*)(fala[- ]?me (de|da|do|sobre)|o que sabes sobre|o que [ée]|quero saber mais sobre|vale a pena visitar)(.*)(museu(?: nacional)? )?machado de castro(.*)",
         (
             "O Museu Nacional Machado de Castro reúne coleções de arte e arqueologia e encontra-se junto à Universidade. Queres saber mais sobre monumentos, museus, jardins ou locais históricos?",
         ),
@@ -276,7 +276,7 @@ pairs = (
     ),
 
     (
-        r"(.*)(museu nacional )?machado de castro(.*)",
+        r"(.*)(museu(?: nacional)? )?machado de castro(.*)",
         (
             "O Museu Nacional Machado de Castro reúne coleções de arte e arqueologia e é uma das principais referências culturais da cidade. Queres saber mais sobre monumentos, museus, jardins ou locais históricos?",
         ),
@@ -471,15 +471,17 @@ coimbra_chatbot = Chat(pairs, reflections)
 #
 # We remember only:
 #   - the last clearly identified tourist place;
-#   - the category of that place.
+#   - the category of that place;
+#   - the action expected after a yes/no question.
 #
 # This is enough to resolve simple references such as:
-#   "ele", "esse museu", "fica onde?", "há outro jardim?"
+#   "ele", "esse museu", "fica onde?", "há outro jardim?", "sim".
 #
 # No conversation history is stored.
 
 last_place = None
 last_category = None
+pending_action = None
 
 
 KNOWN_PLACES = (
@@ -488,7 +490,7 @@ KNOWN_PLACES = (
     (r"\bs[eé] velha\b", "Sé Velha", "monumentos"),
     (r"\bs[eé] nova\b", "Sé Nova", "monumentos"),
     (r"\bjardim bot[aâ]nico\b", "Jardim Botânico", "jardins"),
-    (r"\b(?:museu nacional )?machado de castro\b", "Museu Nacional Machado de Castro", "museus"),
+    (r"\b(?:museu(?: nacional)? )?machado de castro\b", "Museu Nacional Machado de Castro", "museus"),
     (r"\bquinta das l[aá]grimas\b", "Quinta das Lágrimas", "locais históricos"),
     (r"\bsanta clara\b", "Santa Clara", "locais históricos"),
     (r"\bportugal dos pequenitos\b", "Portugal dos Pequenitos", "locais históricos"),
@@ -516,6 +518,54 @@ CATEGORY_PLACES = {
     ),
 }
 
+
+
+YES_PATTERN = re.compile(
+    r"^\s*(?:sim|sim por favor|claro|pode ser|est[aá] bem|ok|quero|for[cç]a)\s*[.!?]*\s*$",
+    re.IGNORECASE,
+)
+
+NO_PATTERN = re.compile(
+    r"^\s*(?:n[aã]o|nao|n[aã]o obrigado|nao obrigado|agora n[aã]o|agora nao|"
+    r"prefiro n[aã]o|prefiro nao|deixa estar)\s*[.!?]*\s*$",
+    re.IGNORECASE,
+)
+
+
+def handle_pending_action(text):
+    """Handle a short yes/no answer to the bot's previous question."""
+    global pending_action
+
+    if pending_action is None:
+        return None
+
+    if YES_PATTERN.match(text):
+        action = pending_action
+        pending_action = None
+
+        if action == "describe_place" and last_place is not None:
+            return coimbra_chatbot.respond(f"quero saber mais sobre {last_place}")
+
+        if action == "show_location" and last_place is not None:
+            return coimbra_chatbot.respond(f"onde fica {last_place}")
+
+        if action == "suggest_alternative" and last_category is not None:
+            return alternative_response(last_category, last_place)
+
+        return (
+            "Percebi a confirmação, mas não tenho uma ação concreta associada. "
+            "Queres saber mais sobre monumentos, museus, jardins ou locais históricos?"
+        )
+
+    if NO_PATTERN.match(text):
+        pending_action = None
+        return (
+            "Sem problema. Queres saber mais sobre monumentos, museus, jardins ou locais históricos?"
+        )
+
+    # If the user answers with something else, we treat it as a new request.
+    pending_action = None
+    return None
 
 def find_places(text):
     """Return the tourist places clearly mentioned in a text."""
@@ -585,6 +635,8 @@ def asks_for_alternative(text):
 
 def alternative_response(category, current_place):
     """Suggest another known place from the same category."""
+    global last_place, last_category, pending_action
+
     places = CATEGORY_PLACES.get(category, ())
     alternatives = [place for place in places if place != current_place]
 
@@ -596,6 +648,7 @@ def alternative_response(category, current_place):
             "locais históricos": "locais históricos",
         }.get(category, category)
 
+        pending_action = None
         return (
             f"Neste momento, dentro da categoria de {category_name}, não tenho outro local definido além de "
             f"{current_place}. Queres saber mais sobre monumentos, museus, jardins ou locais históricos?"
@@ -603,11 +656,17 @@ def alternative_response(category, current_place):
 
     if len(alternatives) == 1:
         other = alternatives[0]
+
+        last_place = other
+        last_category = category
+        pending_action = "describe_place"
+
         return (
             f"Sim. Dentro da mesma categoria também conheço {other}. "
             f"Queres saber mais sobre {other}?"
         )
 
+    pending_action = None
     options = ", ".join(alternatives[:-1]) + f" ou {alternatives[-1]}"
     return (
         f"Sim. Dentro da mesma categoria também conheço {options}. "
@@ -664,9 +723,14 @@ def resolve_reference(text):
 
 def get_response(user_input):
     """Generate a response and update the minimal conversational context."""
-    global last_place, last_category
+    global last_place, last_category, pending_action
 
     text = user_input.strip()
+
+    # A yes/no answer only has meaning when the bot is waiting for one.
+    pending_response = handle_pending_action(text)
+    if pending_response is not None:
+        return pending_response
 
     # If the user explicitly asks for another place in the same category,
     # use the current category and previous place before any generic rule.
@@ -677,18 +741,14 @@ def get_response(user_input):
             last_category = requested_category
 
         if last_category is not None:
-            response = alternative_response(last_category, last_place)
+            return alternative_response(last_category, last_place)
 
-            places_in_response = find_places(response)
-            if len(places_in_response) == 1:
-                last_place, last_category = places_in_response[0]
-
-            return response
-
-    # Going back to a broad category cancels the previous place reference.
+    # Going back to a broad category cancels the previous place reference
+    # and any pending yes/no action.
     if is_main_category(text):
         last_place = None
         last_category = detect_category(text)
+        pending_action = None
 
     # Resolve simple pronouns and vague references using the previous place.
     resolved_text = resolve_reference(text)
@@ -711,14 +771,32 @@ def get_response(user_input):
             # Several places were proposed, so a pronoun would be ambiguous.
             last_place = None
 
+    # If the bot has just asked "Queres saber mais sobre <local>?",
+    # remember that a following "sim" means "describe that place".
+    pending_action = None
+
+    if response is not None and re.search(
+        r"queres saber mais sobre", response, re.IGNORECASE
+    ):
+        question_part = re.split(
+            r"queres saber mais sobre", response, maxsplit=1, flags=re.IGNORECASE
+        )[1]
+
+        places_in_question = find_places(question_part)
+
+        if len(places_in_question) == 1:
+            last_place, last_category = places_in_question[0]
+            pending_action = "describe_place"
+
     return response
 
 
 def coimbra_chat():
-    global last_place, last_category
+    global last_place, last_category, pending_action
 
     last_place = None
     last_category = None
+    pending_action = None
 
     print("Coimbra Guide")
     print("-------------")
