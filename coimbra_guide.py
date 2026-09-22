@@ -1,3 +1,6 @@
+# Tomás Ferreira (2025168427) 
+# Eduardo Pereira (2021233890)
+#
 # Natural Language Toolkit: Coimbra Guide
 #
 # Adapted from the NLTK ELIZA chatbot architecture.
@@ -30,6 +33,23 @@ from nltk.chat.util import Chat, reflections
 # selects one of them when that rule matches.
 
 pairs = (
+
+    # ------------------------------------------------------------------
+    # Clearly outside the domain
+    # ------------------------------------------------------------------
+
+    (
+        r"(.*)\b(comer|jantar|almo[cç]ar|restaurante|restaurantes|caf[eé]|caf[eé]s|"
+        r"bar|bares|hotel|hot[eé]is|futebol|pol[ií]tica|medicina|programa[cç][aã]o|"
+        r"python|bitcoin|intelig[eê]ncia artificial|tempo|meteorologia|[pP]orto|[lL]isboa)\b(.*)",
+        (
+            "Essa pergunta está fora do meu domínio. Fui criado apenas para falar sobre pontos turísticos de Coimbra. Queres saber mais sobre património, museus ou jardins?",
+            "Não consigo ajudar com esse tema, porque o meu conhecimento está limitado aos pontos turísticos de Coimbra. Queres saber mais sobre património, museus ou jardins?",
+            "Esse tema não faz parte do que fui preparado para responder. Posso ajudar-te com património, museus ou jardins de Coimbra.",
+            "O meu domínio está limitado ao turismo em Coimbra. Se quiseres, podemos continuar pelo património, pelos museus ou pelos jardins.",
+        ),
+    ),
+
 
     # ------------------------------------------------------------------
     # Conversation
@@ -504,22 +524,6 @@ pairs = (
     ),
 
     # ------------------------------------------------------------------
-    # Clearly outside the domain
-    # ------------------------------------------------------------------
-
-    (
-        r"(.*)\b(comer|jantar|almo[cç]ar|restaurante|restaurantes|caf[eé]|caf[eé]s|"
-        r"bar|bares|hotel|hot[eé]is|futebol|pol[ií]tica|medicina|programa[cç][aã]o|"
-        r"python|bitcoin|intelig[eê]ncia artificial|tempo|meteorologia)\b(.*)",
-        (
-            "Essa pergunta está fora do meu domínio. Fui criado apenas para falar sobre pontos turísticos de Coimbra. Queres saber mais sobre património, museus ou jardins?",
-            "Não consigo ajudar com esse tema, porque o meu conhecimento está limitado aos pontos turísticos de Coimbra. Queres saber mais sobre património, museus ou jardins?",
-            "Esse tema não faz parte do que fui preparado para responder. Posso ajudar-te com património, museus ou jardins de Coimbra.",
-            "O meu domínio está limitado ao turismo em Coimbra. Se quiseres, podemos continuar pelo património, pelos museus ou pelos jardins.",
-        ),
-    ),
-
-    # ------------------------------------------------------------------
     # Exit
     # ------------------------------------------------------------------
 
@@ -534,10 +538,6 @@ pairs = (
 
     # ------------------------------------------------------------------
     # Fallback
-    # ------------------------------------------------------------------
-    #
-    # If none of the rules above matches, the message may simply be unclear.
-    # We do not assume that it is outside the domain.
     # ------------------------------------------------------------------
 
     (
