@@ -54,6 +54,22 @@ SAFE_SPACED_LETTER_REPAIRS = {
 }
 
 
+# Photo-caption panels on route pages: a marker block such as "a. b. c. d."
+# next to the captions, under a large decorative panel title.
+CAPTION_MARKERS_RE = re.compile(r"(?:[a-z]\.\s*){2,}")
+CAPTION_PANEL_TITLE_MIN_SIZE = 14.0
+CAPTION_PANEL_COMMENT = "<!-- caption_panel -->"
+
+# On map pages, only blocks at least this long are treated as editorial prose;
+# shorter blocks are map labels (same threshold as the route map sidebar).
+MAP_EDITORIAL_MIN_CHARS = 120
+
+# Line-break hyphens before these enclitic pronouns are part of the source
+# word ("destaca-se") and are kept. Only applied after a vowel, 'r', 'm' or 'z',
+# since 'se' after a consonant is ordinary hyphenation ("dis-se").
+KEPT_HYPHEN_ENCLITICS = ("se",)
+
+
 @dataclass(frozen=True)
 class DocumentConfig:
     route_layout: bool = False
@@ -62,12 +78,38 @@ class DocumentConfig:
     stop_after: str | None = None
     skip_content_pages: frozenset[int] = frozenset()
     section_headings: frozenset[str] = frozenset()
+    # (font name, ((min, max), ...)): space glyphs in that font whose
+    # width / font size falls in one of these half-open bands are
+    # letter-spacing, not word boundaries.
+    letter_spacing_fonts: tuple[tuple[str, tuple[tuple[float, float], ...]], ...] = ()
+    # (font name, max span size in pt): small-caps fonts draw lowercase letters
+    # as reduced-size spans, one word per span, with word gaps in separate
+    # full-size spans; every space inside a reduced span is letter-spacing.
+    letter_spacing_small_caps: tuple[tuple[str, float], ...] = ()
+    caption_panel_to_page_end: bool = False
+    map_pages: frozenset[int] = frozenset()
 
 
 DOCUMENT_CONFIG: dict[str, DocumentConfig] = {
     document_id: DocumentConfig(route_layout=True)
     for document_id in ROUTE_DOCUMENT_IDS
 }
+# Every Montserrat-Light space glyph in this PDF falls in one of four width
+# classes (width / font size): 0.15-0.19 letter-spacing (381), 0.27 word space
+# (2306), 0.30 letter-spacing in one tracked name (10), and 0.42 word space in
+# tracked republic names (33). The bands drop only the two letter-spacing
+# classes. Headings use other fonts, whose word spaces can be narrower, so the
+# rule is restricted to this font. Labels in Montserrat-Black-SC700 use
+# reduced spans of 4.9-6.0 pt and full-size word gaps of 7.0-7.4 pt.
+DOCUMENT_CONFIG["fado-e-tradicoes-academicas"] = DocumentConfig(
+    route_layout=True,
+    letter_spacing_fonts=(("Montserrat-Light", ((0.0, 0.23), (0.29, 0.33))),),
+    letter_spacing_small_caps=(("Montserrat-Black-SC700", 6.5),),
+)
+for _document_id in ("coimbra-para-os-pequenitos", "fundacao-da-nacionalidade"):
+    DOCUMENT_CONFIG[_document_id] = DocumentConfig(
+        route_layout=True, caption_panel_to_page_end=True
+    )
 DOCUMENT_CONFIG["biblioteca-joanina-uctour"] = DocumentConfig(
     web_print=True,
     stop_after="Programas que incluem este espaço",
@@ -77,7 +119,10 @@ DOCUMENT_CONFIG["biblioteca-joanina-uctour"] = DocumentConfig(
     ),
 )
 DOCUMENT_CONFIG["universidade-alta-sofia-patrimonio-mundial"] = DocumentConfig(
-    horizontal_blocks=True
+    horizontal_blocks=True,
+    # City map (34-35), regional map with one editorial block (40), and
+    # map of Portugal (41).
+    map_pages=frozenset({34, 35, 40, 41}),
 )
 
 
@@ -167,6 +212,15 @@ def detect_route_heading(line: str) -> tuple[int, str] | None:
     return int(match.group(1)), title
 
 
+def _is_enclitic_line_break(before: str, continuation: str) -> bool:
+    """True when 'verb-' + 'se ...' is an enclitic form split at its hyphen."""
+
+    first_word = re.match(r"\w+", continuation)
+    if not first_word or first_word.group(0) not in KEPT_HYPHEN_ENCLITICS:
+        return False
+    return re.search(r"[aeiouáéíóúâêôãõrmz]-$", before, flags=re.IGNORECASE) is not None
+
+
 def reconstruct_paragraphs(lines: Iterable[str]) -> list[str]:
     """Join PDF line wraps while retaining explicit paragraph boundaries."""
 
@@ -179,7 +233,10 @@ def reconstruct_paragraphs(lines: Iterable[str]) -> list[str]:
         joined = paragraph[0]
         for continuation in paragraph[1:]:
             if joined.endswith("-") and continuation[:1].islower():
-                joined = joined[:-1] + continuation
+                if _is_enclitic_line_break(joined, continuation):
+                    joined += continuation
+                else:
+                    joined = joined[:-1] + continuation
             else:
                 joined += " " + continuation
         output.append(normalize_whitespace(joined))
@@ -239,30 +296,134 @@ def load_manifest(path: Path = MANIFEST_PATH) -> list[dict[str, Any]]:
     return records
 
 
-def _route_first_page_text(page: pymupdf.Page) -> str:
+def _text_blocks(page: pymupdf.Page, config: DocumentConfig) -> list[tuple[float, float, float, float, str]]:
+    """Return (x0, y0, x1, y1, text) text blocks, as get_text("blocks") does.
+
+    When the document configures letter-spacing fonts, blocks are rebuilt from
+    individual glyphs so that narrow letter-spacing space glyphs can be dropped.
+    """
+
+    if not (config.letter_spacing_fonts or config.letter_spacing_small_caps):
+        return [tuple(block[:5]) for block in page.get_text("blocks", sort=False)]
+    bands_by_font = dict(config.letter_spacing_fonts)
+    max_size_by_small_caps_font = dict(config.letter_spacing_small_caps)
+    blocks = []
+    for block in page.get_text("rawdict", sort=False)["blocks"]:
+        if block.get("type") != 0:
+            continue
+        lines = []
+        for line in block["lines"]:
+            chars = []
+            for span in line["spans"]:
+                bands = bands_by_font.get(span["font"], ())
+                max_size = max_size_by_small_caps_font.get(span["font"])
+                reduced_small_caps = max_size is not None and span["size"] < max_size
+                for char in span["chars"]:
+                    if char["c"] == " " and reduced_small_caps:
+                        continue
+                    if char["c"] == " " and bands and span["size"] > 0:
+                        ratio = (char["bbox"][2] - char["bbox"][0]) / span["size"]
+                        if any(low <= ratio < high for low, high in bands):
+                            continue
+                    chars.append(char["c"])
+            lines.append("".join(chars))
+        blocks.append((*block["bbox"], "\n".join(lines) + "\n"))
+    return blocks
+
+
+def _route_column(x0: float, width: float) -> int:
+    return min(2, max(0, int((x0 - width * 0.25) / (width * 0.24))))
+
+
+def _caption_panel_tops(page: pymupdf.Page) -> dict[int, float]:
+    """Top y of each column's photo-caption panel on a route page.
+
+    The panel is anchored on its marker block ("a. b. c. ...") and starts at
+    the nearest large panel title above it in the same column.
+    """
+
+    width = page.rect.width
+    blocks = []
+    for block in page.get_text("dict", sort=False)["blocks"]:
+        if block.get("type") != 0:
+            continue
+        spans = [span for line in block["lines"] for span in line["spans"]]
+        text = normalize_whitespace(
+            " ".join("".join(span["text"] for span in line["spans"]) for line in block["lines"])
+        )
+        max_size = max((span["size"] for span in spans if span["text"].strip()), default=0.0)
+        blocks.append((_route_column(block["bbox"][0], width), block["bbox"][1], max_size, text))
+
+    tops: dict[int, float] = {}
+    for column, marker_y0, _size, text in blocks:
+        if not CAPTION_MARKERS_RE.fullmatch(text):
+            continue
+        titles = [
+            y0
+            for other_column, y0, size, _text in blocks
+            if other_column == column and y0 <= marker_y0 and size >= CAPTION_PANEL_TITLE_MIN_SIZE
+        ]
+        top = max(titles) if titles else marker_y0
+        tops[column] = min(top, tops.get(column, top))
+    return tops
+
+
+def _join_sentence_across_column_break(blocks: list[tuple[int, float, str]], column: int) -> None:
+    """Rejoin the sentence that a caption panel separated at a column break.
+
+    Only applied to the column that held the panel: if its last text block
+    ends mid-sentence, the first block of the next column continues it.
+    """
+
+    last = max((i for i, block in enumerate(blocks) if block[0] == column), default=None)
+    if last is None or last + 1 >= len(blocks) or blocks[last + 1][0] != column + 1:
+        return
+    if re.search(r"[.!?:;”»\"')]$", normalize_whitespace(blocks[last][2])):
+        return
+    column_index, y0, text = blocks[last]
+    blocks[last] = (column_index, y0, text + "\n" + blocks[last + 1][2])
+    del blocks[last + 1]
+
+
+def _route_first_page_text(page: pymupdf.Page, config: DocumentConfig) -> str:
     """Read the body of a municipal route page column by column."""
 
     body_blocks: list[tuple[int, float, str]] = []
+    caption_blocks: list[tuple[int, float, str]] = []
     width, height = page.rect.width, page.rect.height
-    for block in page.get_text("blocks", sort=False):
+    panel_tops = _caption_panel_tops(page) if config.caption_panel_to_page_end else {}
+    for block in _text_blocks(page, config):
         x0, y0, x1, y1, text = block[:5]
         normalized_text = normalize_whitespace(text)
         if x0 < width * 0.25 or y0 < height * 0.12 or y1 > height * 0.96:
             continue
         if re.fullmatch(r"[\d\s]+", normalized_text):
             continue
-        column = min(2, max(0, int((x0 - width * 0.25) / (width * 0.24))))
-        body_blocks.append((column, y0, text.strip()))
+        column = _route_column(x0, width)
+        # Tolerance absorbs rounding differences between text extraction modes.
+        if column in panel_tops and y0 >= panel_tops[column] - 1.0:
+            caption_blocks.append((column, y0, text.strip()))
+        else:
+            body_blocks.append((column, y0, text.strip()))
     body_blocks.sort(key=lambda item: (item[0], item[1]))
-    return "\n\n".join(text for _, _, text in body_blocks if text)
+    caption_blocks.sort(key=lambda item: (item[0], item[1]))
+    for column in sorted(panel_tops, reverse=True):
+        _join_sentence_across_column_break(body_blocks, column)
+    body = "\n\n".join(text for _, _, text in body_blocks if text)
+    if not caption_blocks:
+        return body
+    # The panel sits at the foot of a column while that column's last sentence
+    # continues at the top of the next one, so it goes after the page's text.
+    captions = "\n\n".join(text for _, _, text in caption_blocks if text)
+    return f"{body}\n\n{CAPTION_PANEL_COMMENT}\n\n{captions}"
 
 
-def _route_map_page_text(page: pymupdf.Page) -> str:
+def _route_map_page_text(page: pymupdf.Page, config: DocumentConfig) -> str:
     """Keep the editorial sidebar on route maps, omitting scattered map labels."""
 
     width, height = page.rect.width, page.rect.height
     blocks: list[tuple[float, str]] = []
-    for block in page.get_text("blocks", sort=False):
+    for block in _text_blocks(page, config):
         x0, y0, _x1, _y1, text = block[:5]
         if x0 >= width * 0.79 and y0 >= height * 0.50 and text.strip():
             blocks.append((y0, text.strip()))
@@ -275,8 +436,11 @@ def _route_map_page_text(page: pymupdf.Page) -> str:
     return "\n\n".join(text for _, text in blocks[start:])
 
 
-def _horizontal_block_text(page: pymupdf.Page) -> str:
-    """Extract horizontal text blocks and ignore decorative rotated typography."""
+def _horizontal_block_text(page: pymupdf.Page, editorial_only: bool = False) -> str:
+    """Extract horizontal text blocks and ignore decorative rotated typography.
+
+    With editorial_only (map pages), short blocks are map labels and dropped.
+    """
 
     blocks: list[tuple[float, float, str]] = []
     page_dict = page.get_text("dict", sort=False)
@@ -291,6 +455,8 @@ def _horizontal_block_text(page: pymupdf.Page) -> str:
             text = "".join(span.get("text", "") for span in line.get("spans", []))
             if text.strip():
                 lines.append(text.rstrip())
+        if editorial_only and len(normalize_whitespace(" ".join(lines))) < MAP_EDITORIAL_MIN_CHARS:
+            continue
         if lines:
             x0, y0, _x1, _y1 = block["bbox"]
             blocks.append((y0, x0, "\n".join(lines)))
@@ -309,15 +475,17 @@ def extract_pdf_pages(pdf_path: Path, config: DocumentConfig) -> list[ExtractedP
         for index, page in enumerate(document):
             warnings: list[str] = []
             if config.route_layout and index == 0:
-                text = _route_first_page_text(page)
+                text = _route_first_page_text(page, config)
             elif config.route_layout and index == 1:
-                text = _route_map_page_text(page)
+                text = _route_map_page_text(page, config)
             elif config.horizontal_blocks:
-                text = _horizontal_block_text(page)
+                text = _horizontal_block_text(page, editorial_only=index + 1 in config.map_pages)
             else:
                 text = page.get_text("text", sort=True)
             if config.route_layout and index == 1:
                 warnings.append("Map labels omitted; editorial sidebar retained.")
+            if index + 1 in config.map_pages:
+                warnings.append("Map labels omitted; editorial text blocks retained.")
             if text.strip() and re.fullmatch(r"[\d\s]+", text):
                 text = ""
                 warnings.append("Page contained only map/index numbers; no prose retained.")
@@ -506,9 +674,10 @@ def validate_processed_document(markdown: str, expected_pages: int) -> None:
         raise ValueError("YAML front matter is missing")
 
 
-def process_document(record: dict[str, Any]) -> ProcessingStats:
+def render_document(record: dict[str, Any]) -> tuple[str, ProcessingStats]:
+    """Render a manifest record to validated Markdown without writing it."""
+
     raw_path = D2_ROOT / record["local_raw_path"]
-    output_path = D2_ROOT / record["processed_path"]
     if not raw_path.is_file():
         raise FileNotFoundError(f"Raw PDF not found for {record['document_id']}: {raw_path}")
     actual_hash = _sha256(raw_path)
@@ -522,6 +691,12 @@ def process_document(record: dict[str, Any]) -> ProcessingStats:
     pages = extract_pdf_pages(raw_path, config)
     markdown, stats = render_markdown(record, pages, config)
     validate_processed_document(markdown, len(pages))
+    return markdown, stats
+
+
+def process_document(record: dict[str, Any]) -> ProcessingStats:
+    markdown, stats = render_document(record)
+    output_path = D2_ROOT / record["processed_path"]
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(markdown, encoding="utf-8", newline="\n")
     return stats

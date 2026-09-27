@@ -22,17 +22,7 @@ colégio de jesus - Edifício concebido por William Elsden para albergar os equi
 
 gabinete de física - A coleção de instrumentos científicos e didáticos de física da Universidade de Coimbra é uma das mais notáveis e raras da Europa, tendo sido reconhecido, em 2016, como Sítio Histórico Europeu pela Sociedade Europeia de Física.
 
-galeria de história natural - Criado para o ensino experimental da então Faculdade de Philosophia. É constituído por uma coleção de animais, de plantas, de fósseis, de minerais, de rochas e de modelos que constitui o
-
-Portugal dos pequenitos
-
-“Tudo é minúsculo para nós - mas grande para as crianças - e tudo é verdadeiro” Bissaya Barreto
-
-pavilhão da guiné-bissau casa do senhor abade domus municipalis de bragança sé de lisboa solar da beira alta antiga torre sineira de santa cruz museu nacional machado de castro casa da serra do caramulo
-
-a. b. c. d. e. f. g. h.
-
-mais antigo museu de Portugal que se mantém no seu espaço de origem.
+galeria de história natural - Criado para o ensino experimental da então Faculdade de Philosophia. É constituído por uma coleção de animais, de plantas, de fósseis, de minerais, de rochas e de modelos que constitui o mais antigo museu de Portugal que se mantém no seu espaço de origem.
 
 **Coordenadas:** 40.210085, -8.423552
 
@@ -67,6 +57,16 @@ O UC Exploratório - Centro Ciência Viva da Universidade de Coimbra é um espa�
 Idealizado por Bissaya Barreto e projetado por Cassiano Branco, o Portugal dos Pequenitos, abriu ao público a 8 de junho de 1940. É uma das obras inserida num vasto plano de proteção à Criança, seguindo métodos educativos modernos. É o mais antigo parque temático português, composto por seis grandes temas: Casas Regionais (representação das casas tradicionais das diferentes regiões de Portugal); Portugal Monumental (onde são reproduzidos os monumentos mais significativos de Portugal); Cidade de Coimbra (especial destaque para a cidade e sua história); Portugal Insular (com reprodução de monumentos da Madeira e dos Açores) e os Países de Expressão Portuguesa, antigos territórios coloniais (onde são representadas as antigas casas tradicionais e elementos etnográficos dos antigos territórios coloniais).
 
 **Coordenadas:** 40.203083, -8.434766
+
+<!-- caption_panel -->
+
+Portugal dos pequenitos
+
+“Tudo é minúsculo para nós - mas grande para as crianças - e tudo é verdadeiro” Bissaya Barreto
+
+pavilhão da guiné-bissau casa do senhor abade domus municipalis de bragança sé de lisboa solar da beira alta antiga torre sineira de santa cruz museu nacional machado de castro casa da serra do caramulo
+
+a. b. c. d. e. f. g. h.
 
 <!-- source_page: 2 -->
 

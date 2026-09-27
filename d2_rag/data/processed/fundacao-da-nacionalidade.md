@@ -18,7 +18,7 @@ Em 1876, sendo presidente o Dr. Lourenço de Almeida Azevedo, inicia-se em Agost
 
 ## 2. IGREJA DE SANTA CRUZ | PANTEÃO NACIONAL
 
-Fundado em 1131, com o incentivo de D. Afonso Henriques, foi o mosteiro com mais influência na cidade, tendo contribuído para o desenvolvimento cultural, económico e político do Reino. Da construção românica pouco resta, uma vez que, no século XVI, foram executadas grandes reformas e obras de restauro e alargamento da casa monástica, promovidas pelos reis D. Manuel I e D. João III. Após o alargamento da igreja, com a construção de uma nova capela-mor, encomendaram-se novos túmulos reais a Diogo de Castilho, Nicolau de Chanterenne, entre outros artistas. As arcas tumulares, colocadas frente a frente, são enquadradas por retábulos pétreos marcadamente do gótico final, mas onde a decoração manuelina impera e a renascentista começa a querer evidenciar-se. Em 2003 a igreja foi elevada à categoria de Panteão Nacional. De entre os notáveis que frequentaram a escola deste mosteiro, destacase Fernando de Bulhões que em Coimbra, ao tomar o hábito franciscano, ficou conhecido, após canonização, por Santo António.
+Fundado em 1131, com o incentivo de D. Afonso Henriques, foi o mosteiro com mais influência na cidade, tendo contribuído para o desenvolvimento cultural, económico e político do Reino. Da construção românica pouco resta, uma vez que, no século XVI, foram executadas grandes reformas e obras de restauro e alargamento da casa monástica, promovidas pelos reis D. Manuel I e D. João III. Após o alargamento da igreja, com a construção de uma nova capela-mor, encomendaram-se novos túmulos reais a Diogo de Castilho, Nicolau de Chanterenne, entre outros artistas. As arcas tumulares, colocadas frente a frente, são enquadradas por retábulos pétreos marcadamente do gótico final, mas onde a decoração manuelina impera e a renascentista começa a querer evidenciar-se. Em 2003 a igreja foi elevada à categoria de Panteão Nacional. De entre os notáveis que frequentaram a escola deste mosteiro, destaca-se Fernando de Bulhões que em Coimbra, ao tomar o hábito franciscano, ficou conhecido, após canonização, por Santo António.
 
 **Coordenadas:** 40.210926, -8.429024
 
@@ -56,15 +56,7 @@ Idealizado por Bissaya Barreto e projetado por Cassiano Branco, o Portugal dos P
 
 ## 8. CONVENTO SÃO FRANCISCO - COIMBRA CULTURA E CONGRESSOS - PATRIMÓNIO MUNICIPAL
 
-A construção do Convento São Francisco foi iniciada em 1602, para substituir o edifício anterior, do século XIII, que apresentava precárias condições de habitabilidade, devido às inundações e assoreamento do rio. Coube ao arquiteto régio, Vicenzo Cazalle, realizar o projeto da nova casa conventual, ficando as obras a cargo do arquiteto português Isidro Manuel. O espaço foi adquirido pela Câmara Municipal de Coimbra, em 1986, tendo recebido obras de requalificação para um Centro Cultural e de Congressos, com projeto do arquiteto Carrilho da Graça. Em 2015, foi iniciada a obra de recuperação da antiga igreja do Convento de São Francisco com projeto do arquiteto Gonçalo
-
-fundação da nacionalidade
-
-igreja de santa cruz | panteão nacional bandeira da fundação túmulo d. afonso henriques túmulo d. sancho i
-
-a. b. c. d.
-
-Byrne. Com esta recente requalificação arquitetónica surgiu um novo espaço panorâmico sobre a cidade – a Praça das Bandeiras – no qual foi reinstalada, em 2017, a escultura de arte contemporânea, “Longer Journeys”, da autoria de Cabrita Reis, inaugurada, a 22 de novembro de 2003, no Centro de Artes Visuais, sito no Pátio da Inquisição.
+A construção do Convento São Francisco foi iniciada em 1602, para substituir o edifício anterior, do século XIII, que apresentava precárias condições de habitabilidade, devido às inundações e assoreamento do rio. Coube ao arquiteto régio, Vicenzo Cazalle, realizar o projeto da nova casa conventual, ficando as obras a cargo do arquiteto português Isidro Manuel. O espaço foi adquirido pela Câmara Municipal de Coimbra, em 1986, tendo recebido obras de requalificação para um Centro Cultural e de Congressos, com projeto do arquiteto Carrilho da Graça. Em 2015, foi iniciada a obra de recuperação da antiga igreja do Convento de São Francisco com projeto do arquiteto Gonçalo Byrne. Com esta recente requalificação arquitetónica surgiu um novo espaço panorâmico sobre a cidade – a Praça das Bandeiras – no qual foi reinstalada, em 2017, a escultura de arte contemporânea, “Longer Journeys”, da autoria de Cabrita Reis, inaugurada, a 22 de novembro de 2003, no Centro de Artes Visuais, sito no Pátio da Inquisição.
 
 **Coordenadas:** 40.202998, -8.435718
 
@@ -73,6 +65,14 @@ Byrne. Com esta recente requalificação arquitetónica surgiu um novo espaço p
 O presente edifício data do século XVII e foi erguido para substituir o Mosteiro de Santa Clara-a-Velha, fustigado recorrentemente pelas cheias do Mondego. O edifício é em estilo sóbrio e utilitário. Na igreja, dedicada à Rainha Santa Isabel, foi preparado um retábulo barroco para albergar a urna de prata e cristal, do séc. XVII, para veneração da padroeira da cidade de Coimbra. À frente da urna, num pedestal, encontra-se a imagem da Rainha Santa Isabel, peça única de mogno, esculpida por Teixeira Lopes e oferecida à Confraria da Rainha Santa Isabel, pela Rainha D. Amélia. O primeiro túmulo da padroeira, executado por Mestre Pêro, em 1330, está atualmente no coro baixo, obra única e exemplar da arte tumular gótica. O claustro de 1733, do arquiteto e engenheiro Carlos Mardel, apresenta já a transição para uma nova linguagem artística – o classicismo.
 
 **Coordenadas:** 40.202681, -8.437282
+
+<!-- caption_panel -->
+
+fundação da nacionalidade
+
+igreja de santa cruz | panteão nacional bandeira da fundação túmulo d. afonso henriques túmulo d. sancho i
+
+a. b. c. d.
 
 <!-- source_page: 2 -->
 
