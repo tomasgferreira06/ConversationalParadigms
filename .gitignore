@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# D2 RAG smoke-test vector DB (generated, rebuildable)
+d2_rag/data/chroma_smoke/
