@@ -1,0 +1,451 @@
+{
+  "config": {
+    "chunk_size": 1000,
+    "chunk_overlap": 100,
+    "length_function": "len",
+    "separators": [
+      "\n\n",
+      "\n",
+      ". ",
+      " ",
+      ""
+    ],
+    "status": "TEMPORARY BASELINE / TO BE EVALUATED"
+  },
+  "documents": {
+    "total": 32,
+    "pdf": 8,
+    "web_page": 24
+  },
+  "chunks": {
+    "total": 330,
+    "pdf": 206,
+    "web_page": 124
+  },
+  "chunks_per_document": {
+    "biblioteca-joanina-uctour": 9,
+    "coimbra-dos-escritores": 25,
+    "coimbra-para-os-pequenitos": 13,
+    "fado-e-tradicoes-academicas": 23,
+    "fundacao-da-nacionalidade": 15,
+    "jardins-historicos": 24,
+    "universidade-alta-sofia-patrimonio-mundial": 68,
+    "viver-o-patrimonio-em-coimbra": 29,
+    "web-visitecoimbra-cancao-de-coimbra": 5,
+    "web-visitecoimbra-ceira": 1,
+    "web-visitecoimbra-ceramica-de-coimbra": 2,
+    "web-visitecoimbra-cestaria-de-bunho": 3,
+    "web-visitecoimbra-coimbra-dos-estudantes": 3,
+    "web-visitecoimbra-coimbra-muralhada": 2,
+    "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira": 2,
+    "web-visitecoimbra-d-afonso-henriques": 3,
+    "web-visitecoimbra-docaria-conventual-de-coimbra": 12,
+    "web-visitecoimbra-gastronomia-em-coimbra": 2,
+    "web-visitecoimbra-heranca-cultural-e-religiosa": 27,
+    "web-visitecoimbra-heranca-judaica": 3,
+    "web-visitecoimbra-heranca-mocarabe": 1,
+    "web-visitecoimbra-luis-vaz-de-camoes": 4,
+    "web-visitecoimbra-mercados": 2,
+    "web-visitecoimbra-museus": 24,
+    "web-visitecoimbra-o-brasao-da-cidade-de-coimbra": 3,
+    "web-visitecoimbra-pedro-e-ines": 6,
+    "web-visitecoimbra-princesa-cindazunda": 3,
+    "web-visitecoimbra-rainha-santa-isabel": 3,
+    "web-visitecoimbra-republicas": 3,
+    "web-visitecoimbra-santo-antonio": 3,
+    "web-visitecoimbra-sesnando-david": 4,
+    "web-visitecoimbra-tecelagem-de-almalagues": 3
+  },
+  "chunks_per_category": {
+    "built_heritage": 56,
+    "city_history": 48,
+    "culture_traditions": 68,
+    "gastronomy": 18,
+    "landscape_gardens": 24,
+    "museums_collections": 24,
+    "university_heritage": 77,
+    "visitor_orientation": 15
+  },
+  "chunks_per_unit_role": {
+    "caption_panel": 2,
+    "content": 317,
+    "page_labels": 11
+  },
+  "body_chars": {
+    "min": 13,
+    "p25": 327.8,
+    "median": 545.5,
+    "mean": 555.2,
+    "p75": 775.2,
+    "max": 998
+  },
+  "rendered_text_chars": {
+    "min": 35,
+    "p25": 408.2,
+    "median": 612.5,
+    "mean": 617.0,
+    "p75": 831.5,
+    "max": 1075
+  },
+  "body_under_100_chars": 18,
+  "body_over_chunk_size": 0,
+  "rendered_over_chunk_size": 25,
+  "split_units_chunks": 160,
+  "chunks_with_overlap": 6,
+  "multi_page_chunks": 8,
+  "chunks_without_section": 95,
+  "chunks_with_subsection": 53,
+  "chunks_with_conflict_notes": 51,
+  "page_number_lines_skipped": 28,
+  "label_pages": {
+    "universidade-alta-sofia-patrimonio-mundial": [
+      1,
+      3,
+      9,
+      13,
+      15,
+      17,
+      27,
+      29,
+      33,
+      42,
+      44
+    ]
+  },
+  "section_resets": {
+    "coimbra-dos-escritores": [
+      2
+    ],
+    "coimbra-para-os-pequenitos": [
+      2
+    ],
+    "fado-e-tradicoes-academicas": [
+      2
+    ],
+    "fundacao-da-nacionalidade": [
+      2
+    ],
+    "jardins-historicos": [
+      2
+    ],
+    "universidade-alta-sofia-patrimonio-mundial": [
+      37
+    ],
+    "viver-o-patrimonio-em-coimbra": [
+      2
+    ]
+  },
+  "small_chunks": [
+    {
+      "chunk_id": "biblioteca-joanina-uctour::c0001",
+      "unit_role": "content",
+      "section": null,
+      "body": "O que visitar"
+    },
+    {
+      "chunk_id": "coimbra-dos-escritores::c0014",
+      "unit_role": "content",
+      "section": "7. JARDIM DA SEREIA",
+      "body": "**Coordenadas:** 40.209496, -8.419062"
+    },
+    {
+      "chunk_id": "coimbra-dos-escritores::c0016",
+      "unit_role": "content",
+      "section": "8. AV. SÁ DA BANDEIRA",
+      "body": "**Coordenadas:** 40.210811, -8.422193"
+    },
+    {
+      "chunk_id": "fundacao-da-nacionalidade::c0008",
+      "unit_role": "content",
+      "section": "6. MOSTEIRO DE SANTA CLARA-A-VELHA",
+      "body": "**Coordenadas:** 40.202822, -8.433311"
+    },
+    {
+      "chunk_id": "jardins-historicos::c0022",
+      "unit_role": "content",
+      "section": null,
+      "body": "jardins Históricos"
+    },
+    {
+      "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0001",
+      "unit_role": "page_labels",
+      "section": null,
+      "body": "Coimbra Património Mundial\n\nUniversidade de coimbra Alta e Sofia"
+    },
+    {
+      "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0002",
+      "unit_role": "page_labels",
+      "section": null,
+      "body": "Coimbra Património Mundial"
+    },
+    {
+      "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0006",
+      "unit_role": "page_labels",
+      "section": null,
+      "body": "Claustro do Silêncio, Mosteiro de Santa Cruz"
+    },
+    {
+      "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0018",
+      "unit_role": "page_labels",
+      "section": null,
+      "body": "Universidade de Coimbra | Paço das Escolas"
+    },
+    {
+      "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0022",
+      "unit_role": "page_labels",
+      "section": null,
+      "body": "Casa da Livraria | Biblioteca Joanina"
+    },
+    {
+      "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0026",
+      "unit_role": "page_labels",
+      "section": null,
+      "body": "Faculdade de Letras\n\nBiblioteca Geral\n\nArquivo da Universidade"
+    },
+    {
+      "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0048",
+      "unit_role": "page_labels",
+      "section": null,
+      "body": "Imprensa da Universidade\n\nSé Velha"
+    },
+    {
+      "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0067",
+      "unit_role": "page_labels",
+      "section": null,
+      "body": "texto ©câmara municipal de coimbra\n\nfotografia ©iclio e ©uc\n\nedição IClio | www.iclio.net"
+    },
+    {
+      "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0068",
+      "unit_role": "page_labels",
+      "section": null,
+      "body": "câmara municipal de Coimbra\n\nwww.cm-coimbra.pt\n\n+351 239 857 500"
+    },
+    {
+      "chunk_id": "viver-o-patrimonio-em-coimbra::c0025",
+      "unit_role": "content",
+      "section": "17. PRAÇA 8 DE MAIO",
+      "body": "**Coordenadas:** 40.211014, -8.429275"
+    },
+    {
+      "chunk_id": "web-visitecoimbra-cancao-de-coimbra::c0005",
+      "unit_role": "content",
+      "section": null,
+      "body": "A Canção de Coimbra não é apenas uma música; é a voz de uma tradição, de uma cultura e de um povo."
+    },
+    {
+      "chunk_id": "web-visitecoimbra-heranca-judaica::c0003",
+      "unit_role": "content",
+      "section": "Projeto MIKVEH",
+      "body": "Empreitada “Mikveh – Banhos de Purificação Judaicos – Conservação e Restauro”."
+    },
+    {
+      "chunk_id": "web-visitecoimbra-pedro-e-ines::c0006",
+      "unit_role": "content",
+      "section": "Para reviver esta emocionante história em Coimbra",
+      "body": "O cenário da trágica execução de Inês, cujas ruínas ecoam o drama deste romance eterno."
+    }
+  ],
+  "large_chunks": [],
+  "duplicates": {
+    "exact_duplicate_groups": [
+      [
+        "fado-e-tradicoes-academicas::c0005",
+        "viver-o-patrimonio-em-coimbra::c0002"
+      ],
+      [
+        "fado-e-tradicoes-academicas::c0008",
+        "viver-o-patrimonio-em-coimbra::c0005"
+      ],
+      [
+        "web-visitecoimbra-heranca-cultural-e-religiosa::c0010",
+        "web-visitecoimbra-heranca-cultural-e-religiosa::c0021"
+      ],
+      [
+        "web-visitecoimbra-heranca-cultural-e-religiosa::c0011",
+        "web-visitecoimbra-heranca-cultural-e-religiosa::c0022"
+      ]
+    ],
+    "near_duplicate_threshold": 0.8,
+    "near_duplicate_pairs_by_scope": {
+      "cross_document_pdf": 26,
+      "same_document": 2,
+      "pdf_web": 1
+    },
+    "near_duplicate_pairs": [
+      {
+        "a": "coimbra-dos-escritores::c0004",
+        "b": "jardins-historicos::c0007",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "coimbra-dos-escritores::c0014",
+        "b": "jardins-historicos::c0017",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "coimbra-dos-escritores::c0016",
+        "b": "jardins-historicos::c0020",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "coimbra-para-os-pequenitos::c0008",
+        "b": "jardins-historicos::c0003",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "coimbra-para-os-pequenitos::c0009",
+        "b": "jardins-historicos::c0004",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0001",
+        "b": "universidade-alta-sofia-patrimonio-mundial::c0036",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0004",
+        "b": "viver-o-patrimonio-em-coimbra::c0001",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0005",
+        "b": "viver-o-patrimonio-em-coimbra::c0002",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0006",
+        "b": "universidade-alta-sofia-patrimonio-mundial::c0013",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0007",
+        "b": "universidade-alta-sofia-patrimonio-mundial::c0022",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0007",
+        "b": "viver-o-patrimonio-em-coimbra::c0004",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0008",
+        "b": "viver-o-patrimonio-em-coimbra::c0005",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "universidade-alta-sofia-patrimonio-mundial::c0013",
+        "b": "viver-o-patrimonio-em-coimbra::c0003",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "universidade-alta-sofia-patrimonio-mundial::c0022",
+        "b": "viver-o-patrimonio-em-coimbra::c0004",
+        "containment": 1.0,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "web-visitecoimbra-heranca-cultural-e-religiosa::c0010",
+        "b": "web-visitecoimbra-heranca-cultural-e-religiosa::c0021",
+        "containment": 1.0,
+        "scope": "same_document"
+      },
+      {
+        "a": "web-visitecoimbra-heranca-cultural-e-religiosa::c0011",
+        "b": "web-visitecoimbra-heranca-cultural-e-religiosa::c0022",
+        "containment": 1.0,
+        "scope": "same_document"
+      },
+      {
+        "a": "coimbra-dos-escritores::c0002",
+        "b": "jardins-historicos::c0005",
+        "containment": 0.966,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0006",
+        "b": "viver-o-patrimonio-em-coimbra::c0003",
+        "containment": 0.96,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0013",
+        "b": "universidade-alta-sofia-patrimonio-mundial::c0046",
+        "containment": 0.957,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "coimbra-dos-escritores::c0020",
+        "b": "fado-e-tradicoes-academicas::c0012",
+        "containment": 0.949,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0003",
+        "b": "universidade-alta-sofia-patrimonio-mundial::c0039",
+        "containment": 0.946,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "coimbra-dos-escritores::c0005",
+        "b": "jardins-historicos::c0006",
+        "containment": 0.884,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0002",
+        "b": "universidade-alta-sofia-patrimonio-mundial::c0037",
+        "containment": 0.87,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0003",
+        "b": "universidade-alta-sofia-patrimonio-mundial::c0038",
+        "containment": 0.87,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0015",
+        "b": "universidade-alta-sofia-patrimonio-mundial::c0047",
+        "containment": 0.868,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "fundacao-da-nacionalidade::c0001",
+        "b": "viver-o-patrimonio-em-coimbra::c0024",
+        "containment": 0.864,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "coimbra-dos-escritores::c0022",
+        "b": "web-visitecoimbra-museus::c0024",
+        "containment": 0.839,
+        "scope": "pdf_web"
+      },
+      {
+        "a": "fado-e-tradicoes-academicas::c0008",
+        "b": "universidade-alta-sofia-patrimonio-mundial::c0019",
+        "containment": 0.83,
+        "scope": "cross_document_pdf"
+      },
+      {
+        "a": "universidade-alta-sofia-patrimonio-mundial::c0019",
+        "b": "viver-o-patrimonio-em-coimbra::c0005",
+        "containment": 0.83,
+        "scope": "cross_document_pdf"
+      }
+    ]
+  }
+}
