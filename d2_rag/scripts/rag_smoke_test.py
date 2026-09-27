@@ -69,12 +69,12 @@ class SmokeTestError(RuntimeError):
 
 
 def load_manifest(path: Path = MANIFEST_PATH) -> list[dict[str, Any]]:
-    """Return the accepted manifest records, in manifest order."""
+    """Return the accepted PDF manifest records, in manifest order."""
     records = []
     for line in path.read_text(encoding="utf-8").splitlines():
         if line.strip():
             record = json.loads(line)
-            if record.get("status") == "accepted":
+            if record.get("status") == "accepted" and record.get("source_type") == "pdf":
                 records.append(record)
     return records
 

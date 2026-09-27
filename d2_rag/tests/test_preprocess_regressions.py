@@ -202,7 +202,7 @@ class ConsistencyTests(unittest.TestCase):
 
     def test_processed_files_match_a_fresh_render(self):
         for record in load_manifest():
-            if record.get("status") != "accepted":
+            if record.get("status") != "accepted" or record.get("source_type") != "pdf":
                 continue
             with self.subTest(document_id=record["document_id"]):
                 markdown, _stats = render_document(record)

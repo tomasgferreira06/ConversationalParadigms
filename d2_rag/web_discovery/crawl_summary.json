@@ -1,0 +1,274 @@
+{
+  "config": {
+    "root_url": "https://visitecoimbra.pt/",
+    "strategy": "BFSDeepCrawlStrategy + sitemap gaps",
+    "fetcher": "AsyncHTTPCrawlerStrategy",
+    "check_robots_txt": true,
+    "max_depth": 3,
+    "max_pages": 300,
+    "concurrency": 2,
+    "delay_s": [
+      1.5,
+      2.5
+    ],
+    "user_agent": "D2-RAG-discovery/0.1 (academic project; conservative crawl)",
+    "domain": "visitecoimbra.pt",
+    "commercial_sample_per_type": 2
+  },
+  "robots": {
+    "robots_url": "https://visitecoimbra.pt/robots.txt",
+    "status": 200,
+    "root_allowed": true,
+    "sitemaps": [
+      "https://visitecoimbra.pt/wp-sitemap.xml"
+    ],
+    "child_sitemaps": {
+      "posts-page": 106,
+      "posts-alojamentos": 48,
+      "posts-restaurantes": 70,
+      "posts-experiencias": 30,
+      "posts-ova_framework_hf_el": 3,
+      "taxonomies-estrela": 6,
+      "taxonomies-preco": 3,
+      "taxonomies-tipos-de-alojamento": 5,
+      "taxonomies-tipo-de-restaurante": 15
+    }
+  },
+  "robots_txt": "User-agent: *\nDisallow: /wp-admin/\nAllow: /wp-admin/admin-ajax.php\n\nSitemap: https://visitecoimbra.pt/wp-sitemap.xml\n",
+  "fetched": 132,
+  "fetched_ok": 123,
+  "redirected": 0,
+  "discovered": 457,
+  "by_status": {
+    "review": 61,
+    "excluded": 314,
+    "unavailable": 9,
+    "candidate": 29,
+    "already_in_corpus": 14,
+    "irrelevant": 27,
+    "new_candidate": 2,
+    "unknown": 1
+  },
+  "by_page_type": {
+    "home": 2,
+    "account": 6,
+    "institutional": 8,
+    "listing_accommodation": 48,
+    "system": 3,
+    "topic": 66,
+    "event": 7,
+    "taxonomy": 29,
+    "experience": 30,
+    "listing_index": 2,
+    "agenda": 1,
+    "section_index": 3,
+    "template": 3,
+    "listing_restaurant": 70,
+    "route": 9,
+    "blog_index": 1,
+    "asset": 132,
+    "pdf": 37
+  },
+  "by_category": {
+    "gastronomy": 4,
+    "visitor_orientation": 10,
+    "landscape_gardens": 1,
+    "university_heritage": 2,
+    "built_heritage": 1,
+    "city_history": 10,
+    "museums_collections": 1,
+    "culture_traditions": 7,
+    "None": 7
+  },
+  "html_lang": {
+    "pt-PT": 122,
+    "None": 9
+  },
+  "pdfs": [
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/COIMBRA-AMURALLADA_ESP_V1_1.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['esp'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/COIMBRA-FOR-THE-LITTLE-ONES_UK_V1_1.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['uk'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/COIMBRA-FORTIFIEE_FR_V1_1.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['fr'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/COIMBRA-PARA-LOS-PEQUENITOS_ESP_V1_1.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['esp'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/COIMBRA-POUR-LES-ENFANTS_FR_V1_1.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['fr'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/CoimbraMuralhada_final.PT_.pdf",
+      "status": "new_candidate",
+      "reason": "Portuguese edition not in the PDF corpus (filename); not downloaded"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/ESCRITORES_ESP_V1_1-1-compressed.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['esp'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/FADO-AND-THE-TRADITIONS_UK_V1_1.pdf.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['uk'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/FADO-ET-TRADITIONS_FR_V1_1.pdf.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['fr'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/FADO-Y-LAS-TRADICIONES_ESP_V1_1.pdf.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['esp'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/FUNDACAO-DA-NACIONALIDADE_ESP.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['esp'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/FUNDACAO-DA-NACIONALIDADE_FR.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['fr'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/FUNDACAO-DA-NACIONALIDADE_PT.pdf",
+      "status": "already_in_corpus",
+      "reason": "same filename as raw PDF of fundacao-da-nacionalidade"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/HISTORICAL-GARDENS_UK.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['uk'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/JARDINES-HISTORICOS_ESP.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['esp'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/JARDINS-HISTORIQUES_FR_compressed.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['fr'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/LIVING-THE-HERITAGE_UK_V1_1.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['uk'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/VIVIR-EL-PATRIMONIO_ESP_V1_1.pdf.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['esp'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/VIVRE-LE-PATRIMOINE_FR_V1_1.pdf.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['fr'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/WALLED-COIMBRA_UK_V1_1.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['uk'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/WRITERS_UK_V1_1-1-compressed.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['uk'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/escritores_final-compressed_1.pdf",
+      "status": "already_in_corpus",
+      "reason": "same filename as raw PDF of coimbra-dos-escritores"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/fadoetradicoes_final-compressed.pdf",
+      "status": "already_in_corpus",
+      "reason": "same filename as raw PDF of fado-e-tradicoes-academicas"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/jardins-historicos_PT.pdf",
+      "status": "already_in_corpus",
+      "reason": "same filename as raw PDF of jardins-historicos"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/mapa_turistico_2023.pdf.pdf",
+      "status": "unknown",
+      "reason": "no language token and not in the corpus; needs manual review"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/patrimoniomundial_brochura-uk.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['uk'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/patrimoniomundial_brochura.pdf",
+      "status": "already_in_corpus",
+      "reason": "same filename as raw PDF of universidade-alta-sofia-patrimonio-mundial"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/patrimoniomundial_brochura_ESP.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['esp'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/patrimoniomundial_brochura_fr.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['fr'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/02/viveropatrimonio_final.pt_.pdf",
+      "status": "already_in_corpus",
+      "reason": "same filename as raw PDF of viver-o-patrimonio-em-coimbra"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/06/ECRIVAINS_FR_V1_1.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['fr'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/06/FOUNDING-OF-THE-NATIONALITY_UK_V1_1.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['uk'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/06/PATRIMOINE-MONDIAL_FR_V1_1.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['fr'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/06/PATRIMONIO-MUNDIAL_ESP_V1_1.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['esp'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/06/PATRIMONIO-MUNDIAL_PT_V2_1.pdf",
+      "status": "new_candidate",
+      "reason": "Portuguese edition not in the PDF corpus (filename); not downloaded"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/06/WORLD-HERITAGE_UK_V1_1.pdf",
+      "status": "irrelevant",
+      "reason": "non-Portuguese edition (language token ['uk'] in filename)"
+    },
+    {
+      "url": "https://visitecoimbra.pt/wp-content/uploads/2025/07/Coimbraparaospequenitos-PT.pdf",
+      "status": "already_in_corpus",
+      "reason": "same filename as raw PDF of coimbra-para-os-pequenitos"
+    }
+  ]
+}

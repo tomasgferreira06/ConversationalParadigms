@@ -705,7 +705,12 @@ def process_document(record: dict[str, Any]) -> ProcessingStats:
 def _select_records(
     records: list[dict[str, Any]], requested: list[str] | None, process_all: bool
 ) -> list[dict[str, Any]]:
-    accepted = [record for record in records if record.get("status") == "accepted"]
+    # The manifest also lists web pages; those have their own pipeline.
+    accepted = [
+        record
+        for record in records
+        if record.get("status") == "accepted" and record.get("source_type") == "pdf"
+    ]
     if process_all:
         return accepted
     if not requested:

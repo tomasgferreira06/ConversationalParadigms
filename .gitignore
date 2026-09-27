@@ -219,3 +219,6 @@ __marimo__/
 
 # D2 RAG smoke-test vector DB (generated, rebuildable)
 d2_rag/data/chroma_smoke/
+
+# Cygwin/MSYS (Git Bash) crash dumps
+*.stackdump
