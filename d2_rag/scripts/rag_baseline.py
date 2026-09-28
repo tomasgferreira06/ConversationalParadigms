@@ -1,7 +1,8 @@
 """Unified RAG baseline: interactive smoke test over the 32-document corpus.
 
 Not a formal evaluation. Command-line interface to rag_pipeline with the
-BASELINE configuration: builds the Chroma index of the content chunks in
+BASELINE configuration (see rag_pipeline; --rebuild only ever touches that
+configuration's own store, never the stores of earlier versions): builds the Chroma index of the content chunks in
 data/chunks/chunks.jsonl, then answers independent questions with visible
 retrieval, context, answer and sources.
 
@@ -21,7 +22,6 @@ from langchain_core.documents import Document
 
 from rag_pipeline import (
     BASELINE,
-    STORE_DIR,
     BaselineError,
     build_messages,
     build_store,
@@ -111,7 +111,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Indexed chunks: {report['indexed_chunks']}")
             for role, count in sorted(report["excluded"].items()):
                 print(f"Excluded {role}: {count}")
-            print(f"Collection '{BASELINE.collection_name}' count: {report['collection_count']} ({STORE_DIR})")
+            print(f"Collection '{BASELINE.collection_name}' count: {report['collection_count']} ({BASELINE.store_dir})")
             if not args.question:
                 return 0
         else:

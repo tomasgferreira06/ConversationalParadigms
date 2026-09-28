@@ -1,11 +1,13 @@
 """Technical tests for the unified RAG baseline (no Ollama, no model download, no network)."""
 
+import dataclasses
 import sys
 import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
 
+import numpy as np
 from langchain_core.documents import Document
 from langchain_core.embeddings import DeterministicFakeEmbedding
 
@@ -145,16 +147,144 @@ class ContextAndPromptTests(unittest.TestCase):
         self.assertEqual(cli.chunk_body(Document(page_content="Sem heading.")), "Sem heading.")
 
 
+def _config(**overrides):
+    values = dict(distance_space="cosine", top_k=3, llm_model="llama3.2:3b", llm_temperature=0.1,
+                  indexed_roles=frozenset({"content"}))
+    return rb.RAGConfig(**values, **overrides)
+
+
+def _embeddings_with_fake_client(config):
+    """The real HuggingFaceEmbeddings built by load_embeddings, with a fake SentenceTransformer."""
+
+    from langchain_huggingface import HuggingFaceEmbeddings
+
+    client = mock.Mock()
+    client.encode.side_effect = lambda texts, **kwargs: np.zeros((len(texts), 4))
+
+    def construct(**kwargs):
+        embeddings = HuggingFaceEmbeddings.model_construct(multi_process=False, show_progress=False, **kwargs)
+        embeddings._client = client
+        return embeddings
+
+    with mock.patch("langchain_huggingface.HuggingFaceEmbeddings", side_effect=construct) as hf:
+        embeddings = rb.load_embeddings(config)
+    return embeddings, client, hf
+
+
+EMBEDDED = {"documents": [], "queries": []}
+
+
+class RecordingEmbeddings(DeterministicFakeEmbedding):
+    """Fake embeddings that record which texts were embedded as documents and as queries."""
+
+    def embed_documents(self, texts):
+        EMBEDDED["documents"].extend(texts)
+        return super().embed_documents(texts)
+
+    def embed_query(self, text):
+        EMBEDDED["queries"].append(text)
+        return super().embed_query(text)
+
+
 class ConfigurationTests(unittest.TestCase):
-    def test_baseline_configuration_is_unchanged(self):
-        self.assertEqual(rb.BASELINE, rb.RAGConfig(
+    def test_v0_configuration_is_preserved(self):
+        self.assertEqual(rb.BASELINE_V0, _config(
             embedding_model="sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+            query_prompt_name=None,
             collection_name="coimbra_rag_baseline",
-            distance_space="cosine",
-            top_k=3,
-            llm_model="llama3.2:3b",
-            llm_temperature=0.1,
-            indexed_roles=frozenset({"content"}),
+            store_dir=D2_ROOT / "data" / "chroma_baseline",
+        ))
+
+    def test_v1_configuration_is_preserved(self):
+        self.assertEqual(rb.BASELINE_V1, _config(
+            embedding_model="sentence-transformers/all-mpnet-base-v2",
+            query_prompt_name=None,
+            collection_name="coimbra_rag_baseline_v1",
+            store_dir=D2_ROOT / "data" / "chroma_baseline_v1",
+        ))
+
+    def test_v2_is_the_baseline_with_qwen3_and_its_query_prompt(self):
+        self.assertIs(rb.BASELINE, rb.BASELINE_V2)
+        self.assertEqual(rb.BASELINE_V2, _config(
+            embedding_model="Qwen/Qwen3-Embedding-0.6B",
+            query_prompt_name="query",
+            collection_name="coimbra_rag_baseline_v2",
+            store_dir=D2_ROOT / "data" / "chroma_baseline_v2",
+        ))
+
+    def test_versions_differ_only_in_the_embedding_solution_and_store(self):
+        v0, v1, v2 = (vars(c) for c in (rb.BASELINE_V0, rb.BASELINE_V1, rb.BASELINE_V2))
+        self.assertEqual({k for k in v0 if v0[k] != v1[k]}, {"embedding_model", "collection_name", "store_dir"})
+        self.assertEqual({k for k in v1 if v1[k] != v2[k]},
+                         {"embedding_model", "query_prompt_name", "collection_name", "store_dir"})
+
+    def test_stores_and_collections_never_collide(self):
+        configs = (rb.BASELINE_V0, rb.BASELINE_V1, rb.BASELINE_V2)
+        self.assertEqual(len({c.collection_name for c in configs}), 3)
+        dirs = [c.store_dir.resolve() for c in configs]
+        self.assertEqual(len(set(dirs)), 3)
+        for a in dirs:
+            for b in dirs:
+                self.assertNotIn(a, b.parents)
+        self.assertTrue(all(d.parent == (D2_ROOT / "data").resolve() for d in dirs))
+
+    def test_every_version_selects_the_317_content_chunks(self):
+        chunks = rb.load_chunks()
+        for config in (rb.BASELINE_V0, rb.BASELINE_V1, rb.BASELINE_V2):
+            with self.subTest(config=config.collection_name):
+                kept, excluded = rb.select_indexable(chunks, config)
+                self.assertEqual(len(kept), 317)
+                self.assertEqual(excluded, {"page_labels": 11, "caption_panel": 2})
+
+    def test_v0_v1_embed_queries_like_documents(self):
+        for config in (rb.BASELINE_V0, rb.BASELINE_V1):
+            with self.subTest(config=config.collection_name):
+                with mock.patch("langchain_huggingface.HuggingFaceEmbeddings") as hf:
+                    rb.load_embeddings(config)
+                hf.assert_called_once_with(model_name=config.embedding_model,
+                                           encode_kwargs={"normalize_embeddings": True})
+
+    def test_v2_prompts_queries_only_and_normalizes_both(self):
+        embeddings, client, hf = _embeddings_with_fake_client(rb.BASELINE_V2)
+        hf.assert_called_once_with(
+            model_name="Qwen/Qwen3-Embedding-0.6B",
+            encode_kwargs={"normalize_embeddings": True},
+            query_encode_kwargs={"normalize_embeddings": True, "prompt_name": "query"},
+        )
+        embeddings.embed_documents([PDF_CHUNK["text"]])
+        self.assertEqual(client.encode.call_args.kwargs, {"show_progress_bar": False, "normalize_embeddings": True})
+        embeddings.embed_query("Em que ano foi fundado o Mosteiro de Santa Cruz?")
+        self.assertEqual(client.encode.call_args.args[0], ["Em que ano foi fundado o Mosteiro de Santa Cruz?"])
+        self.assertEqual(client.encode.call_args.kwargs,
+                         {"show_progress_bar": False, "normalize_embeddings": True, "prompt_name": "query"})
+
+    def test_store_embeds_chunk_text_as_documents_and_the_question_as_query(self):
+        EMBEDDED["documents"].clear()
+        EMBEDDED["queries"].clear()
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+            store, _report = rb.build_store([PDF_CHUNK, WEB_CHUNK], RecordingEmbeddings(size=8), Path(tmp) / "s")
+            rb.retrieve(store, "Quem fundou?")
+        self.assertEqual(EMBEDDED["documents"], [PDF_CHUNK["text"], WEB_CHUNK["text"]])
+        self.assertEqual(EMBEDDED["queries"], ["Quem fundou?"])
+
+    def test_store_defaults_to_the_config_store_dir(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            config = dataclasses.replace(rb.BASELINE, store_dir=Path(tmp) / "absent")
+            with self.assertRaisesRegex(rb.BaselineError, "Run with --rebuild"):
+                rb.open_store(DeterministicFakeEmbedding(size=16), config=config)
+            self.assertFalse(config.store_dir.exists())
+
+    def test_prompt_is_unchanged(self):
+        self.assertEqual(rb.SYSTEM_PROMPT, (
+            "És um assistente especializado em turismo, história, património, cultura e gastronomia de Coimbra.\n"
+            "Responde à pergunta utilizando apenas o contexto fornecido.\n"
+            "Não uses conhecimento externo para preencher informação que não esteja no contexto.\n"
+            "Se o contexto não for suficiente para responder com segurança, diz explicitamente:\n"
+            "\"Não tenho informação suficiente no contexto disponível para responder com segurança.\"\n"
+            "Se existirem fontes recuperadas que apresentam versões contraditórias do mesmo facto, não escolhas "
+            "silenciosamente uma delas. Explica brevemente que existem formulações divergentes e identifica as fontes.\n"
+            "Responde em Português de Portugal, de forma clara e concisa.\n"
+            "Não inventes fontes."
         ))
 
     def test_generation_uses_the_configured_model_and_temperature(self):

@@ -2,15 +2,16 @@
 
 chunks.jsonl -> content chunks -> Chroma (HuggingFace embeddings) -> top-k
 retrieval -> context and prompt -> Ollama answer, plus source formatting.
-Every experimental setting is in a RAGConfig; BASELINE is the configuration
-of the interactive baseline (rag_baseline.py). Retrieval can be run without
-the LLM, and prompts built without Chroma.
+Every experimental setting, including the vector store it owns, is in a
+RAGConfig; BASELINE is the configuration of the interactive baseline
+(rag_baseline.py). Retrieval can be run without the LLM, and prompts built
+without Chroma.
 """
 
 from __future__ import annotations
 
 import shutil
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
@@ -21,14 +22,15 @@ from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 from corpus import CHUNKS_PATH, DATA_DIR, read_jsonl
 
 
-# The first smoke test's store (data/chroma_smoke) is historical and never opened.
-STORE_DIR = DATA_DIR / "chroma_baseline"
-
-
 @dataclass(frozen=True)
 class RAGConfig:
     embedding_model: str
+    # Name of a prompt defined by the embedding model itself (its
+    # SentenceTransformer config), applied to queries only; None for models
+    # that embed queries and documents the same way.
+    query_prompt_name: str | None
     collection_name: str
+    store_dir: Path
     distance_space: str
     top_k: int
     llm_model: str
@@ -37,15 +39,45 @@ class RAGConfig:
 
 
 # ---- TEMPORARY BASELINE / TO BE EVALUATED -----------------------------------
-BASELINE = RAGConfig(
+# The first smoke test's store (data/chroma_smoke) is historical and never opened.
+
+# V0: first unified baseline (RAG_BASELINE_SMOKE_TEST.md). Kept as a diagnostic
+# reference; its store is never rebuilt by the CLI.
+BASELINE_V0 = RAGConfig(
     embedding_model="sentence-transformers/paraphrase-multilingual-mpnet-base-v2",  # 768-d
+    query_prompt_name=None,
     collection_name="coimbra_rag_baseline",
+    store_dir=DATA_DIR / "chroma_baseline",
     distance_space="cosine",
     top_k=3,
     llm_model="llama3.2:3b",
     llm_temperature=0.1,
     indexed_roles=frozenset({"content"}),  # page_labels and caption_panel stay out of the index
 )
+# V1: the course RAG worksheet's embedding model, matching its 1000/100-char
+# chunking (RAG_BASELINE_V1_SMOKE_TEST.md). Only the embedding model and the
+# store identity differ from V0.
+BASELINE_V1 = replace(
+    BASELINE_V0,
+    embedding_model="sentence-transformers/all-mpnet-base-v2",  # 768-d
+    collection_name="coimbra_rag_baseline_v1",
+    store_dir=DATA_DIR / "chroma_baseline_v1",
+)
+# V2: Qwen3 embedding, instruction-aware: queries get the model's own "query"
+# prompt, documents are embedded as they are (RAG_BASELINE_V2_QWEN_SMOKE_TEST.md).
+# Written out in full because the query prompt is model-specific.
+BASELINE_V2 = RAGConfig(
+    embedding_model="Qwen/Qwen3-Embedding-0.6B",  # 1024-d (native, no MRL truncation)
+    query_prompt_name="query",
+    collection_name="coimbra_rag_baseline_v2",
+    store_dir=DATA_DIR / "chroma_baseline_v2",
+    distance_space="cosine",
+    top_k=3,
+    llm_model="llama3.2:3b",
+    llm_temperature=0.1,
+    indexed_roles=frozenset({"content"}),
+)
+BASELINE = BASELINE_V2
 # -----------------------------------------------------------------------------
 
 # Chroma 1.5 stores lists natively; None values are dropped, so absent = null.
@@ -120,8 +152,13 @@ def to_document(chunk: dict[str, Any]) -> Document:
 def load_embeddings(config: RAGConfig = BASELINE) -> Embeddings:
     from langchain_huggingface import HuggingFaceEmbeddings
 
+    encode_kwargs = {"normalize_embeddings": True}
+    extra = {}
+    if config.query_prompt_name:
+        # embed_query uses these instead of encode_kwargs; documents never get the prompt.
+        extra["query_encode_kwargs"] = {**encode_kwargs, "prompt_name": config.query_prompt_name}
     try:
-        return HuggingFaceEmbeddings(model_name=config.embedding_model, encode_kwargs={"normalize_embeddings": True})
+        return HuggingFaceEmbeddings(model_name=config.embedding_model, encode_kwargs=encode_kwargs, **extra)
     except Exception as exc:
         raise BaselineError(f"[embeddings] could not load {config.embedding_model}: {exc}") from exc
 
@@ -140,11 +177,12 @@ def _chroma(embeddings: Embeddings, store_dir: Path, config: RAGConfig):
 
 
 def build_store(
-    chunks: list[dict[str, Any]], embeddings: Embeddings, store_dir: Path = STORE_DIR,
+    chunks: list[dict[str, Any]], embeddings: Embeddings, store_dir: Path | None = None,
     config: RAGConfig = BASELINE,
 ):
-    """Delete and rebuild the store from the chunks; returns (store, report)."""
+    """Delete and rebuild the store (default: config.store_dir); returns (store, report)."""
 
+    store_dir = config.store_dir if store_dir is None else store_dir
     indexable, excluded = select_indexable(chunks, config)
     ids = [c["chunk_id"] for c in indexable]
     if len(ids) != len(set(ids)):
@@ -166,7 +204,8 @@ def build_store(
     return store, report
 
 
-def open_store(embeddings: Embeddings, store_dir: Path = STORE_DIR, config: RAGConfig = BASELINE):
+def open_store(embeddings: Embeddings, store_dir: Path | None = None, config: RAGConfig = BASELINE):
+    store_dir = config.store_dir if store_dir is None else store_dir
     if not (store_dir / "chroma.sqlite3").exists():
         raise BaselineError("Baseline vector store not found. Run with --rebuild.")
     store = _chroma(embeddings, store_dir, config)
