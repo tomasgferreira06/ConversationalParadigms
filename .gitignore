@@ -222,3 +222,6 @@ d2_rag/data/chroma_smoke/
 
 # Cygwin/MSYS (Git Bash) crash dumps
 *.stackdump
+
+# D2 unified RAG baseline vector DB (generated from data/chunks/chunks.jsonl)
+d2_rag/data/chroma_baseline/
