@@ -227,3 +227,8 @@ d2_rag/data/chroma_smoke/
 d2_rag/data/chroma_baseline/
 d2_rag/data/chroma_baseline_v1/
 d2_rag/data/chroma_baseline_v2/
+
+# D2 RAG vector DBs over the frozen evaluation corpus (generated from data/chunks/chunks.jsonl)
+d2_rag/data/chroma_frozen_v0/
+d2_rag/data/chroma_frozen_v1/
+d2_rag/data/chroma_frozen_v2/

@@ -1,11 +1,11 @@
-"""Unified RAG pipeline over the 32-document corpus (no CLI, no printing).
+"""Unified RAG pipeline over the frozen 35-document corpus (no CLI, no printing).
 
 chunks.jsonl -> content chunks -> Chroma (HuggingFace embeddings) -> top-k
 retrieval -> context and prompt -> Ollama answer, plus source formatting.
 Every experimental setting, including the vector store it owns, is in a
-RAGConfig; BASELINE is the configuration of the interactive baseline
-(rag_baseline.py). Retrieval can be run without the LLM, and prompts built
-without Chroma.
+RAGConfig; CONFIGS are the configurations of the interactive baseline
+(rag_baseline.py) and BASELINE its default. Retrieval can be run without the
+LLM, and prompts built without Chroma.
 """
 
 from __future__ import annotations
@@ -77,7 +77,18 @@ BASELINE_V2 = RAGConfig(
     llm_temperature=0.1,
     indexed_roles=frozenset({"content"}),
 )
-BASELINE = BASELINE_V2
+# The BASELINE_V* stores above are historical snapshots of the 317-content-chunk
+# corpus of their smoke tests: never rebuilt, never opened by the CLI.
+
+# FROZEN_V*: the same three embedding solutions over the frozen evaluation
+# corpus (35 documents, 348 content chunks; FROZEN_CORPUS_VECTOR_STORES_SMOKE_TEST.md).
+# Only the store identity differs from the matching BASELINE_V*.
+FROZEN_V0 = replace(BASELINE_V0, collection_name="coimbra_rag_frozen_v0", store_dir=DATA_DIR / "chroma_frozen_v0")
+FROZEN_V1 = replace(BASELINE_V1, collection_name="coimbra_rag_frozen_v1", store_dir=DATA_DIR / "chroma_frozen_v1")
+FROZEN_V2 = replace(BASELINE_V2, collection_name="coimbra_rag_frozen_v2", store_dir=DATA_DIR / "chroma_frozen_v2")
+# The configurations the CLI can build and query.
+CONFIGS = {"frozen-v0": FROZEN_V0, "frozen-v1": FROZEN_V1, "frozen-v2": FROZEN_V2}
+BASELINE = FROZEN_V2
 # -----------------------------------------------------------------------------
 
 # Chroma 1.5 stores lists natively; None values are dropped, so absent = null.
@@ -207,10 +218,10 @@ def build_store(
 def open_store(embeddings: Embeddings, store_dir: Path | None = None, config: RAGConfig = BASELINE):
     store_dir = config.store_dir if store_dir is None else store_dir
     if not (store_dir / "chroma.sqlite3").exists():
-        raise BaselineError("Baseline vector store not found. Run with --rebuild.")
+        raise BaselineError(f"Vector store {store_dir.name} not found. Run with --rebuild.")
     store = _chroma(embeddings, store_dir, config)
     if store._collection.count() == 0:
-        raise BaselineError("Baseline vector store is empty. Run with --rebuild.")
+        raise BaselineError(f"Vector store {store_dir.name} is empty. Run with --rebuild.")
     return store
 
 

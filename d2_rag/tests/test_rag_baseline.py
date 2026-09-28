@@ -1,6 +1,8 @@
 """Technical tests for the unified RAG baseline (no Ollama, no model download, no network)."""
 
+import contextlib
 import dataclasses
+import io
 import sys
 import tempfile
 import unittest
@@ -203,8 +205,7 @@ class ConfigurationTests(unittest.TestCase):
             store_dir=D2_ROOT / "data" / "chroma_baseline_v1",
         ))
 
-    def test_v2_is_the_baseline_with_qwen3_and_its_query_prompt(self):
-        self.assertIs(rb.BASELINE, rb.BASELINE_V2)
+    def test_v2_configuration_is_preserved_with_qwen3_and_its_query_prompt(self):
         self.assertEqual(rb.BASELINE_V2, _config(
             embedding_model="Qwen/Qwen3-Embedding-0.6B",
             query_prompt_name="query",
@@ -228,9 +229,63 @@ class ConfigurationTests(unittest.TestCase):
                 self.assertNotIn(a, b.parents)
         self.assertTrue(all(d.parent == (D2_ROOT / "data").resolve() for d in dirs))
 
+    def test_frozen_configs_change_only_the_store_of_their_historical_version(self):
+        expected = {
+            rb.FROZEN_V0: (rb.BASELINE_V0, "coimbra_rag_frozen_v0", "chroma_frozen_v0"),
+            rb.FROZEN_V1: (rb.BASELINE_V1, "coimbra_rag_frozen_v1", "chroma_frozen_v1"),
+            rb.FROZEN_V2: (rb.BASELINE_V2, "coimbra_rag_frozen_v2", "chroma_frozen_v2"),
+        }
+        for frozen, (historical, collection, directory) in expected.items():
+            with self.subTest(config=collection):
+                self.assertEqual(frozen, dataclasses.replace(
+                    historical, collection_name=collection, store_dir=D2_ROOT / "data" / directory))
+        self.assertIsNone(rb.FROZEN_V0.query_prompt_name)
+        self.assertIsNone(rb.FROZEN_V1.query_prompt_name)
+        self.assertEqual(rb.FROZEN_V2.query_prompt_name, "query")
+        self.assertEqual(rb.FROZEN_V2.embedding_model, "Qwen/Qwen3-Embedding-0.6B")
+
+    def test_cli_offers_only_the_frozen_configs_and_defaults_to_frozen_v2(self):
+        self.assertEqual(rb.CONFIGS, {"frozen-v0": rb.FROZEN_V0, "frozen-v1": rb.FROZEN_V1,
+                                      "frozen-v2": rb.FROZEN_V2})
+        self.assertIs(rb.BASELINE, rb.FROZEN_V2)
+        historical = {rb.BASELINE_V0.store_dir, rb.BASELINE_V1.store_dir, rb.BASELINE_V2.store_dir}
+        self.assertFalse(historical & {c.store_dir for c in rb.CONFIGS.values()})
+
+    def test_cli_rebuild_uses_only_the_selected_config(self):
+        with mock.patch.object(cli, "load_embeddings") as load, \
+                mock.patch.object(cli, "load_chunks", return_value=[]), \
+                mock.patch.object(cli, "build_store", return_value=(None, {
+                    "input_chunks": 0, "indexed_chunks": 0, "excluded": {}, "collection_count": 0})) as build,                 contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(cli.main(["--config", "frozen-v0", "--rebuild"]), 0)
+        load.assert_called_once_with(rb.FROZEN_V0)
+        build.assert_called_once_with([], load.return_value, config=rb.FROZEN_V0)
+
+    def test_frozen_and_historical_stores_and_collections_never_collide(self):
+        configs = (rb.BASELINE_V0, rb.BASELINE_V1, rb.BASELINE_V2, rb.FROZEN_V0, rb.FROZEN_V1, rb.FROZEN_V2)
+        self.assertEqual(len({c.collection_name for c in configs}), 6)
+        dirs = [c.store_dir.resolve() for c in configs] + [(D2_ROOT / "data" / "chroma_smoke").resolve()]
+        self.assertEqual(len(set(dirs)), 7)
+        for a in dirs:
+            for b in dirs:
+                self.assertNotIn(a, b.parents)
+
+    def test_frozen_embedding_setups_match_their_historical_versions(self):
+        for config in (rb.FROZEN_V0, rb.FROZEN_V1):
+            with self.subTest(config=config.collection_name):
+                with mock.patch("langchain_huggingface.HuggingFaceEmbeddings") as hf:
+                    rb.load_embeddings(config)
+                hf.assert_called_once_with(model_name=config.embedding_model,
+                                           encode_kwargs={"normalize_embeddings": True})
+        _embeddings, _client, hf = _embeddings_with_fake_client(rb.FROZEN_V2)
+        hf.assert_called_once_with(
+            model_name="Qwen/Qwen3-Embedding-0.6B",
+            encode_kwargs={"normalize_embeddings": True},
+            query_encode_kwargs={"normalize_embeddings": True, "prompt_name": "query"},
+        )
+
     def test_every_version_selects_the_348_content_chunks(self):
         chunks = rb.load_chunks()
-        for config in (rb.BASELINE_V0, rb.BASELINE_V1, rb.BASELINE_V2):
+        for config in (rb.BASELINE_V0, rb.BASELINE_V1, rb.BASELINE_V2, rb.FROZEN_V0, rb.FROZEN_V1, rb.FROZEN_V2):
             with self.subTest(config=config.collection_name):
                 kept, excluded = rb.select_indexable(chunks, config)
                 self.assertEqual(len(kept), 348)

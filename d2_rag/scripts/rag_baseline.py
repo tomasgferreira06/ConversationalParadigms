@@ -1,15 +1,15 @@
-"""Unified RAG baseline: interactive smoke test over the 32-document corpus.
+"""Unified RAG baseline: interactive smoke test over the frozen 35-document corpus.
 
-Not a formal evaluation. Command-line interface to rag_pipeline with the
-BASELINE configuration (see rag_pipeline; --rebuild only ever touches that
-configuration's own store, never the stores of earlier versions): builds the Chroma index of the content chunks in
-data/chunks/chunks.jsonl, then answers independent questions with visible
-retrieval, context, answer and sources.
+Not a formal evaluation. Command-line interface to rag_pipeline with one of
+its CONFIGS (--config, default frozen-v2; --rebuild only ever touches that
+configuration's own store, never the historical BASELINE_V* stores): builds the
+Chroma index of the content chunks in data/chunks/chunks.jsonl, then answers
+independent questions with visible retrieval, context, answer and sources.
 
 Usage:
-    uv run python d2_rag/scripts/rag_baseline.py --rebuild
-    uv run python d2_rag/scripts/rag_baseline.py                         # interactive
-    uv run python d2_rag/scripts/rag_baseline.py --question "..."
+    uv run python d2_rag/scripts/rag_baseline.py --config frozen-v0 --rebuild
+    uv run python d2_rag/scripts/rag_baseline.py                         # interactive, frozen-v2
+    uv run python d2_rag/scripts/rag_baseline.py --config frozen-v1 --question "..."
     uv run python d2_rag/scripts/rag_baseline.py --question "..." --retrieval-only
 """
 
@@ -21,8 +21,9 @@ import sys
 from langchain_core.documents import Document
 
 from rag_pipeline import (
-    BASELINE,
+    CONFIGS,
     BaselineError,
+    RAGConfig,
     build_messages,
     build_store,
     check_ollama,
@@ -69,10 +70,10 @@ def print_retrieval(results: list[tuple[Document, float]]) -> None:
         print("-" * 60)
 
 
-def answer_question(store, question: str, retrieval_only: bool, show_context: bool) -> None:
+def answer_question(store, question: str, retrieval_only: bool, show_context: bool, config: RAGConfig) -> None:
     print_section("QUESTION")
     print(question)
-    results = retrieve(store, question)
+    results = retrieve(store, question, k=config.top_k)
     print_retrieval(results)
     if retrieval_only:
         return
@@ -81,7 +82,7 @@ def answer_question(store, question: str, retrieval_only: bool, show_context: bo
         print_section("CONTEXT (user message sent to the LLM)")
         print(messages[1].content)
     print_section("ANSWER")
-    print(generate(messages))
+    print(generate(messages, config))
     print_section("SOURCES")
     print(format_sources(results))
 
@@ -94,33 +95,36 @@ def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdin, "reconfigure") and not sys.stdin.isatty():
         sys.stdin.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description="Unified RAG baseline (interactive smoke test).")
-    parser.add_argument("--rebuild", action="store_true", help="delete and rebuild the baseline vector store")
+    parser.add_argument("--config", choices=sorted(CONFIGS), default="frozen-v2",
+                        help="retrieval configuration and the vector store it owns (default: frozen-v2)")
+    parser.add_argument("--rebuild", action="store_true", help="delete and rebuild the selected configuration's vector store")
     parser.add_argument("--question", help="ask one question and exit")
     parser.add_argument("--retrieval-only", action="store_true", help="show retrieved chunks, do not call the LLM")
     parser.add_argument("--show-context", action="store_true", help="print the exact user message sent to the LLM")
     args = parser.parse_args(argv)
+    config = CONFIGS[args.config]
 
     try:
         if not args.retrieval_only and (args.question or not args.rebuild):
-            check_ollama()  # fail before loading anything heavy
-        embeddings = load_embeddings()
+            check_ollama(config.llm_model)  # fail before loading anything heavy
+        embeddings = load_embeddings(config)
         if args.rebuild:
-            store, report = build_store(load_chunks(), embeddings)
+            store, report = build_store(load_chunks(), embeddings, config=config)
             print_section("VECTOR STORE BUILD")
             print(f"Expected input chunks: {report['input_chunks']}")
             print(f"Indexed chunks: {report['indexed_chunks']}")
             for role, count in sorted(report["excluded"].items()):
                 print(f"Excluded {role}: {count}")
-            print(f"Collection '{BASELINE.collection_name}' count: {report['collection_count']} ({BASELINE.store_dir})")
+            print(f"Collection '{config.collection_name}' count: {report['collection_count']} ({config.store_dir})")
             if not args.question:
                 return 0
         else:
-            store = open_store(embeddings)
+            store = open_store(embeddings, config=config)
 
         if args.question:
-            answer_question(store, args.question, args.retrieval_only, args.show_context)
+            answer_question(store, args.question, args.retrieval_only, args.show_context, config)
             return 0
-        print("Coimbra RAG baseline (each question is independent; no chat history).")
+        print(f"Coimbra RAG baseline, {args.config} (each question is independent; no chat history).")
         print("Type 'exit' to quit.")
         while True:
             try:
@@ -130,7 +134,7 @@ def main(argv: list[str] | None = None) -> int:
             if question.lower() in {"exit", "quit", "sair"}:
                 break
             if question:
-                answer_question(store, question, args.retrieval_only, args.show_context)
+                answer_question(store, question, args.retrieval_only, args.show_context, config)
     except BaselineError as exc:
         print(f"\nERROR {exc}", file=sys.stderr)
         return 2
