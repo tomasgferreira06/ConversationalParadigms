@@ -19,6 +19,7 @@ import re
 import sys
 import unicodedata
 from dataclasses import dataclass, field
+from itertools import groupby
 from typing import Any
 
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -40,12 +41,24 @@ DROP_WIDGETS = {
     "image", "image-carousel", "gallery", "button", "spacer", "divider", "html", "video",
     "nested-carousel", "social-icons", "share-buttons", "icon", "google_maps",
     "ova_heading",
+    # Listing UI: category/price filter buttons and the "add your venue" form.
+    "taxonomy-filter", "form",
 }
+# Widgets that only lay out other widgets (the restaurant directory's loop
+# grid holds one flip-box per venue); walked like plain containers.
+CONTAINER_WIDGETS = {"loop-grid"}
 # Site-wide call-to-action sections (promote the portal's own apps/pages).
 SITE_CTA_SECTIONS = [
     "Não sabe por onde começar?",  # promotes the "Roteiros temáticos" webapp
     "Experiências",  # one-line teaser linking to a bookable experience
 ]
+# Site-wide call-to-action paragraphs addressed to businesses, not visitors.
+SITE_CTA_PARAGRAPHS = {
+    "Faça parte desta lista!",
+    "Gostava que o seu espaço fizesse parte do nosso site?",
+}
+# Price tier suffix of a directory card's category ("Cervejaria | €€").
+PRICE_TIER = re.compile(r"\s*\|\s*€+(?=\s|$)")
 QUOTE_OPENERS = ('"', "“", "«", "‘")
 # Real section headings in this corpus have 1-8 words; Elementor "headings"
 # of 17+ words are highlighted sentences, kept as quotes instead.
@@ -61,21 +74,43 @@ MIN_WORDS = 80
 # structurally; removed with everything below them down to the next heading of
 # the same or higher level. Human-reviewed, per document.
 DROP_SECTIONS: dict[str, list[str]] = {
-    "web-visitecoimbra-cancao-de-coimbra": [
-        "Casas para ouvir a Canção de Coimbra",  # cards of private fado houses
-    ],
     "web-visitecoimbra-docaria-conventual-de-coimbra": [
         "Mostra de Doçaria Conventual e Contemporânea de Coimbra",  # event
-    ],
-    "web-visitecoimbra-ceramica-de-coimbra": [
-        "Saber mais sobre a Louça de Coimbra",  # named shops and an artisan's gallery
-    ],
-    "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira": [
-        "BREW!", "Epicura", "Portuguese Pedro", "Praxis",  # brand/festival cards
     ],
     "web-visitecoimbra-heranca-judaica": [
         "APP - Exposição “Judeus em Coimbra”",  # app download promotion
     ],
+}
+
+# Documents whose flip-box cards are short entity entries (name + one-line
+# description, e.g. beer brands, fado houses) grouped under one section. Their
+# cards are rendered as one list, "name — description" per card in source
+# order, instead of one heading per card, which would turn every card into a
+# tiny section of its own. Human-reviewed, per document.
+CARD_LIST_DOCUMENTS = {
+    "web-visitecoimbra-cancao-de-coimbra",
+    "web-visitecoimbra-coimbra-by-night",
+    "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira",
+    "web-visitecoimbra-desporto",
+    "web-visitecoimbra-restauracao",
+}
+
+# Documents that name private establishments (bars, restaurants, fado houses,
+# brands). Kept as tourist knowledge, but recorded as a validity limitation.
+ESTABLISHMENTS_NOTE = (
+    "Names private establishments (bars, restaurants, fado houses, brands) as listed by the "
+    "portal at acquisition time; they may close or change. Opening hours, prices and "
+    "contacts are not preserved."
+)
+VALIDITY_NOTES: dict[str, str] = {
+    document_id: ESTABLISHMENTS_NOTE
+    for document_id in (
+        "web-visitecoimbra-cancao-de-coimbra",
+        "web-visitecoimbra-ceramica-de-coimbra",
+        "web-visitecoimbra-coimbra-by-night",
+        "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira",
+        "web-visitecoimbra-restauracao",
+    )
 }
 
 # Known disagreements with the PDF corpus. Recorded, never corrected.
@@ -96,7 +131,7 @@ CONFLICT_NOTES: dict[str, str] = {
 
 @dataclass
 class Block:
-    kind: str  # heading | paragraph | list | quote
+    kind: str  # heading | paragraph | list | quote | card (merged into a list)
     text: str
     level: int = 0
 
@@ -182,8 +217,9 @@ def _text_editor_blocks(widget: Tag, stats: Stats) -> list[Block]:
 class Walker:
     """Walk the content DOM in document order and emit Markdown blocks."""
 
-    def __init__(self, stats: Stats) -> None:
+    def __init__(self, stats: Stats, cards_as_list: bool = False) -> None:
         self.stats = stats
+        self.cards_as_list = cards_as_list
         self.blocks: list[Block] = []
 
     def walk(self, node: Tag, scope_level: int, last_heading: int | None = None) -> int:
@@ -200,7 +236,7 @@ class Walker:
                 self.stats.hidden_blocks += 1
                 continue
             widget = _widget_type(child)
-            if widget is None:
+            if widget is None or widget in CONTAINER_WIDGETS:
                 last = self.walk(child, scope_level, last)
             else:
                 last = self._widget(child, widget, scope_level, last)
@@ -227,6 +263,15 @@ class Walker:
             front = widget.select_one(".elementor-flip-box__front") or widget
             title = front.select_one(".elementor-flip-box__layer__title")
             description = front.select_one(".elementor-flip-box__layer__description")
+            if self.cards_as_list:
+                name = _inline_text(title) if title else ""
+                text = _strip_operational(_inline_text(description), self.stats) if description else ""
+                text = PRICE_TIER.sub(" —", text).removesuffix(" —")
+                entry = " — ".join(part for part in (name, text) if part)
+                if entry:
+                    self.blocks.append(Block("card", entry))
+                _count(self.stats, "flip-box back layer")
+                return last_heading
             if title and _inline_text(title):
                 self.blocks.append(Block("heading", _inline_text(title), min(last_heading + 1, 6)))
             if description:
@@ -246,7 +291,14 @@ class Walker:
                     summary.extract()
                 if title:
                     self.blocks.append(Block("heading", title, item_level))
+                    emitted = len(self.blocks)
                     self.walk(item, item_level)
+                    if len(self.blocks) == emitted:
+                        # Nothing kept inside (e.g. only filter buttons or a
+                        # form): the title must not adopt the content that
+                        # follows the accordion.
+                        self.blocks.pop()
+                        self.stats.empty_sections.append(title)
                 else:
                     # An untitled item is only a visual container.
                     self.walk(item, scope_level)
@@ -259,6 +311,18 @@ class Walker:
         return last_heading
 
 
+def _merge_cards(blocks: list[Block]) -> list[Block]:
+    """Consecutive card entries become one list block, in source order."""
+
+    out: list[Block] = []
+    for is_card, run in groupby(blocks, key=lambda b: b.kind == "card"):
+        if is_card:
+            out.append(Block("list", "\n".join(f"- {b.text}" for b in run)))
+        else:
+            out.extend(run)
+    return out
+
+
 def _drop_sections(blocks: list[Block], titles: list[str], stats: Stats) -> list[Block]:
     out, skip_level = [], None
     for block in blocks:
@@ -267,6 +331,8 @@ def _drop_sections(blocks: list[Block], titles: list[str], stats: Stats) -> list
                 skip_level = None
             else:
                 continue
+        if block.kind == "paragraph" and block.text in SITE_CTA_PARAGRAPHS:
+            continue
         if block.kind == "heading" and block.text in titles:
             stats.dropped_sections.append(block.text)
             skip_level = block.level
@@ -321,10 +387,10 @@ def html_to_blocks(html: str, document_id: str) -> tuple[list[Block], Stats]:
     containers = BeautifulSoup(html, "lxml").select(CONTENT_SELECTOR)
     if len(containers) != 1:
         raise ValueError(f"{document_id}: expected 1 content container, found {len(containers)}")
-    walker = Walker(stats)
+    walker = Walker(stats, cards_as_list=document_id in CARD_LIST_DOCUMENTS)
     walker.walk(containers[0], scope_level=1)
     configured = DROP_SECTIONS.get(document_id, [])
-    blocks = _drop_sections(walker.blocks, configured + SITE_CTA_SECTIONS, stats)
+    blocks = _drop_sections(_merge_cards(walker.blocks), configured + SITE_CTA_SECTIONS, stats)
     blocks = _close_level_gaps(_drop_empty_sections(_dedupe_consecutive(blocks), stats))
     for title in configured:
         if title not in stats.dropped_sections:
@@ -470,7 +536,9 @@ def main(argv: list[str] | None = None) -> int:
             updated = dict(record)
             updated["extraction_notes"] = extraction_notes(stats)
             updated["conflict_notes"] = CONFLICT_NOTES.get(record["document_id"])
-            if stats.operational_sentences:
+            if record["document_id"] in VALIDITY_NOTES:
+                updated["validity_notes"] = VALIDITY_NOTES[record["document_id"]]
+            elif stats.operational_sentences:
                 updated["validity_notes"] = (
                     "Opening hours present in the raw page were removed from the processed "
                     "Markdown; the portal may change schedules at any time."

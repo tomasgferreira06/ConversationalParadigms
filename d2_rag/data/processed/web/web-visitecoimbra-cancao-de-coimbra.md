@@ -26,3 +26,9 @@ Com o tempo, o Fado de Coimbra evoluiu para o que hoje conhecemos como Canto e C
 “Coimbra tem mais encanto, na hora da despedida”, da canção “Coimbra”. é um trecho, popularizado pela grande voz portuguesa Amália Rodrigues que encapsula a alma da Canção de Coimbra: uma expressão artística que transcende o tempo, perpetuando o amor e a saudade por uma cidade que é, simultaneamente, palco e inspiração… Uma ideia tão forte que muito recentemente subiu ao palco dos concertos dos Coldplay em Coimbra, e celebrada por mais de 200 mil pessoas a acompanhar surpreendentemente o vocalista Chris Martin.
 
 A Canção de Coimbra não é apenas uma música; é a voz de uma tradição, de uma cultura e de um povo.
+
+## Casas para ouvir a Canção de Coimbra
+
+- Fado ao Centro — Um espetáculo autêntico, celebrando a tradição do Fado de Coimbra com guitarras e vozes emocionantes.
+- À Capella — Instalado num espaço emblemático (uma antiga capela do século XIV) esta Casa de Fados e Centro Cultural situada na judiaria de Coimbra, apresenta diariamente um espetáculo/serenata de Fado, Canção e Guitarra de Coimbra. Um espaço que oferece aos seus visitantes serviço de bar e de tapas.
+- Café Santa Cruz — Um café centenário instalado numa antiga igreja e que, à noite, se transforma em palco de fado, rodeado por história e arte.

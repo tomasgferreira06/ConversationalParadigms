@@ -55,11 +55,11 @@ class SelectionAndMetadataTests(unittest.TestCase):
     def test_only_content_chunks_are_indexed(self):
         chunks = rb.load_chunks()
         kept, excluded = rb.select_indexable(chunks)
-        self.assertEqual(len(chunks), 330)
-        self.assertEqual(len(kept), 317)
+        self.assertEqual(len(chunks), 361)
+        self.assertEqual(len(kept), 348)
         self.assertEqual(excluded, {"page_labels": 11, "caption_panel": 2})
         self.assertEqual({c["unit_role"] for c in kept}, {"content"})
-        self.assertEqual(len({c["chunk_id"] for c in kept}), 317)
+        self.assertEqual(len({c["chunk_id"] for c in kept}), 348)
 
     def test_metadata_keeps_provenance_and_drops_nulls(self):
         meta = rb.to_metadata(PDF_CHUNK)
@@ -84,7 +84,7 @@ class VectorStoreTests(unittest.TestCase):
         chunks = rb.load_chunks()
         with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
             store, report = rb.build_store(chunks, DeterministicFakeEmbedding(size=16), Path(tmp) / "store")
-            self.assertEqual(report["collection_count"], 317)
+            self.assertEqual(report["collection_count"], 348)
             self.assertEqual(report["excluded"], {"page_labels": 11, "caption_panel": 2})
             self.assertEqual(store._collection.configuration.get("hnsw", {}).get("space"), "cosine")
             got = store._collection.get(ids=[PDF_CHUNK["chunk_id"], WEB_CHUNK["chunk_id"]], include=["metadatas"])
@@ -228,12 +228,12 @@ class ConfigurationTests(unittest.TestCase):
                 self.assertNotIn(a, b.parents)
         self.assertTrue(all(d.parent == (D2_ROOT / "data").resolve() for d in dirs))
 
-    def test_every_version_selects_the_317_content_chunks(self):
+    def test_every_version_selects_the_348_content_chunks(self):
         chunks = rb.load_chunks()
         for config in (rb.BASELINE_V0, rb.BASELINE_V1, rb.BASELINE_V2):
             with self.subTest(config=config.collection_name):
                 kept, excluded = rb.select_indexable(chunks, config)
-                self.assertEqual(len(kept), 317)
+                self.assertEqual(len(kept), 348)
                 self.assertEqual(excluded, {"page_labels": 11, "caption_panel": 2})
 
     def test_v0_v1_embed_queries_like_documents(self):

@@ -190,7 +190,7 @@ class CorpusTests(unittest.TestCase):
         self.assertEqual(chunker.validate_chunks(self.chunks), [])
         fresh, _ = chunker.chunk_corpus(chunker.load_records())
         self.assertEqual(fresh, self.chunks)
-        self.assertEqual(len({c["document_id"] for c in self.chunks}), 32)
+        self.assertEqual(len({c["document_id"] for c in self.chunks}), 35)
 
     def test_every_chunk_has_required_metadata(self):
         for chunk in self.chunks:
@@ -253,6 +253,21 @@ class CorpusTests(unittest.TestCase):
                 self.assertIn(chunk["section"], headings)
                 checked += 1
         self.assertGreater(checked, 50)
+
+    def test_recovered_and_new_web_entities_reach_a_chunk(self):
+        beer = _find(self.chunks, "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira", "- BREW!")
+        for name in ("Epicura", "Portuguese Pedro", "Praxis — Cervejaria, Restaurante"):
+            self.assertIn(name, _body(beer))
+        cases = [
+            ("web-visitecoimbra-cancao-de-coimbra", "À Capella", "Casas para ouvir a Canção de Coimbra"),
+            ("web-visitecoimbra-coimbra-by-night", "NB Club", "10 locais imperdíveis para sair à noite em Coimbra"),
+            ("web-visitecoimbra-coimbra-by-night", "LOGGIA", "6 rooftops a não perder"),
+            ("web-visitecoimbra-desporto", "Escalódromo de Coimbra", "Aqui estão 10 atividades desportivas que pode praticar em Coimbra"),
+            ("web-visitecoimbra-restauracao", "Cervejaria Praxis", None),
+        ]
+        for document_id, needle, section in cases:
+            with self.subTest(needle=needle):
+                self.assertEqual(_find(self.chunks, document_id, needle)["section"], section)
 
     def test_web_chunks_have_url_and_no_pages(self):
         for chunk in (c for c in self.chunks if c["source_type"] == "web_page"):

@@ -4,6 +4,7 @@ import hashlib
 import json
 import re
 import sys
+import unicodedata
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -156,6 +157,46 @@ class TemplateAndWidgetTests(unittest.TestCase):
         self.assertNotIn("Fado ao Centro", markdown)
         self.assertIn("## História\n\nTexto histórico.", markdown)
 
+    def test_card_list_document_renders_cards_as_one_list_in_source_order(self):
+        html = _page(
+            _widget("text-editor", "<p>Texto sobre bares.</p>"),
+            _flip("BREW!", "Festival de cerveja artesanal"),
+            _flip("Epicura", "Cerveja Artesanal"),
+            _flip("Sem descrição", ""),
+            _widget("text-editor", "<p>Depois.</p>"),
+        )
+        with mock.patch.object(web, "CARD_LIST_DOCUMENTS", {"web-test"}):
+            markdown = _render(html)
+        self.assertIn("Texto sobre bares.\n\n- BREW! — Festival de cerveja artesanal\n- Epicura — Cerveja Artesanal\n"
+                      "- Sem descrição\n\nDepois.", markdown)
+        self.assertNotIn("## BREW!", markdown)
+        self.assertNotIn("Preparar visita", markdown)
+
+    def test_directory_loop_grid_filters_form_and_price_tier(self):
+        html = _page(
+            _widget("nested-accordion", "<details><summary>Preço</summary><div>"
+                    + _widget("taxonomy-filter", "<button>€</button><button>€€</button>") + "</div></details>"),
+            _widget("loop-grid", "<div class='e-loop-item'>"
+                    + _flip("A Taberna", "<strong>Tradicional Portuguesa | €€</strong><br>Um restaurante típico.")
+                    + "</div>"),
+            _widget("text-editor", "<p>Faça parte desta lista!</p>"),
+            _widget("nested-accordion", "<details><summary>Clique aqui</summary><div>"
+                    + _widget("form", "<input placeholder='Nome do Restaurante'>") + "</div></details>"),
+        )
+        with mock.patch.object(web, "CARD_LIST_DOCUMENTS", {"web-test"}):
+            markdown = _render(html)
+        self.assertIn("- A Taberna — Tradicional Portuguesa — Um restaurante típico.", markdown)
+        for gone in ("€", "Preço", "Faça parte", "Clique aqui", "Nome do Restaurante"):
+            self.assertNotIn(gone, markdown)
+
+    def test_empty_accordion_item_does_not_adopt_following_content(self):
+        blocks, _stats = web.html_to_blocks(_page(
+            _widget("nested-accordion", "<details><summary>Filtros</summary><div>"
+                    + _widget("form", "<input>") + "</div></details>"),
+            _widget("text-editor", "<p>Conteúdo da página.</p>"),
+        ), "web-test")
+        self.assertEqual([(b.kind, b.text) for b in blocks], [("paragraph", "Conteúdo da página.")])
+
     def test_page_without_single_content_container_is_rejected(self):
         with self.assertRaises(ValueError):
             web.html_to_blocks("<html><body><p>sem container</p></body></html>", "web-test")
@@ -173,12 +214,63 @@ def _processed(document_id: str) -> str:
 class CorpusIntegrationTests(unittest.TestCase):
     """Checks on the real acquired pages (local raw snapshots, no network)."""
 
-    def test_cancao_keeps_culture_and_drops_player_and_commercial_cards(self):
+    def test_cancao_keeps_culture_and_fado_houses_and_drops_player(self):
         markdown = _processed("web-visitecoimbra-cancao-de-coimbra")
         self.assertIn("A guitarra portuguesa de Coimbra é um dos elementos mais icónicos", markdown)
         self.assertIn("> \"O Fado de Coimbra é uma expressão musical única no mundo.", markdown)
-        for gone in ("Playlist", "Casas para ouvir", "Fado ao Centro", "À Capella", "Saber mais"):
+        # Fado houses: reviewed INCLUDE (WEB_CONTENT_CARD_FIX_REPORT.md).
+        self.assertRegex(markdown, r"## Casas para ouvir a Canção de Coimbra\n\n- Fado ao Centro — Um espetáculo"
+                                   r"[^\n]*\n- À Capella — Instalado[^\n]*\n- Café Santa Cruz — Um café centenário")
+        for gone in ("Playlist", "Saber mais", "fadoaocentro.com", "acapella.com.pt"):
             self.assertNotIn(gone, markdown)
+
+    def test_ceramica_keeps_reviewed_places_to_see_and_buy_pottery(self):
+        markdown = _processed("web-visitecoimbra-ceramica-de-coimbra")
+        self.assertIn("### Refeitro\n\nEspaço que combina gastronomia e olaria", markdown)
+        self.assertIn("### Carlos Tomás\n\nArtesão renomado, com a sua galeria na Sé Velha", markdown)
+        self.assertIn("### Lojas de artesanato da Baixa\n\nDiversos estabelecimentos", markdown)
+        self.assertNotIn("wp-content", markdown)
+
+    def test_still_excluded_cards_and_sections_stay_absent(self):
+        # Navigation cards ("Ver também"), app promotion and event: EXCLUDE.
+        estudantes = _processed("web-visitecoimbra-coimbra-dos-estudantes")
+        for gone in ("Ver também", "Roteiro das Tradições Académicas"):
+            self.assertNotIn(gone, estudantes)
+        self.assertNotIn("APP - Exposição", _processed("web-visitecoimbra-heranca-judaica"))
+        self.assertNotIn("Mostra de Doçaria", _processed("web-visitecoimbra-docaria-conventual-de-coimbra"))
+
+    def test_beer_page_recovers_the_four_cards_once_in_order_without_back_layer(self):
+        markdown = _processed("web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira")
+        cards = ["BREW! — Festival de cerveja artesanal", "Epicura — Cerveja Artesanal",
+                 "Portuguese Pedro — Cerveja", "Praxis — Cervejaria, Restaurante"]
+        self.assertIn("\n".join(f"- {card}" for card in cards), markdown)
+        for name in ("BREW!", "Epicura", "Portuguese Pedro", "Praxis"):
+            self.assertEqual(markdown.count(name), 1, name)
+        body = markdown.split("\n---\n", 1)[1]
+        for gone in ("Saber mais", "http", "beerpraxis", "instagram", "## BREW!", "## Praxis"):
+            self.assertNotIn(gone, body)
+        # The narrative is kept, and the cards follow it.
+        narrative = "Além das microcervejarias, a cidade conta com vários bares especializados em cerveja artesanal"
+        self.assertIn("Coimbra tem uma forte ligação à cerveja, que remonta aos tempos medievais.", markdown)
+        self.assertLess(markdown.index(narrative), markdown.index("- BREW!"))
+
+    def test_new_pages_keep_their_entities_and_drop_directory_ui(self):
+        night = _processed("web-visitecoimbra-coimbra-by-night")
+        self.assertIn("## 10 locais imperdíveis para sair à noite em Coimbra\n\n- Quebra Costas — Situado nas famosas escadas", night)
+        self.assertIn("## 6 rooftops a não perder\n\n- Bar do Hotel Oslo — ", night)
+        self.assertEqual(night.count("\n- "), 19)
+        restaurants = _processed("web-visitecoimbra-restauracao")
+        self.assertEqual(restaurants.count("\n- "), 70)
+        self.assertIn("- Cervejaria Praxis — Cervejaria — Descubra a 1ª microcervejeira artesanal portuguesa.", restaurants)
+        for gone in ("€", "Tipo de Cozinha", "Preço", "Apagar filtro", "Faça parte", "Clique aqui", "Nome do Restaurante"):
+            self.assertNotIn(gone, restaurants)
+        sport = _processed("web-visitecoimbra-desporto")
+        self.assertIn("- 1. Paddle no Rio Mondego — Explore o rio", sport)
+        self.assertIn("- 10. Atletismo — ", sport)
+        self.assertIn("A Associação Académica de Coimbra (AAC), fundada em 1887", sport)
+        for markdown in (night, restaurants, sport):
+            self.assertGreater(len(markdown.split("\n---\n", 1)[1].split()), 600)
+            self.assertNotIn("Saber mais", markdown)
 
     def test_docaria_drops_event_and_keeps_sweets_with_their_names(self):
         markdown = _processed("web-visitecoimbra-docaria-conventual-de-coimbra")
@@ -220,7 +312,7 @@ class ManifestTests(unittest.TestCase):
         self.records = _web_records()
 
     def test_web_records_are_complete_and_consistent(self):
-        self.assertEqual(len(self.records), 24)
+        self.assertEqual(len(self.records), 27)
         required = ("document_id", "title", "source_organization", "url", "canonical_url", "language",
                     "primary_category", "source_type", "status", "acquired_at", "access_checked_at",
                     "content_hash", "local_raw_path", "processed_path", "decision_reason")
@@ -246,6 +338,12 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(len(pdf), 8)
         self.assertTrue(all("canonical_url" not in r for r in pdf))
 
+    def test_establishment_pages_record_their_validity_limit(self):
+        notes = {r["document_id"]: r.get("validity_notes") or "" for r in self.records}
+        for document_id in ("web-visitecoimbra-coimbra-by-night", "web-visitecoimbra-restauracao",
+                            "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira"):
+            self.assertIn("may close or change", notes[document_id])
+
     def test_known_conflicts_are_recorded(self):
         notes = {r["document_id"]: r.get("conflict_notes") for r in self.records}
         self.assertIn("Santa Clara-a-Velha", notes["web-visitecoimbra-heranca-cultural-e-religiosa"])
@@ -260,12 +358,18 @@ class ReproducibilityTests(unittest.TestCase):
                 self.assertEqual(problems, [])
                 self.assertEqual(markdown, _processed(record["document_id"]))
 
+    def test_rendering_is_deterministic(self):
+        record = next(r for r in _web_records() if r["document_id"] == "web-visitecoimbra-restauracao")
+        self.assertEqual(web.render_document(record)[0], web.render_document(record)[0])
+
     def test_no_words_are_introduced(self):
         word = re.compile(r"[^\W_]+")
         for record in _web_records():
             with self.subTest(document_id=record["document_id"]):
                 html = (D2_ROOT / record["local_raw_path"]).read_text(encoding="utf-8")
-                raw_words = {w.lower() for w in word.findall(BeautifulSoup(html, "lxml").get_text(" "))}
+                # Preprocessing normalises to NFC; some raw pages use decomposed accents.
+                raw_text = unicodedata.normalize("NFC", BeautifulSoup(html, "lxml").get_text(" "))
+                raw_words = {w.lower() for w in word.findall(raw_text)}
                 body = _processed(record["document_id"]).split("\n---\n", 1)[1]
                 introduced = {w.lower() for w in word.findall(body)} - raw_words
                 self.assertEqual(introduced, set())

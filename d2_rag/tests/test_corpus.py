@@ -40,8 +40,8 @@ class ManifestTests(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             corpus.load_manifest(self.path)
 
-    def test_real_manifest_has_32_unique_documents(self):
-        self.assertEqual(len(corpus.load_manifest()), 32)
+    def test_real_manifest_has_35_unique_documents(self):
+        self.assertEqual(len(corpus.load_manifest()), 35)
 
 
 class FormatTests(unittest.TestCase):

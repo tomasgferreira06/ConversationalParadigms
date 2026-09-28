@@ -20,3 +20,8 @@ Hoje, essa tradição cervejeira renasceu com o movimento das cervejas artesanai
 Produzindo cervejas artesanais de alta qualidade, muitas delas inspiradas em receitas antigas, os mestres cervejeiros de Coimbra têm criado cervejas que vão desde as clássicas pilsners até às mais complexas IPAs, stouts e cervejas de trigo.
 
 Além das microcervejarias, a cidade conta com vários bares especializados em cerveja artesanal, onde os visitantes podem provar uma grande variedade de rótulos, tanto nacionais como internacionais. Estes espaços tornaram-se verdadeiros pontos de encontro para os apreciadores da bebida, que podem explorar uma ampla gama de sabores, texturas e aromas, enquanto desfrutam da companhia de amigos e de uma vista sobre o rio Mondego.
+
+- BREW! — Festival de cerveja artesanal
+- Epicura — Cerveja Artesanal
+- Portuguese Pedro — Cerveja
+- Praxis — Cervejaria, Restaurante

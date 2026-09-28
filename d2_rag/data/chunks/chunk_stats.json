@@ -13,14 +13,14 @@
     "status": "TEMPORARY BASELINE / TO BE EVALUATED"
   },
   "documents": {
-    "total": 32,
+    "total": 35,
     "pdf": 8,
-    "web_page": 24
+    "web_page": 27
   },
   "chunks": {
-    "total": 330,
+    "total": 361,
     "pdf": 206,
-    "web_page": 124
+    "web_page": 155
   },
   "chunks_per_document": {
     "biblioteca-joanina-uctour": 9,
@@ -31,14 +31,16 @@
     "jardins-historicos": 24,
     "universidade-alta-sofia-patrimonio-mundial": 68,
     "viver-o-patrimonio-em-coimbra": 29,
-    "web-visitecoimbra-cancao-de-coimbra": 5,
+    "web-visitecoimbra-cancao-de-coimbra": 6,
     "web-visitecoimbra-ceira": 1,
-    "web-visitecoimbra-ceramica-de-coimbra": 2,
+    "web-visitecoimbra-ceramica-de-coimbra": 5,
     "web-visitecoimbra-cestaria-de-bunho": 3,
+    "web-visitecoimbra-coimbra-by-night": 5,
     "web-visitecoimbra-coimbra-dos-estudantes": 3,
     "web-visitecoimbra-coimbra-muralhada": 2,
     "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira": 2,
     "web-visitecoimbra-d-afonso-henriques": 3,
+    "web-visitecoimbra-desporto": 7,
     "web-visitecoimbra-docaria-conventual-de-coimbra": 12,
     "web-visitecoimbra-gastronomia-em-coimbra": 2,
     "web-visitecoimbra-heranca-cultural-e-religiosa": 27,
@@ -52,6 +54,7 @@
     "web-visitecoimbra-princesa-cindazunda": 3,
     "web-visitecoimbra-rainha-santa-isabel": 3,
     "web-visitecoimbra-republicas": 3,
+    "web-visitecoimbra-restauracao": 15,
     "web-visitecoimbra-santo-antonio": 3,
     "web-visitecoimbra-sesnando-david": 4,
     "web-visitecoimbra-tecelagem-de-almalagues": 3
@@ -59,42 +62,42 @@
   "chunks_per_category": {
     "built_heritage": 56,
     "city_history": 48,
-    "culture_traditions": 68,
-    "gastronomy": 18,
+    "culture_traditions": 72,
+    "gastronomy": 33,
     "landscape_gardens": 24,
     "museums_collections": 24,
     "university_heritage": 77,
-    "visitor_orientation": 15
+    "visitor_orientation": 27
   },
   "chunks_per_unit_role": {
     "caption_panel": 2,
-    "content": 317,
+    "content": 348,
     "page_labels": 11
   },
   "body_chars": {
     "min": 13,
-    "p25": 327.8,
-    "median": 545.5,
-    "mean": 555.2,
-    "p75": 775.2,
+    "p25": 349.0,
+    "median": 575.0,
+    "mean": 573.1,
+    "p75": 818.0,
     "max": 998
   },
   "rendered_text_chars": {
     "min": 35,
-    "p25": 408.2,
-    "median": 612.5,
-    "mean": 617.0,
-    "p75": 831.5,
+    "p25": 427.0,
+    "median": 629.0,
+    "mean": 632.7,
+    "p75": 873.0,
     "max": 1075
   },
   "body_under_100_chars": 18,
   "body_over_chunk_size": 0,
-  "rendered_over_chunk_size": 25,
-  "split_units_chunks": 160,
-  "chunks_with_overlap": 6,
+  "rendered_over_chunk_size": 27,
+  "split_units_chunks": 184,
+  "chunks_with_overlap": 8,
   "multi_page_chunks": 8,
-  "chunks_without_section": 95,
-  "chunks_with_subsection": 53,
+  "chunks_without_section": 115,
+  "chunks_with_subsection": 56,
   "chunks_with_conflict_notes": 51,
   "page_number_lines_skipped": 28,
   "label_pages": {
@@ -257,6 +260,10 @@
         "viver-o-patrimonio-em-coimbra::c0005"
       ],
       [
+        "web-visitecoimbra-cancao-de-coimbra::c0006",
+        "web-visitecoimbra-coimbra-by-night::c0004"
+      ],
+      [
         "web-visitecoimbra-heranca-cultural-e-religiosa::c0010",
         "web-visitecoimbra-heranca-cultural-e-religiosa::c0021"
       ],
@@ -268,6 +275,7 @@
     "near_duplicate_threshold": 0.8,
     "near_duplicate_pairs_by_scope": {
       "cross_document_pdf": 26,
+      "cross_document_web": 1,
       "same_document": 2,
       "pdf_web": 1
     },
@@ -355,6 +363,12 @@
         "b": "viver-o-patrimonio-em-coimbra::c0004",
         "containment": 1.0,
         "scope": "cross_document_pdf"
+      },
+      {
+        "a": "web-visitecoimbra-cancao-de-coimbra::c0006",
+        "b": "web-visitecoimbra-coimbra-by-night::c0004",
+        "containment": 1.0,
+        "scope": "cross_document_web"
       },
       {
         "a": "web-visitecoimbra-heranca-cultural-e-religiosa::c0010",
