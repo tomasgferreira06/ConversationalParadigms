@@ -19,18 +19,20 @@ import json
 import re
 import sys
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from preprocess_documents import ROUTE_DOCUMENT_IDS  # noqa: E402
+from corpus import (
+    CAPTION_PANEL_MARKER,
+    CHUNKS_DIR,
+    CHUNKS_PATH,
+    D2_ROOT,
+    ROUTE_DOCUMENT_IDS,
+    load_manifest,
+    write_jsonl,
+)
 
-
-D2_ROOT = Path(__file__).resolve().parents[1]
-MANIFEST_PATH = D2_ROOT / "data" / "manifest.jsonl"
-CHUNKS_DIR = D2_ROOT / "data" / "chunks"
 
 # ---- TEMPORARY BASELINE (course worksheet) / TO BE EVALUATED ----------------
 CHUNK_SIZE = 1000
@@ -41,7 +43,6 @@ SEPARATORS = ["\n\n", "\n", ". ", " ", ""]
 
 HEADING_RE = re.compile(r"^(#{1,6}) (.+)$")
 PAGE_MARKER_RE = re.compile(r"^<!-- source_page: (\d+) -->$")
-CAPTION_PANEL_MARKER = "<!-- caption_panel -->"
 FRONT_MATTER_RE = re.compile(r"\A---\n(.*?)\n---\n", re.DOTALL)
 # Printed page numbers / map index numbers (only in the UC brochure).
 PAGE_NUMBER_LINE_RE = re.compile(r"^\d{1,3}( \d{1,3})*$")
@@ -303,12 +304,11 @@ def chunk_document(record: dict[str, Any], markdown: str) -> tuple[list[dict[str
 
 
 def load_records(document_ids: list[str] | None = None) -> list[dict[str, Any]]:
-    records = [json.loads(l) for l in MANIFEST_PATH.read_text(encoding="utf-8").splitlines() if l.strip()]
-    records = [r for r in records if r.get("status") == "accepted"]
+    records = [r for r in load_manifest() if r.get("status") == "accepted"]
     if document_ids:
         unknown = set(document_ids) - {r["document_id"] for r in records}
         if unknown:
-            raise SystemExit(f"Unknown or non-accepted document_id(s): {sorted(unknown)}")
+            raise ValueError(f"Unknown or non-accepted document_id(s): {sorted(unknown)}")
         records = [r for r in records if r["document_id"] in document_ids]
     return sorted(records, key=lambda r: r["document_id"])
 
@@ -489,7 +489,11 @@ def main(argv: list[str] | None = None) -> int:
                         help="chunk only these documents and print them (no files written)")
     args = parser.parse_args(argv)
 
-    records = load_records(args.documents)
+    try:
+        records = load_records(args.documents)
+    except (FileNotFoundError, ValueError) as exc:
+        print(exc, file=sys.stderr)
+        return 1
     chunks, per_document = chunk_corpus(records)
     if args.documents:
         for chunk in chunks:
@@ -503,9 +507,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"INVALID {problem}", file=sys.stderr)
         return 1
     CHUNKS_DIR.mkdir(parents=True, exist_ok=True)
-    with (CHUNKS_DIR / "chunks.jsonl").open("w", encoding="utf-8", newline="\n") as handle:
-        for chunk in chunks:
-            handle.write(json.dumps(chunk, ensure_ascii=False) + "\n")
+    write_jsonl(CHUNKS_PATH, chunks)
     stats = corpus_stats(chunks, per_document)
     (CHUNKS_DIR / "chunk_stats.json").write_text(
         json.dumps(stats, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n"
@@ -513,7 +515,7 @@ def main(argv: list[str] | None = None) -> int:
     stale = CHUNKS_DIR / "chunk_documents.json"
     if stale.exists():
         stale.unlink()
-    print(f"{len(records)} documents -> {len(chunks)} chunks (validated) -> {CHUNKS_DIR / 'chunks.jsonl'}")
+    print(f"{len(records)} documents -> {len(chunks)} chunks (validated) -> {CHUNKS_PATH}")
     return 0
 
 

@@ -7,7 +7,6 @@ RAG chunking, summarization, translation, or any LLM-backed transformation.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import logging
 import re
@@ -19,20 +18,10 @@ from typing import Any, Iterable
 
 import pymupdf
 
+from corpus import CAPTION_PANEL_MARKER, D2_ROOT, ROUTE_DOCUMENT_IDS, load_manifest, sha256_file
+
 
 LOGGER = logging.getLogger("preprocess_documents")
-SCRIPT_PATH = Path(__file__).resolve()
-D2_ROOT = SCRIPT_PATH.parents[1]
-MANIFEST_PATH = D2_ROOT / "data" / "manifest.jsonl"
-
-ROUTE_DOCUMENT_IDS = {
-    "coimbra-para-os-pequenitos",
-    "coimbra-dos-escritores",
-    "fado-e-tradicoes-academicas",
-    "fundacao-da-nacionalidade",
-    "jardins-historicos",
-    "viver-o-patrimonio-em-coimbra",
-}
 
 WEB_NOISE_TOKENS = (
     "keyboard_arrow_left",
@@ -58,7 +47,6 @@ SAFE_SPACED_LETTER_REPAIRS = {
 # next to the captions, under a large decorative panel title.
 CAPTION_MARKERS_RE = re.compile(r"(?:[a-z]\.\s*){2,}")
 CAPTION_PANEL_TITLE_MIN_SIZE = 14.0
-CAPTION_PANEL_COMMENT = "<!-- caption_panel -->"
 
 # On map pages, only blocks at least this long are treated as editorial prose;
 # shorter blocks are map labels (same threshold as the route map sidebar).
@@ -268,34 +256,6 @@ def _collapse_blank_lines(lines: Iterable[str]) -> str:
     return "\n".join(output).strip()
 
 
-def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as file_handle:
-        for block in iter(lambda: file_handle.read(1024 * 1024), b""):
-            digest.update(block)
-    return f"sha256:{digest.hexdigest()}"
-
-
-def load_manifest(path: Path = MANIFEST_PATH) -> list[dict[str, Any]]:
-    if not path.exists():
-        raise FileNotFoundError(f"Manifest not found: {path}")
-    records: list[dict[str, Any]] = []
-    seen_ids: set[str] = set()
-    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-        if not line.strip():
-            continue
-        try:
-            record = json.loads(line)
-        except json.JSONDecodeError as exc:
-            raise ValueError(f"Invalid JSON on manifest line {line_number}: {exc}") from exc
-        document_id = record.get("document_id")
-        if not document_id or document_id in seen_ids:
-            raise ValueError(f"Missing or duplicate document_id on manifest line {line_number}")
-        seen_ids.add(document_id)
-        records.append(record)
-    return records
-
-
 def _text_blocks(page: pymupdf.Page, config: DocumentConfig) -> list[tuple[float, float, float, float, str]]:
     """Return (x0, y0, x1, y1, text) text blocks, as get_text("blocks") does.
 
@@ -415,7 +375,7 @@ def _route_first_page_text(page: pymupdf.Page, config: DocumentConfig) -> str:
     # The panel sits at the foot of a column while that column's last sentence
     # continues at the top of the next one, so it goes after the page's text.
     captions = "\n\n".join(text for _, _, text in caption_blocks if text)
-    return f"{body}\n\n{CAPTION_PANEL_COMMENT}\n\n{captions}"
+    return f"{body}\n\n{CAPTION_PANEL_MARKER}\n\n{captions}"
 
 
 def _route_map_page_text(page: pymupdf.Page, config: DocumentConfig) -> str:
@@ -680,7 +640,7 @@ def render_document(record: dict[str, Any]) -> tuple[str, ProcessingStats]:
     raw_path = D2_ROOT / record["local_raw_path"]
     if not raw_path.is_file():
         raise FileNotFoundError(f"Raw PDF not found for {record['document_id']}: {raw_path}")
-    actual_hash = _sha256(raw_path)
+    actual_hash = sha256_file(raw_path)
     if actual_hash != record["content_hash"]:
         raise ValueError(
             f"Raw hash mismatch for {record['document_id']}: "

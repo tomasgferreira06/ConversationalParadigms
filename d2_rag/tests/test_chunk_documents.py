@@ -182,6 +182,10 @@ class CorpusTests(unittest.TestCase):
     def setUpClass(cls):
         cls.chunks = _corpus_chunks()
 
+    def test_unknown_document_is_an_error_not_an_exit(self):
+        with self.assertRaisesRegex(ValueError, "nope"):
+            chunker.load_records(["nope"])
+
     def test_persisted_chunks_are_valid_and_reproducible(self):
         self.assertEqual(chunker.validate_chunks(self.chunks), [])
         fresh, _ = chunker.chunk_corpus(chunker.load_records())

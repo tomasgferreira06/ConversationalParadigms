@@ -14,20 +14,17 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import re
 import sys
 import unicodedata
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
+from corpus import D2_ROOT, MANIFEST_PATH, load_manifest, sha256_bytes
 
-D2_ROOT = Path(__file__).resolve().parents[1]
-MANIFEST_PATH = D2_ROOT / "data" / "manifest.jsonl"
 
 # ---- Template configuration (visitecoimbra.pt, WordPress + Elementor) -------
 # Header, menus and footer are separate Elementor templates; the page's own
@@ -402,10 +399,6 @@ def hidden_blocks_missing_from_output(html: str, markdown: str) -> list[str]:
     return missing
 
 
-def load_manifest() -> list[dict[str, Any]]:
-    return [json.loads(l) for l in MANIFEST_PATH.read_text(encoding="utf-8").splitlines() if l.strip()]
-
-
 def write_web_records(updates: dict[str, dict[str, Any]]) -> None:
     """Rewrite web records only; every PDF line stays byte-identical."""
 
@@ -425,7 +418,7 @@ def render_document(record: dict[str, Any]) -> tuple[str, Stats, list[str]]:
     """Raw HTML (hash-checked) -> Markdown, validation problems. No network."""
 
     raw = (D2_ROOT / record["local_raw_path"]).read_bytes()
-    actual = "sha256:" + hashlib.sha256(raw).hexdigest()
+    actual = sha256_bytes(raw)
     if actual != record["content_hash"]:
         raise ValueError(f"{record['document_id']}: raw hash mismatch ({actual})")
     html = raw.decode("utf-8")

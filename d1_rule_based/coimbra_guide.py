@@ -663,7 +663,7 @@ def find_places(text):
 
     for pattern, place, category in KNOWN_PLACES:
         if re.search(pattern, text, re.IGNORECASE):
-            if place not in places:
+            if (place, category) not in places:
                 places.append((place, category))
 
     return places

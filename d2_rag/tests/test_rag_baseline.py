@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from langchain_core.documents import Document
 from langchain_core.embeddings import DeterministicFakeEmbedding
@@ -12,7 +13,8 @@ from langchain_core.embeddings import DeterministicFakeEmbedding
 D2_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(D2_ROOT / "scripts"))
 
-import rag_baseline as rb  # noqa: E402
+import rag_baseline as cli  # noqa: E402
+import rag_pipeline as rb  # noqa: E402
 
 
 PDF_CHUNK = {
@@ -139,8 +141,29 @@ class ContextAndPromptTests(unittest.TestCase):
         self.assertIn("https://visitecoimbra.pt/o-que-visitar/museus/", lines[1])
 
     def test_display_body_strips_heading_context(self):
-        self.assertEqual(rb.chunk_body(rb.to_document(WEB_CHUNK)), "Mandado construir em 1314.")
-        self.assertEqual(rb.chunk_body(Document(page_content="Sem heading.")), "Sem heading.")
+        self.assertEqual(cli.chunk_body(rb.to_document(WEB_CHUNK)), "Mandado construir em 1314.")
+        self.assertEqual(cli.chunk_body(Document(page_content="Sem heading.")), "Sem heading.")
+
+
+class ConfigurationTests(unittest.TestCase):
+    def test_baseline_configuration_is_unchanged(self):
+        self.assertEqual(rb.BASELINE, rb.RAGConfig(
+            embedding_model="sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+            collection_name="coimbra_rag_baseline",
+            distance_space="cosine",
+            top_k=3,
+            llm_model="llama3.2:3b",
+            llm_temperature=0.1,
+            indexed_roles=frozenset({"content"}),
+        ))
+
+    def test_generation_uses_the_configured_model_and_temperature(self):
+        messages = rb.build_messages("Q?", [_result(PDF_CHUNK)])
+        with mock.patch("langchain_ollama.ChatOllama") as chat:
+            chat.return_value.invoke.return_value.content = "Resposta."
+            self.assertEqual(rb.generate(messages), "Resposta.")
+        chat.assert_called_once_with(model="llama3.2:3b", temperature=0.1)
+        chat.return_value.invoke.assert_called_once_with(messages)
 
 
 if __name__ == "__main__":
