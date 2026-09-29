@@ -1,7 +1,7 @@
 """D1 + D2 integrated agent: a text classifier routes each message.
 
     user input -> text classifier -> ELIZA_RUDE (D1, chit-chat)
-                                  -> RAG        (D2, Coimbra tourism questions)
+                                  -> RAG        (D2, Coimbra expert questions)
 
 Startup loads, once: the router (vectorizer + classifier), ELIZA_RUDE, the RAG
 embedding model and its Chroma store (frozen configuration, BASELINE). Then,
@@ -56,7 +56,7 @@ def format_routing(probabilities: dict[str, float], route: str) -> str:
 
 def run(agent: IntegratedAgent, debug_routing: bool = False,
         read: Callable[[str], str] = input, write: Callable[[str], None] = print) -> None:
-    write('Agente integrado D1 + D2 (ELIZA_RUDE + Coimbra Tourism Expert). Escreve "sair" para terminar.')
+    write('Agente integrado D1 + D2 (ELIZA_RUDE + Coimbra Expert). Escreve "sair" para terminar.')
     while True:
         try:
             text = read("\nTu: ")
@@ -75,8 +75,6 @@ def run(agent: IntegratedAgent, debug_routing: bool = False,
 def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    # Piped stdin on Windows is decoded with the console code page (cp1252),
-    # which garbles accented input; a real console already yields Unicode.
     if hasattr(sys.stdin, "reconfigure") and not sys.stdin.isatty():
         sys.stdin.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description="D1 + D2 integrated agent with text-classification routing.")

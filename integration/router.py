@@ -1,8 +1,8 @@
 """D1/D2 message router: the trained text classifier, loaded once.
 
 The router never answers the user; it only says which agent should:
-"eliza_rude" (D1, ELIZA_RUDE) or "rag" (D2, Coimbra Tourism Expert RAG). The
-route is the argmax of the class probabilities, with no special threshold.
+"eliza_rude" (D1, ELIZA_RUDE) or "rag" (D2, Coimbra Expert RAG). A message
+goes to the RAG when P(rag) >= RAG_THRESHOLD (0.45), otherwise to ELIZA_RUDE.
 
 Usage:
     router = AgentRouter.load()
@@ -15,6 +15,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from train_classifier import CLASSIFIER_FILE, LABELS, MODELS_DIR, VECTORIZER_FILE, load_router
+
+# Borderline messages (P(rag) between 0.45 and 0.50) go to the RAG instead of ELIZA_RUDE.
+RAG_THRESHOLD = 0.45
 
 
 class RouterError(RuntimeError):
@@ -47,7 +50,6 @@ class AgentRouter:
         return {label: float(proba[self._classes.index(label)]) for label in LABELS}
 
     def classify(self, text: str) -> str:
-        """The most probable label (argmax, no threshold)."""
+        """"rag" if P(rag) >= RAG_THRESHOLD, otherwise "eliza_rude"."""
 
-        probabilities = self.predict_proba(text)
-        return max(probabilities, key=probabilities.get)
+        return "rag" if self.predict_proba(text)["rag"] >= RAG_THRESHOLD else "eliza_rude"

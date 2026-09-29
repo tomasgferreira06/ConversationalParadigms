@@ -81,10 +81,18 @@ class TrainedRouterTests(unittest.TestCase):
         self.assertAlmostEqual(sum(probabilities.values()), 1.0)
         self.assertGreater(probabilities["rag"], probabilities["eliza_rude"])
 
-    def test_classify_is_the_argmax_of_predict_proba(self):
+    def test_classify_applies_the_rag_threshold(self):
         for text in [*RAG_CASES.values(), *ELIZA_RUDE_CASES.values(), *BOUNDARY_CASES]:
-            probabilities = self.router.predict_proba(text)
-            self.assertEqual(self.router.classify(text), max(probabilities, key=probabilities.get))
+            expected = "rag" if self.router.predict_proba(text)["rag"] >= rt.RAG_THRESHOLD else "eliza_rude"
+            self.assertEqual(self.router.classify(text), expected)
+
+    def test_rag_threshold_boundary(self):
+        self.assertEqual(rt.RAG_THRESHOLD, 0.45)
+        cases = {0.45: "rag", 0.47: "rag", 0.60: "rag", 0.449: "eliza_rude", 0.30: "eliza_rude"}
+        for p_rag, expected in cases.items():
+            with self.subTest(p_rag=p_rag), \
+                    mock.patch.object(self.router, "predict_proba", return_value={"eliza_rude": 1 - p_rag, "rag": p_rag}):
+                self.assertEqual(self.router.classify("texto"), expected)
 
     def test_persisted_model_equals_a_fresh_training_run(self):
         texts, labels = tc.load_dataset()

@@ -1,8 +1,7 @@
 """Train the D1/D2 routing classifier (supervised binary text classification).
 
 The classifier never answers the user: it only decides which agent handles a
-message, "eliza_rude" (D1, ELIZA_RUDE chit-chat) or "rag" (D2, Coimbra Tourism
-Expert RAG). Following the course Text Classification worksheet: one 70/30
+message, "eliza_rude" (D1, ELIZA_RUDE chit-chat) or "rag" (D2, Coimbra Expert RAG). Following the course Text Classification worksheet: one 70/30
 stratified split (random_state=42), the vectorizer fitted on the training part
 only, and two small experiments evaluated on the same held-out test set:
 
@@ -83,7 +82,7 @@ def validate_dataset(texts: list[str], labels: list[str]) -> dict[str, Any]:
     problems = []
     seen_exact: dict[str, int] = {}
     seen_norm: dict[str, int] = {}
-    for line, (text, label) in enumerate(zip(texts, labels), start=2):  # line 1 is the header
+    for line, (text, label) in enumerate(zip(texts, labels), start=2):  
         if not text.strip():
             problems.append(f"line {line}: empty text")
         elif text != text.strip():

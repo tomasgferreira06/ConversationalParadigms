@@ -3,7 +3,7 @@
 - ElizaRudeAgent: D1 ELIZA_RUDE (d1_rule_based_v2/eliza_rude.py), its NLTK Chat
   used as is: same pairs, reflections and rule order. Only respond() is used,
   never converse(), because the integrated system owns the conversation loop.
-- RAGAgent: D2 Coimbra Tourism Expert RAG (d2_rag/scripts/rag_pipeline.py) with
+- RAGAgent: D2 Coimbra Expert RAG (d2_rag/scripts/rag_pipeline.py) with
   its active frozen configuration, BASELINE (= FROZEN_V2): the existing
   retrieve -> build_messages -> generate steps over the existing vector store,
   opened once at startup and never rebuilt.
