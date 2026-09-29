@@ -1,0 +1,201 @@
+text,label
+"Olá",eliza_rude
+"Hoje estou cansado.",eliza_rude
+"Estou farto do meu trabalho.",eliza_rude
+"O meu chefe irrita-me.",eliza_rude
+"Sinto-me sozinho.",eliza_rude
+"Preciso de férias.",eliza_rude
+"Acho que sou demasiado preguiçoso.",eliza_rude
+"Tu és mesmo antipática.",eliza_rude
+"Obrigado pela ajuda.",eliza_rude
+"Os meus amigos não me percebem.",eliza_rude
+"Quero sair daqui.",eliza_rude
+"O meu trabalho está a correr mal.",eliza_rude
+"Estou cansado de andar.",eliza_rude
+"Quero comer.",eliza_rude
+"Bom dia!",eliza_rude
+"Boa noite, ainda estás acordada?",eliza_rude
+"Oi, tudo bem contigo?",eliza_rude
+"Olá outra vez, voltei.",eliza_rude
+"Estou tão aborrecida hoje.",eliza_rude
+"Sinto que ninguém me ouve.",eliza_rude
+"Sinto-me perdido na vida.",eliza_rude
+"Estou nervoso por causa do exame de amanhã.",eliza_rude
+"Sou uma pessoa muito tímida.",eliza_rude
+"Sou péssimo a tomar decisões.",eliza_rude
+"Tenho medo de falhar.",eliza_rude
+"Tenho uma dor de cabeça horrível.",eliza_rude
+"Preciso de dormir mais.",eliza_rude
+"Preciso que alguém me dê atenção.",eliza_rude
+"Não consigo concentrar-me em nada.",eliza_rude
+"Não consigo parar de pensar nela.",eliza_rude
+"Porque é que eu não consigo acabar nada?",eliza_rude
+"Porque é que tu não és mais simpática?",eliza_rude
+"Tu nunca me ouves.",eliza_rude
+"És sempre tão mal-disposta?",eliza_rude
+"Consegues ser simpática por uma vez?",eliza_rude
+"Podes parar de me insultar?",eliza_rude
+"Posso desabafar contigo?",eliza_rude
+"Gosto muito de chocolate.",eliza_rude
+"Gosto de passar o domingo no sofá.",eliza_rude
+"Quero ganhar a lotaria.",eliza_rude
+"Quero mudar de vida.",eliza_rude
+"A minha mãe está sempre a ligar-me.",eliza_rude
+"A minha mãe estudou na universidade e não se cala com isso.",eliza_rude
+"O meu pai nunca me elogia.",eliza_rude
+"O meu pai gosta de fado mas eu não suporto.",eliza_rude
+"Discuti com a minha irmã outra vez.",eliza_rude
+"O meu namorado esqueceu-se do meu aniversário.",eliza_rude
+"A minha melhor amiga mudou-se para longe.",eliza_rude
+"Os meus colegas de casa não lavam a loiça.",eliza_rude
+"A minha chefe marcou uma reunião para sábado.",eliza_rude
+"Fui despedido hoje.",eliza_rude
+"Detesto segundas-feiras.",eliza_rude
+"Desculpa, não queria ser rude.",eliza_rude
+"Desculpa o atraso.",eliza_rude
+"Muito obrigada, és um amor.",eliza_rude
+"Obrigado por nada.",eliza_rude
+"Sim.",eliza_rude
+"Os meus amigos querem jantar fora e eu não tenho vontade nenhuma.",eliza_rude
+"Não.",eliza_rude
+"Não quero falar sobre isso.",eliza_rude
+"Não me apetece fazer nada.",eliza_rude
+"É complicado.",eliza_rude
+"É a terceira vez que isto me acontece esta semana.",eliza_rude
+"Como estás?",eliza_rude
+"Como é que te chamas?",eliza_rude
+"O que achas de mim?",eliza_rude
+"O que é que fazes quando estás triste?",eliza_rude
+"Tu és um robô?",eliza_rude
+"És uma máquina ou uma pessoa?",eliza_rude
+"Estou a falar com um computador, não estou?",eliza_rude
+"Qual é o sentido da vida?",eliza_rude
+"Quanto é dois mais dois?",eliza_rude
+"Achas que vai chover amanhã?",eliza_rude
+"Acho que o meu gato me odeia.",eliza_rude
+"Acho que ninguém gosta de mim.",eliza_rude
+"Porque é que a vida é tão injusta?",eliza_rude
+"Porque sim.",eliza_rude
+"Hoje correu tudo mal.",eliza_rude
+"Ontem fui ao ginásio e agora dói-me tudo.",eliza_rude
+"Estou cheio de fome.",eliza_rude
+"Tenho saudades das férias na praia.",eliza_rude
+"Sinto falta da minha avó.",eliza_rude
+"A minha vida amorosa é um desastre.",eliza_rude
+"Perdi as chaves de casa outra vez.",eliza_rude
+"Não tenho paciência para ninguém.",eliza_rude
+"Estou a pensar em deixar o curso.",eliza_rude
+"Os exames estão a dar cabo de mim.",eliza_rude
+"O meu computador avariou e perdi o trabalho todo.",eliza_rude
+"Ninguém responde às minhas mensagens.",eliza_rude
+"Tenho de te contar uma coisa.",eliza_rude
+"Já não sei o que fazer.",eliza_rude
+"Estás de mau humor hoje?",eliza_rude
+"Porque é que és tão rude comigo?",eliza_rude
+"Vou-me embora, não aguento mais.",eliza_rude
+"Adoro dias de sol.",eliza_rude
+"Vi o jogo ontem e fiquei irritado com o árbitro.",eliza_rude
+"Ando a dormir muito mal.",eliza_rude
+"Hmm, deixa-me pensar.",eliza_rude
+"Ok.",eliza_rude
+"Estás a gozar comigo?",eliza_rude
+"Que museus posso visitar em Coimbra?",rag
+"O que há para ver perto da Universidade?",rag
+"Gostava de conhecer monumentos históricos da cidade.",rag
+"Onde posso ouvir Fado de Coimbra ao vivo?",rag
+"Há algum sítio interessante para jantar na Baixa?",rag
+"Que atividades posso fazer junto ao Mondego?",rag
+"Conta-me a história da Biblioteca Joanina.",rag
+"Quais são os principais locais associados à cerâmica em Coimbra?",rag
+"Que bares são referidos para sair à noite?",rag
+"Há atividades desportivas para visitantes?",rag
+"Preciso de um restaurante em Coimbra.",rag
+"Quero sair à noite em Coimbra.",rag
+"Que trabalho realizou Nicolau Chanterene em Coimbra?",rag
+"Onde posso fazer uma caminhada em Coimbra?",rag
+"Quem está sepultado no Mosteiro de Santa Cruz?",rag
+"Porque é que a torre da Universidade é conhecida como a Cabra?",rag
+"Qual é a diferença entre a Sé Velha e a Sé Nova?",rag
+"Quando foi a Universidade classificada como Património Mundial?",rag
+"O que significa Alta e Sofia?",rag
+"Fala-me da lenda de Pedro e Inês na Quinta das Lágrimas.",rag
+"Vale a pena levar crianças ao Portugal dos Pequenitos?",rag
+"Que doces conventuais são típicos da região?",rag
+"O que são os pastéis de Santa Clara?",rag
+"Onde se come uma boa chanfana?",rag
+"Qual é o prato típico que devo provar?",rag
+"Que cervejarias são conhecidas na cidade?",rag
+"O que é a Queima das Fitas?",rag
+"Quando se realiza a Latada?",rag
+"Explica-me o significado do traje académico.",rag
+"O que é uma república de estudantes?",rag
+"Qual a origem da Canção de Coimbra?",rag
+"Em que é que o Fado de Coimbra difere do Fado de Lisboa?",rag
+"Onde fica o Museu Nacional Machado de Castro?",rag
+"O que é o Criptopórtico de Aeminium?",rag
+"Que coleções tem o Museu da Ciência?",rag
+"Horário da Biblioteca Joanina",rag
+"Rainha Santa Isabel",rag
+"Arco de Almedina",rag
+"O que aconteceu ao Mosteiro de Santa Clara-a-Velha com as cheias do rio?",rag
+"Quem mandou construir o Mosteiro de Santa Clara-a-Nova?",rag
+"Onde está o túmulo da Rainha Santa?",rag
+"Que jardins históricos existem na cidade?",rag
+"O Jardim Botânico é aberto ao público?",rag
+"Posso fazer canoagem no rio Mondego?",rag
+"Há percursos de bicicleta no Parque Verde?",rag
+"Onde é que os estudantes fazem a serenata monumental?",rag
+"Que escritores viveram ou estudaram em Coimbra?",rag
+"Existe algum roteiro dedicado a Miguel Torga?",rag
+"O que é a Casa da Escrita?",rag
+"Estou em Coimbra só um dia, o que devo visitar primeiro?",rag
+"Tenho um fim de semana na cidade, sugere-me um roteiro.",rag
+"Sou turista e gostava de conhecer a zona histórica.",rag
+"Consegues dizer-me onde fica a Sé Velha?",rag
+"Podes recomendar-me um museu para visitar com a família?",rag
+"Como chego ao Paço das Escolas a partir da Baixa?",rag
+"O que tem de especial a Sala dos Capelos?",rag
+"A Capela de São Miguel pode ser visitada?",rag
+"Qual é a importância de D. Afonso Henriques para Coimbra?",rag
+"Porque é que Coimbra foi capital do reino?",rag
+"Que igrejas românicas posso visitar?",rag
+"Que obras de João de Ruão existem na cidade?",rag
+"Onde posso comprar faiança tradicional?",rag
+"Há oficinas de cerâmica abertas a visitantes?",rag
+"Quais são os melhores miradouros?",rag
+"O que é o Penedo da Saudade?",rag
+"Onde fica a Mata Nacional do Choupal?",rag
+"Gostava de saber mais sobre o Aqueduto de São Sebastião.",rag
+"Que espaços culturais há na margem esquerda do rio?",rag
+"O Convento São Francisco organiza espetáculos?",rag
+"Que tradições académicas ainda se mantêm?",rag
+"Quais são os pratos de leitão mais famosos da zona?",rag
+"Onde se podem provar arrufadas?",rag
+"Há passeios de barco no Mondego?",rag
+"Que monumentos estão incluídos no bilhete da Universidade?",rag
+"Onde se pode ver uma guitarra de Coimbra?",rag
+"O Estádio Cidade de Coimbra recebe visitas?",rag
+"Que clube de futebol representa a cidade?",rag
+"Onde posso praticar remo?",rag
+"Qual é a história da Rua da Sofia?",rag
+"Que colégios universitários existiam na Rua da Sofia?",rag
+"Há algum sítio com vista para o rio para beber um copo?",rag
+"Onde é que a malta costuma ir beber depois das aulas?",rag
+"Que zonas têm mais vida noturna?",rag
+"O que posso fazer num dia de chuva na cidade?",rag
+"Existem visitas guiadas à Alta?",rag
+"Qual é o museu mais antigo da cidade?",rag
+"Fala-me do Mosteiro de Celas.",rag
+"Quem foi Zeca Afonso e qual a sua ligação a Coimbra?",rag
+"O que representam as fitas das pastas dos finalistas?",rag
+"Onde fica a Igreja de Santiago?",rag
+"A Praça do Comércio tem esplanadas?",rag
+"Que eventos culturais acontecem no verão?",rag
+"Qual é a melhor altura do ano para visitar Coimbra?",rag
+"Que ruínas romanas há perto da cidade?",rag
+"Onde fica o Jardim da Sereia?",rag
+"Quero visitar a Quinta das Lágrimas, vale a pena?",rag
+"Acho que gostava de ver a Universidade por dentro, é possível?",rag
+"Não sei onde fica o Jardim Botânico, podes ajudar?",rag
+"Que restaurantes servem cozinha tradicional portuguesa perto da Sé?",rag
+"O que é que os turistas costumam visitar na Baixa?",rag

@@ -1,0 +1,199 @@
+{
+  "dataset": {
+    "path": "routing_dataset.csv",
+    "sha256": "959f444765c4c9a582abac0eaeeb46143a78bcebb2d5ba22a1d348e811a762b5",
+    "total": 200,
+    "per_class": {
+      "eliza_rude": 100,
+      "rag": 100
+    },
+    "words_per_utterance": {
+      "min": 1,
+      "max": 13,
+      "mean": 6.45
+    },
+    "tokens": 1312,
+    "distinct_tokens": 516,
+    "type_token_ratio": 0.393,
+    "mentions_coimbra": {
+      "eliza_rude": 0,
+      "rag": 17
+    }
+  },
+  "split": {
+    "test_size": 0.3,
+    "random_state": 42,
+    "stratify": true,
+    "train": 140,
+    "test": 60,
+    "train_per_class": {
+      "eliza_rude": 70,
+      "rag": 70
+    },
+    "test_per_class": {
+      "eliza_rude": 30,
+      "rag": 30
+    },
+    "vocabulary_size_selected": 1052
+  },
+  "experiments": {
+    "A": {
+      "name": "CountVectorizer + MultinomialNB",
+      "accuracy": 0.9166666666666666,
+      "per_class": {
+        "eliza_rude": {
+          "precision": 0.9629629629629629,
+          "recall": 0.8666666666666667,
+          "f1-score": 0.9122807017543859,
+          "support": 30.0
+        },
+        "rag": {
+          "precision": 0.8787878787878788,
+          "recall": 0.9666666666666667,
+          "f1-score": 0.9206349206349206,
+          "support": 30.0
+        }
+      },
+      "macro_avg": {
+        "precision": 0.9208754208754208,
+        "recall": 0.9166666666666667,
+        "f1-score": 0.9164578111946533
+      },
+      "report_text": "              precision    recall  f1-score   support\n\n  eliza_rude      0.963     0.867     0.912        30\n         rag      0.879     0.967     0.921        30\n\n    accuracy                          0.917        60\n   macro avg      0.921     0.917     0.916        60\nweighted avg      0.921     0.917     0.916        60\n",
+      "confusion_matrix": [
+        [
+          26,
+          4
+        ],
+        [
+          1,
+          29
+        ]
+      ],
+      "errors": [
+        {
+          "text": "Bom dia!",
+          "true": "eliza_rude",
+          "predicted": "rag",
+          "probabilities": {
+            "eliza_rude": 0.283,
+            "rag": 0.717
+          }
+        },
+        {
+          "text": "Quero sair à noite em Coimbra.",
+          "true": "rag",
+          "predicted": "eliza_rude",
+          "probabilities": {
+            "eliza_rude": 0.6014,
+            "rag": 0.3986
+          }
+        },
+        {
+          "text": "Adoro dias de sol.",
+          "true": "eliza_rude",
+          "predicted": "rag",
+          "probabilities": {
+            "eliza_rude": 0.3638,
+            "rag": 0.6362
+          }
+        },
+        {
+          "text": "Quanto é dois mais dois?",
+          "true": "eliza_rude",
+          "predicted": "rag",
+          "probabilities": {
+            "eliza_rude": 0.4865,
+            "rag": 0.5135
+          }
+        },
+        {
+          "text": "Os exames estão a dar cabo de mim.",
+          "true": "eliza_rude",
+          "predicted": "rag",
+          "probabilities": {
+            "eliza_rude": 0.4737,
+            "rag": 0.5263
+          }
+        }
+      ]
+    },
+    "B": {
+      "name": "TfidfVectorizer + LogisticRegression",
+      "accuracy": 0.95,
+      "per_class": {
+        "eliza_rude": {
+          "precision": 0.9655172413793104,
+          "recall": 0.9333333333333333,
+          "f1-score": 0.9491525423728814,
+          "support": 30.0
+        },
+        "rag": {
+          "precision": 0.9354838709677419,
+          "recall": 0.9666666666666667,
+          "f1-score": 0.9508196721311475,
+          "support": 30.0
+        }
+      },
+      "macro_avg": {
+        "precision": 0.9505005561735261,
+        "recall": 0.95,
+        "f1-score": 0.9499861072520144
+      },
+      "report_text": "              precision    recall  f1-score   support\n\n  eliza_rude      0.966     0.933     0.949        30\n         rag      0.935     0.967     0.951        30\n\n    accuracy                          0.950        60\n   macro avg      0.951     0.950     0.950        60\nweighted avg      0.951     0.950     0.950        60\n",
+      "confusion_matrix": [
+        [
+          28,
+          2
+        ],
+        [
+          1,
+          29
+        ]
+      ],
+      "errors": [
+        {
+          "text": "Bom dia!",
+          "true": "eliza_rude",
+          "predicted": "rag",
+          "probabilities": {
+            "eliza_rude": 0.4807,
+            "rag": 0.5193
+          }
+        },
+        {
+          "text": "Quero sair à noite em Coimbra.",
+          "true": "rag",
+          "predicted": "eliza_rude",
+          "probabilities": {
+            "eliza_rude": 0.5276,
+            "rag": 0.4724
+          }
+        },
+        {
+          "text": "Adoro dias de sol.",
+          "true": "eliza_rude",
+          "predicted": "rag",
+          "probabilities": {
+            "eliza_rude": 0.4,
+            "rag": 0.6
+          }
+        }
+      ]
+    }
+  },
+  "selected": {
+    "model": "B",
+    "name": "TfidfVectorizer + LogisticRegression",
+    "reason": "higher macro F1 by 0.034 (>= one test example, 0.017)"
+  },
+  "artifacts": {
+    "vectorizer": "router_vectorizer.joblib",
+    "classifier": "router_classifier.joblib",
+    "classes": [
+      "eliza_rude",
+      "rag"
+    ],
+    "scikit_learn": "1.9.1"
+  }
+}

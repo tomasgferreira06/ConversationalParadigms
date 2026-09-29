@@ -631,6 +631,7 @@ dependencies = [
     { name = "langchain-text-splitters" },
     { name = "nltk" },
     { name = "pymupdf" },
+    { name = "scikit-learn" },
     { name = "sentence-transformers" },
 ]
 
@@ -643,6 +644,7 @@ requires-dist = [
     { name = "langchain-text-splitters", specifier = ">=1.1.2" },
     { name = "nltk", specifier = ">=3.10.3" },
     { name = "pymupdf", specifier = ">=1.28.2" },
+    { name = "scikit-learn", specifier = ">=1.9.1" },
     { name = "sentence-transformers", specifier = ">=6.1.0" },
 ]
 
