@@ -1,0 +1,925 @@
+{
+  "evaluation": "D2 RAG vs No-RAG Answer Quality V2",
+  "assessment_method": "automated rubric-based assessment using the pre-defined 0–2 scoring rules",
+  "model": "llama3.2:3b",
+  "temperature": 0.1,
+  "no_rag_system_prompt": "És um assistente especializado em turismo, história, património, cultura e gastronomia de Coimbra.\nResponde em Português de Portugal, de forma clara, direta e concisa.\nNão inventes informação. Se não tiveres conhecimento suficiente para responder com segurança, diz que não sabes.",
+  "rag_config": {
+    "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+    "query_prompt_name": "query",
+    "collection_name": "coimbra_rag_frozen_v2",
+    "store_dir": "C:\\Users\\35191\\Documents\\GitHub\\ConversationalParadigms\\d2_rag\\data\\chroma_frozen_v2",
+    "distance_space": "cosine",
+    "top_k": 3,
+    "llm_model": "llama3.2:3b",
+    "llm_temperature": 0.1,
+    "indexed_roles": [
+      "content"
+    ]
+  },
+  "technical_retries": [],
+  "raw_results_sha256": "78dd3a1186685d2ff0e2f1017f7a96727e3c8a95bb3f9577f70f944bea317cbd",
+  "results": [
+    {
+      "question_id": "Q01",
+      "question": "Que dois contributos são atribuídos a D. Dinis no Largo que o homenageia em Coimbra?",
+      "expected_answer": "D. Dinis é apresentado como responsável pela fundação dos Estudos Gerais e pela introdução do português na documentação oficial.",
+      "essential_facts": [
+        "D. Dinis foi responsável pela fundação dos Estudos Gerais.",
+        "A D. Dinis é atribuída a introdução do idioma português na documentação oficial."
+      ],
+      "score_guidance": "2 = identifica corretamente os dois contributos; 1 = identifica corretamente apenas um; 0 = não identifica nenhum ou atribui contributos errados.",
+      "no_rag": {
+        "answer": "No Largo D. Dinis, em Coimbra, estão os dois contributos atribuídos a D. Dinis:\n\n1.  A Basílica de Santa Cruz, que foi construída durante o reinado de D. Dinis, e que é considerada uma das mais importantes igrejas góticas de Portugal.\n2.  A Universidade de Coimbra, que foi fundada em 1290, durante o reinado de D. Dinis, e que é uma das mais antigas e respeitadas universidades de Portugal.",
+        "score": 1,
+        "label": "PARTIALLY CORRECT",
+        "reason": "Atribui corretamente a D. Dinis a fundação da Universidade/Estudos Gerais, mas omite a introdução do português na documentação oficial e acrescenta incorretamente Santa Cruz."
+      },
+      "rag": {
+        "answer": "Com base no contexto fornecido, podemos concluir que D. Dinis é homenageado no Largo que o leva o nome, e que dois dos seus contributos são:\n\n1. A fundação dos Estudos Gerais em Coimbra;\n2. A introdução do idioma português na documentação oficial.\n\nAmbos os contributos são mencionados em diferentes fontes: Fonte 1 (Coimbra dos Escritores) e Fonte 2 (Viver o Património em Coimbra), embora com algumas variações de detalhes. Não há informações divergentes sobre os contributos de D. Dinis no Largo que o homenageia.",
+        "score": 2,
+        "label": "CORRECT",
+        "reason": "Identifica corretamente a fundação dos Estudos Gerais e a introdução do português na documentação oficial.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "coimbra-dos-escritores::c0006",
+            "document_id": "coimbra-dos-escritores",
+            "section": "3. LARGO D. DINIS",
+            "distance": 0.23737967014312744
+          },
+          {
+            "chunk_id": "viver-o-patrimonio-em-coimbra::c0006",
+            "document_id": "viver-o-patrimonio-em-coimbra",
+            "section": "2. LARGO D. DINIS",
+            "distance": 0.25180137157440186
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0007",
+            "document_id": "universidade-alta-sofia-patrimonio-mundial",
+            "section": "1. UNIVERSIDADE DE COIMBRA | PAÇO DAS ESCOLAS > PORTA FÉRREA",
+            "distance": 0.4126656651496887
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q02",
+      "question": "Em que instituição de Coimbra ingressou Fernando de Bulhões e que decisão transformadora tomou depois na cidade?",
+      "expected_answer": "Ingressou no Mosteiro de Santa Cruz e, em Coimbra, decidiu tornar-se franciscano e adotar o nome de António.",
+      "essential_facts": [
+        "Fernando de Bulhões ingressou no Mosteiro de Santa Cruz, em Coimbra.",
+        "Em Coimbra, decidiu tornar-se franciscano e adotar o nome de António."
+      ],
+      "score_guidance": "2 = indica Santa Cruz e a decisão de se tornar franciscano/adotar o nome António; 1 = apresenta corretamente apenas um destes elementos; 0 = nenhum elemento correto ou informação contraditória.",
+      "no_rag": {
+        "answer": "Fernando de Bulhões ingressou na Universidade de Coimbra. A decisão transformadora que tomou na cidade foi a fundação da Universidade de Coimbra, que se tornou um centro de aprendizado e cultura importante na história de Portugal.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Indica erradamente a Universidade de Coimbra e a sua fundação; não refere o Mosteiro de Santa Cruz nem a decisão franciscana e o nome António."
+      },
+      "rag": {
+        "answer": "De acordo com o contexto fornecido, Fernando de Bulhões ingressou no Mosteiro de Santa Cruz, uma das instituições religiosas e intelectuais mais prestigiadas da época, em Coimbra.\n\nA decisão transformadora que tomou Fernando de Bulhões foi adotar o nome de António e se tornar franciscano, que foi tomada em Coimbra.",
+        "score": 2,
+        "label": "CORRECT",
+        "reason": "Refere corretamente o ingresso no Mosteiro de Santa Cruz e a decisão de se tornar franciscano e adotar o nome António.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "web-visitecoimbra-santo-antonio::c0001",
+            "document_id": "web-visitecoimbra-santo-antonio",
+            "section": "(sem secção)",
+            "distance": 0.27691417932510376
+          },
+          {
+            "chunk_id": "fundacao-da-nacionalidade::c0015",
+            "document_id": "fundacao-da-nacionalidade",
+            "section": "(sem secção)",
+            "distance": 0.40405166149139404
+          },
+          {
+            "chunk_id": "web-visitecoimbra-coimbra-muralhada::c0002",
+            "document_id": "web-visitecoimbra-coimbra-muralhada",
+            "section": "(sem secção)",
+            "distance": 0.41521942615509033
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q03",
+      "question": "Em que séculos Coimbra esteve sob domínio mouro e que duas igrejas são apontadas como exemplos de influência moçárabe?",
+      "expected_answer": "Coimbra esteve sob domínio mouro nos séculos VIII e IX; a Igreja de São Salvador e a Igreja de São Bartolomeu são indicadas como exemplos de influência moçárabe.",
+      "essential_facts": [
+        "O domínio mouro referido ocorreu durante os séculos VIII e IX.",
+        "As igrejas de São Salvador e São Bartolomeu exibem influências moçárabes."
+      ],
+      "score_guidance": "2 = indica os séculos VIII e IX e nomeia as duas igrejas; 1 = acerta o período ou as duas igrejas, ou apresenta apenas parte correta da resposta; 0 = nenhum elemento essencial correto.",
+      "no_rag": {
+        "answer": "Coimbra esteve sob domínio mouro de 8 a 1249. \n\nDuas igrejas que são apontadas como exemplos de influência moçárabe são a Sé Velha e a Igreja de São Francisco.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Apresenta um período incorreto e nomeia a Sé Velha e São Francisco, em vez de São Salvador e São Bartolomeu."
+      },
+      "rag": {
+        "answer": "Coimbra esteve sob domínio mouro nos séculos VIII e IX. As duas igrejas que são apontadas como exemplos de influência moçárabe são a Igreja de São Salvador e a Igreja de São Bartolomeu.",
+        "score": 2,
+        "label": "CORRECT",
+        "reason": "Indica corretamente os séculos VIII e IX e as igrejas de São Salvador e São Bartolomeu.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "web-visitecoimbra-heranca-mocarabe::c0001",
+            "document_id": "web-visitecoimbra-heranca-mocarabe",
+            "section": "(sem secção)",
+            "distance": 0.18320053815841675
+          },
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0001",
+            "document_id": "web-visitecoimbra-heranca-cultural-e-religiosa",
+            "section": "(sem secção)",
+            "distance": 0.32885831594467163
+          },
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0010",
+            "document_id": "web-visitecoimbra-heranca-cultural-e-religiosa",
+            "section": "Igrejas e Mosteiros > Mosteiro de São Francisco",
+            "distance": 0.3341188430786133
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q04",
+      "question": "Entre que anos foi construída a Estação Nova de Coimbra e quem assinou o projeto?",
+      "expected_answer": "Foi construída entre 1925 e 1931, segundo projeto dos arquitetos Cotinelli Telmo e Luís Cunha.",
+      "essential_facts": [
+        "A Estação Nova foi construída entre 1925 e 1931.",
+        "O projeto foi dos arquitetos Cotinelli Telmo e Luís Cunha."
+      ],
+      "score_guidance": "2 = apresenta corretamente o intervalo 1925–1931 e os dois arquitetos; 1 = acerta o intervalo ou os autores, ou omite um dos arquitetos; 0 = nenhum elemento correto.",
+      "no_rag": {
+        "answer": "A Estação Nova de Coimbra foi construída entre 1906 e 1910.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Indica o intervalo errado, 1906–1910, e não identifica os arquitetos."
+      },
+      "rag": {
+        "answer": "Com base no contexto fornecido, a Estação Nova de Coimbra foi construída entre 1925 e 1931, com projeto dos arquitetos Cotinelli Telmo e Luís Cunha.",
+        "score": 2,
+        "label": "CORRECT",
+        "reason": "Indica corretamente 1925–1931 e os arquitetos Cotinelli Telmo e Luís Cunha.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "viver-o-patrimonio-em-coimbra::c0017",
+            "document_id": "viver-o-patrimonio-em-coimbra",
+            "section": "11. LARGO DAS AMEIAS | CAIS DAS AMEIAS",
+            "distance": 0.2873147130012512
+          },
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0005",
+            "document_id": "web-visitecoimbra-heranca-cultural-e-religiosa",
+            "section": "Igrejas e Mosteiros > Sé Nova de Coimbra",
+            "distance": 0.3284042477607727
+          },
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0019",
+            "document_id": "web-visitecoimbra-heranca-cultural-e-religiosa",
+            "section": "A Universidade de Coimbra e os Colégios da Baixa > Colégio Novo, de Santo Agostinho ou da Sapiência",
+            "distance": 0.36578017473220825
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q05",
+      "question": "Quais eram as duas principais funções do Piso Intermédio da Biblioteca Joanina?",
+      "expected_answer": "Servia de apoio aos guardas da Prisão Académica e de depósito dos livros lidos no Piso Nobre.",
+      "essential_facts": [
+        "O Piso Intermédio apoiava os guardas que vigiavam a Prisão Académica.",
+        "Funcionava como depósito dos livros lidos no Piso Nobre."
+      ],
+      "score_guidance": "2 = refere as duas funções; 1 = refere corretamente apenas uma; 0 = não refere nenhuma ou apresenta funções erradas.",
+      "no_rag": {
+        "answer": "Não tenho conhecimento suficiente para responder com segurança sobre as duas principais funções do Piso Intermédio da Biblioteca Joanina.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Declara não saber e não apresenta nenhuma das duas funções do Piso Intermédio."
+      },
+      "rag": {
+        "answer": "Com base no contexto fornecido, as duas principais funções do Piso Intermédio da Biblioteca Joanina eram:\n\n1. Servir de apoio aos guardas que vigiavam a prisão académica (extinta em 1834).\n2. Funcionar como depósito dos livros que eram lidos no piso nobre.\n\nNão há informações suficientes no contexto para identificar outras funções específicas do Piso Intermédio.",
+        "score": 2,
+        "label": "CORRECT",
+        "reason": "Refere corretamente o apoio aos guardas da Prisão Académica e o depósito dos livros lidos no Piso Nobre.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "biblioteca-joanina-uctour::c0006",
+            "document_id": "biblioteca-joanina-uctour",
+            "section": "Piso Intermédio",
+            "distance": 0.140130877494812
+          },
+          {
+            "chunk_id": "biblioteca-joanina-uctour::c0002",
+            "document_id": "biblioteca-joanina-uctour",
+            "section": "Biblioteca Joanina",
+            "distance": 0.3179427981376648
+          },
+          {
+            "chunk_id": "biblioteca-joanina-uctour::c0007",
+            "document_id": "biblioteca-joanina-uctour",
+            "section": "Piso Intermédio",
+            "distance": 0.3555701971054077
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q06",
+      "question": "Quando foi criada a Faculdade de Letras de Coimbra, a que faculdade sucedeu e quando foi inaugurado o novo edifício?",
+      "expected_answer": "Foi criada em 1911, sucedeu à antiga Faculdade de Teologia e o novo edifício foi inaugurado em 22 de novembro de 1951.",
+      "essential_facts": [
+        "A Faculdade de Letras foi criada em 1911.",
+        "A Faculdade de Letras sucedeu à antiga Faculdade de Teologia.",
+        "O novo edifício foi inaugurado em 22 de novembro de 1951."
+      ],
+      "score_guidance": "2 = apresenta corretamente os três factos; 1 = apresenta corretamente um ou dois; 0 = não apresenta nenhum ou contradiz os dados essenciais.",
+      "no_rag": {
+        "answer": "A Faculdade de Letras de Coimbra foi criada em 1290, pelo rei D. Dinis, como uma das primeiras faculdades da Universidade de Coimbra.\n\nA faculdade sucedeu a Escola de Filosofia, que foi fundada em 1290, mas que não tinha o estatuto de faculdade.\n\nO novo edifício da Faculdade de Letras de Coimbra foi inaugurado em 2009, após uma reforma e expansão que permitiu a criação de novos espaços de ensino e pesquisa.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Erra os três elementos: data de criação, faculdade antecedente e data de inauguração."
+      },
+      "rag": {
+        "answer": "Com base no contexto fornecido, a Faculdade de Letras de Coimbra foi criada em 1911, sucedendo à antiga Faculdade de Teologia. O novo edifício, projetado por Alberto Pessoa, foi inaugurado em 22 de novembro de 1951.",
+        "score": 2,
+        "label": "CORRECT",
+        "reason": "Apresenta corretamente 1911, a antiga Faculdade de Teologia e 22 de novembro de 1951.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0023",
+            "document_id": "universidade-alta-sofia-patrimonio-mundial",
+            "section": "3. FACULDADE DE LETRAS",
+            "distance": 0.22891837358474731
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0017",
+            "document_id": "universidade-alta-sofia-patrimonio-mundial",
+            "section": "1. UNIVERSIDADE DE COIMBRA | PAÇO DAS ESCOLAS > PRISÃO ACADÉMICA",
+            "distance": 0.27094191312789917
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0020",
+            "document_id": "universidade-alta-sofia-patrimonio-mundial",
+            "section": "1. UNIVERSIDADE DE COIMBRA | PAÇO DAS ESCOLAS > AUDITÓRIO DA FACULDADE DE DIREITO",
+            "distance": 0.27486467361450195
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q07",
+      "question": "Quando começou a construção do Colégio de São Jerónimo, quem a dirigiu e a que função foi adaptado em 1848?",
+      "expected_answer": "A construção começou em 1565, sob direção de Diogo de Castilho; em 1848, o edifício foi adaptado a serviços hospitalares, o Hospital Velho.",
+      "essential_facts": [
+        "A construção começou em 1565.",
+        "A construção decorreu sob a direção de Diogo de Castilho.",
+        "Em 1848 foi adaptado a serviços hospitalares, passando a Hospital Velho."
+      ],
+      "score_guidance": "2 = indica 1565, Diogo de Castilho e a adaptação a Hospital Velho em 1848; 1 = acerta um ou dois elementos; 0 = nenhum elemento essencial correto.",
+      "no_rag": {
+        "answer": "Não tenho informações suficientes para responder com segurança à sua pergunta. Não sei quem dirigiu a construção do Colégio de São Jerónimo ou a função para a qual foi adaptado em 1848. Se precisar de mais informações, posso tentar ajudar.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Declara não saber e não apresenta nenhum dos três factos essenciais."
+      },
+      "rag": {
+        "answer": "Não tenho informação suficiente no contexto disponível para responder com segurança.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Abstém-se apesar de o contexto recuperado conter os factos; não apresenta 1565, Diogo de Castilho nem a adaptação a Hospital Velho em 1848.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0030",
+            "document_id": "universidade-alta-sofia-patrimonio-mundial",
+            "section": "9. COLÉGIO DE SÃO JERÓNIMO",
+            "distance": 0.17700761556625366
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0059",
+            "document_id": "universidade-alta-sofia-patrimonio-mundial",
+            "section": "30. COLÉGIO DE SÃO PEDRO DOS RELIGIOSOS TERCEIROS",
+            "distance": 0.36666107177734375
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0058",
+            "document_id": "universidade-alta-sofia-patrimonio-mundial",
+            "section": "29. COLÉGIO DE NOSSA SENHORA DA GRAÇA",
+            "distance": 0.37251007556915283
+          }
+        ]
+      },
+      "better": "TIE"
+    },
+    {
+      "question_id": "Q08",
+      "question": "Que três marcos cronológicos descrevem a instalação, extinção e reativação da Imprensa da Universidade de Coimbra?",
+      "expected_answer": "As instalações remontam a 1773, no contexto da Reforma Pombalina; a Imprensa foi extinta em 1934 pelo Estado Novo e reativada no mesmo edifício em 1999.",
+      "essential_facts": [
+        "As instalações da Imprensa remontam a 1773, no contexto da Reforma Pombalina.",
+        "A Imprensa foi extinta pelo Estado Novo em 1934.",
+        "A Imprensa foi reativada no mesmo edifício em 1999."
+      ],
+      "score_guidance": "2 = apresenta corretamente os três marcos e respetivo significado; 1 = apresenta corretamente um ou dois; 0 = nenhum marco correto ou cronologia contraditória.",
+      "no_rag": {
+        "answer": "A Imprensa da Universidade de Coimbra foi um jornal universitário fundado em 1911. Os três marcos cronológicos que descrevem a instalação, extinção e reativação da Imprensa da Universidade de Coimbra são:\n\n1. 1911: Fundação da Imprensa da Universidade de Coimbra.\n2. 1934: A Imprensa da Universidade de Coimbra foi extinta.\n3. 1999: A Imprensa da Universidade de Coimbra foi reativaada.",
+        "score": 1,
+        "label": "PARTIALLY CORRECT",
+        "reason": "Acerta a extinção em 1934 e a reativação em 1999, mas erra o primeiro marco, indicando 1911 em vez de 1773."
+      },
+      "rag": {
+        "answer": "Com base no contexto fornecido, os três marcos cronológicos que descrevem a instalação, extinção e reativação da Imprensa da Universidade de Coimbra são:\n\n1. 1773: A Imprensa foi transferida para o edifício originalmente ocupado por uma vasta área do espaço claustral da Sé e do novo edifício oitocentista.\n2. 1934: A Imprensa foi extinta pelo Estado Novo.\n3. 1999: A Imprensa da Universidade foi reativada no mesmo edifício.",
+        "score": 2,
+        "label": "CORRECT",
+        "reason": "Apresenta os três marcos: 1773, extinção em 1934 pelo Estado Novo e reativação no mesmo edifício em 1999.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0045",
+            "document_id": "universidade-alta-sofia-patrimonio-mundial",
+            "section": "20. IMPRENSA DA UNIVERSIDADE",
+            "distance": 0.24422699213027954
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0017",
+            "document_id": "universidade-alta-sofia-patrimonio-mundial",
+            "section": "1. UNIVERSIDADE DE COIMBRA | PAÇO DAS ESCOLAS > PRISÃO ACADÉMICA",
+            "distance": 0.33915722370147705
+          },
+          {
+            "chunk_id": "coimbra-dos-escritores::c0024",
+            "document_id": "coimbra-dos-escritores",
+            "section": "(sem secção)",
+            "distance": 0.3393808603286743
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q09",
+      "question": "Como é preparado o bunho para a cestaria de Arzila e que tipos de peças são produzidos com ele?",
+      "expected_answer": "O bunho, planta abundante no Paul de Arzila, é colhido no verão e deixado a secar; depois é usado em peças como cestos, esteiras e outros objetos utilitários.",
+      "essential_facts": [
+        "O bunho é uma planta abundante na Reserva Natural do Paul de Arzila.",
+        "O bunho é colhido no verão e deixado a secar antes de ser trabalhado.",
+        "Com ele são feitos cestos, esteiras e outros objetos utilitários."
+      ],
+      "score_guidance": "2 = indica o vínculo ao Paul de Arzila, a colheita no verão/secagem e os tipos de peças; 1 = apresenta corretamente um ou dois destes factos; 0 = nenhum facto essencial correto.",
+      "no_rag": {
+        "answer": "Peço desculpas, mas não tenho informações específicas sobre a preparação do \"bunho\" na cestaria de Arzila. A Arzila é uma região do Portugal, mais precisamente do distrito de Leiria, conhecida por sua produção de cestas e outros artigos de tecido, mas não consegui encontrar informações sobre um produto específico chamado \"bunho\" na sua produção.\n\nSe você tiver mais informações ou contexto sobre o \"bunho\" e a sua relação com a Arzila, ficarei feliz em tentar ajudar. Até lá, não tenho conhecimento suficiente para responder com segurança.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Declara não conhecer o processo e não apresenta nenhum Essential Fact; acrescenta ainda uma localização errada para Arzila."
+      },
+      "rag": {
+        "answer": "Com base no contexto fornecido, não há informações suficientes para responder com segurança sobre como é preparado o bunho para a cestaria de Arzila. O contexto apenas menciona que o bunho é colhido durante os meses de verão e deixado a secar, mas não fornece detalhes sobre o processo de preparação.\n\nNo entanto, é possível concluir que o bunho é utilizado como matéria-prima essencial para a criação de peças, como cestos, esteiras e outros objetos utilitários, que são elaborados com técnicas ancestrais. Além disso, o contexto menciona que o bunho é utilizado para criar peças únicas que combinam funcionalidade e história.",
+        "score": 1,
+        "label": "PARTIALLY CORRECT",
+        "reason": "Refere a colheita no verão, a secagem e as peças produzidas, mas omite que o bunho é abundante na Reserva Natural do Paul de Arzila.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "web-visitecoimbra-cestaria-de-bunho::c0001",
+            "document_id": "web-visitecoimbra-cestaria-de-bunho",
+            "section": "(sem secção)",
+            "distance": 0.16257131099700928
+          },
+          {
+            "chunk_id": "web-visitecoimbra-cestaria-de-bunho::c0003",
+            "document_id": "web-visitecoimbra-cestaria-de-bunho",
+            "section": "(sem secção)",
+            "distance": 0.2030200958251953
+          },
+          {
+            "chunk_id": "web-visitecoimbra-cestaria-de-bunho::c0002",
+            "document_id": "web-visitecoimbra-cestaria-de-bunho",
+            "section": "(sem secção)",
+            "distance": 0.2750806212425232
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q10",
+      "question": "Para que servia originalmente o Jardim da Sereia e que recinto recreativo possuía?",
+      "expected_answer": "Destinava-se sobretudo ao recolhimento e meditação dos crúzios e incluía o recinto do Jogo da Pela para fins recreativos.",
+      "essential_facts": [
+        "O parque destinava-se principalmente ao recolhimento e meditação dos crúzios.",
+        "Entre as funções recreativas estava o recinto do Jogo da Pela."
+      ],
+      "score_guidance": "2 = refere o recolhimento/meditação dos crúzios e o Jogo da Pela; 1 = refere corretamente apenas um; 0 = nenhum elemento correto.",
+      "no_rag": {
+        "answer": "O Jardim da Sereia, localizado na Universidade de Coimbra, tinha origem como um jardim de árvores e um local de estudo, mas também servia como um espaço de recreação para os estudantes da universidade.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Não refere o recolhimento e meditação dos crúzios nem o recinto do Jogo da Pela."
+      },
+      "rag": {
+        "answer": "Com base no contexto fornecido, o Jardim da Sereia servia originalmente para o recolhimento e meditação dos crúzios, mas também tinha funções recreativas, incluindo o recinto do Jogo da Pela.",
+        "score": 2,
+        "label": "CORRECT",
+        "reason": "Refere corretamente o recolhimento e meditação dos crúzios e o recinto do Jogo da Pela.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "jardins-historicos::c0016",
+            "document_id": "jardins-historicos",
+            "section": "7. JARDIM DA SEREIA | PARQUE DE SANTA CRUZ",
+            "distance": 0.2551317811012268
+          },
+          {
+            "chunk_id": "coimbra-dos-escritores::c0013",
+            "document_id": "coimbra-dos-escritores",
+            "section": "7. JARDIM DA SEREIA",
+            "distance": 0.31363606452941895
+          },
+          {
+            "chunk_id": "jardins-historicos::c0023",
+            "document_id": "jardins-historicos",
+            "section": "(sem secção)",
+            "distance": 0.3951152563095093
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q11",
+      "question": "Quem criou o Memorial Miguel Torga junto à Ponte de Santa Clara e que elementos materiais o compõem?",
+      "expected_answer": "Foi uma obra conjunta do arquiteto José Bandeirinha e do escultor António Olaio. Integra uma passadeira de xisto que termina na palavra “Torga”, esculpida em pedra de Ançã, e tem o poema “Memória” gravado na grade.",
+      "essential_facts": [
+        "O Memorial é obra conjunta de José Bandeirinha e António Olaio.",
+        "É composto por uma passadeira de xisto que culmina na palavra “Torga” em pedra de Ançã.",
+        "Na grade está gravado o poema “Memória”."
+      ],
+      "score_guidance": "2 = identifica os dois autores e os elementos materiais descritos, incluindo “Torga” e “Memória”; 1 = apresenta corretamente apenas parte substancial destes elementos; 0 = não apresenta os elementos essenciais ou inventa a autoria.",
+      "no_rag": {
+        "answer": "O Memorial Miguel Torga, localizado junto à Ponte de Santa Clara, foi criado pelo escritor Miguel Torga. \n\nO Memorial é composto por uma escultura de bronze de Miguel Torga, criada pelo escultor Fernando Palmeirim, e uma placa com a inscrição do nome do autor.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Inventa a autoria e os elementos materiais, sem identificar José Bandeirinha, António Olaio, a passadeira, a palavra Torga ou o poema Memória."
+      },
+      "rag": {
+        "answer": "Não tenho informação suficiente no contexto disponível para responder com segurança.\n\nO contexto menciona que o Memorial Miguel Torga foi inaugurado em 2007, mas não fornece informações sobre quem o criou. Além disso, não há informações sobre os elementos materiais que o compõem.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Abstém-se e não apresenta qualquer Essential Fact, embora o primeiro chunk recuperado contenha a informação.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "coimbra-dos-escritores::c0001",
+            "document_id": "coimbra-dos-escritores",
+            "section": "1. LARGO DA PORTAGEM",
+            "distance": 0.34437882900238037
+          },
+          {
+            "chunk_id": "coimbra-dos-escritores::c0022",
+            "document_id": "coimbra-dos-escritores",
+            "section": "14. CASA-MUSEU MIGUEL TORGA",
+            "distance": 0.41454648971557617
+          },
+          {
+            "chunk_id": "web-visitecoimbra-museus::c0024",
+            "document_id": "web-visitecoimbra-museus",
+            "section": "Casa Museu Miguel Torga",
+            "distance": 0.44330430030822754
+          }
+        ]
+      },
+      "better": "TIE"
+    },
+    {
+      "question_id": "Q12",
+      "question": "Segundo a tradição descrita no corpus, quem protagoniza o Fado de Coimbra e como deve ser usada a capa durante a atuação?",
+      "expected_answer": "Segundo a tradição, é protagonizado somente por homens e, para tocar e cantar, é preciso usar a capa traçada.",
+      "essential_facts": [
+        "Segundo a tradição, o Fado de Coimbra é protagonizado somente por homens.",
+        "Para tocar e cantar Fado de Coimbra é preciso envergar a capa traçada."
+      ],
+      "score_guidance": "2 = refere somente homens e a capa traçada; 1 = refere corretamente apenas um; 0 = nenhum elemento correto ou descrição contraditória.",
+      "no_rag": {
+        "answer": "Não tenho conhecimento suficiente para responder com segurança sobre a tradição específica do Fado de Coimbra, incluindo quem protagoniza a atuação e como deve ser usada a capa durante a atuação. Se quiseres mais informações sobre o Fado de Coimbra, posso tentar ajudar com o que sei.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Declara não saber e não apresenta nenhum dos dois factos essenciais."
+      },
+      "rag": {
+        "answer": "De acordo com o contexto fornecido, o Fado de Coimbra é protagonizado pelos estudantes da Universidade de Coimbra. Durante as Serenatas Monumentais, os estudantes devem estar de capa traçada, manter o silêncio e não aplaudir. Nas Serenatas de Rua, a capa também se mantém traçada.",
+        "score": 1,
+        "label": "PARTIALLY CORRECT",
+        "reason": "Refere corretamente a capa traçada, mas diz apenas que os protagonistas são estudantes e omite que, segundo a tradição descrita, são somente homens.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "fado-e-tradicoes-academicas::c0022",
+            "document_id": "fado-e-tradicoes-academicas",
+            "section": "(sem secção)",
+            "distance": 0.2698003053665161
+          },
+          {
+            "chunk_id": "fado-e-tradicoes-academicas::c0021",
+            "document_id": "fado-e-tradicoes-academicas",
+            "section": "(sem secção)",
+            "distance": 0.2906845808029175
+          },
+          {
+            "chunk_id": "web-visitecoimbra-cancao-de-coimbra::c0006",
+            "document_id": "web-visitecoimbra-cancao-de-coimbra",
+            "section": "Casas para ouvir a Canção de Coimbra",
+            "distance": 0.3175387382507324
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q13",
+      "question": "De que convento são originários os Pastéis de Santa Clara e qual é o seu recheio?",
+      "expected_answer": "Foram criados no Convento de Santa Clara e são recheados com doce de ovos e amêndoa.",
+      "essential_facts": [
+        "Os Pastéis de Santa Clara foram criados no Convento de Santa Clara.",
+        "O recheio é de doce de ovos e amêndoa."
+      ],
+      "score_guidance": "2 = indica o Convento de Santa Clara e o recheio de doce de ovos e amêndoa; 1 = indica corretamente apenas a origem ou o recheio; 0 = nenhum elemento correto.",
+      "no_rag": {
+        "answer": "Os Pastéis de Santa Clara são originários do Convento de Santa Clara, em Coimbra. O seu recheio é composto por queijo de cabra, ovos, cebola e azeite.",
+        "score": 1,
+        "label": "PARTIALLY CORRECT",
+        "reason": "Identifica corretamente o Convento de Santa Clara, mas dá um recheio salgado incorreto em vez de doce de ovos e amêndoa."
+      },
+      "rag": {
+        "answer": "Os Pastéis de Santa Clara são originários do Convento de Santa Clara-a-Velha. O seu recheio é doce de ovos e amêndoa.",
+        "score": 2,
+        "label": "CORRECT",
+        "reason": "Identifica a origem em Santa Clara e o recheio correto de doce de ovos e amêndoa.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "web-visitecoimbra-docaria-conventual-de-coimbra::c0008",
+            "document_id": "web-visitecoimbra-docaria-conventual-de-coimbra",
+            "section": "Doces a não perder > Pastéis de Santa Clara",
+            "distance": 0.17031145095825195
+          },
+          {
+            "chunk_id": "web-visitecoimbra-docaria-conventual-de-coimbra::c0012",
+            "document_id": "web-visitecoimbra-docaria-conventual-de-coimbra",
+            "section": "Sabia que...",
+            "distance": 0.32714372873306274
+          },
+          {
+            "chunk_id": "web-visitecoimbra-docaria-conventual-de-coimbra::c0002",
+            "document_id": "web-visitecoimbra-docaria-conventual-de-coimbra",
+            "section": "(sem secção)",
+            "distance": 0.3430596590042114
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q14",
+      "question": "Que ingredientes compõem as Barrigas de Freira de Coimbra e que textura lhes é atribuída?",
+      "expected_answer": "São feitas com gemas, açúcar e pão, e têm uma textura cremosa e delicada.",
+      "essential_facts": [
+        "As Barrigas de Freira são feitas com gemas, açúcar e pão.",
+        "O resultado tem textura cremosa e delicada."
+      ],
+      "score_guidance": "2 = indica os três ingredientes e a textura cremosa e delicada; 1 = indica corretamente os ingredientes ou a textura, ou omite um ingrediente; 0 = nenhum elemento essencial correto.",
+      "no_rag": {
+        "answer": "As Barrigas de Freira são um prato típico da cozinha portuguesa, originário da região de Coimbra, e são frequentemente associadas à gastronomia da cidade.\n\nAs Barrigas de Freira são feitas com carne de porco, mais especificamente com carne de porco moída, e são compostas por vários ingredientes, incluindo:\n\n*   Carne de porco moída\n*   Cebola picada\n*   Azeite\n*   Vinho branco\n*   Pimenta-do-reino\n*   Sal\n*   Pimenta preta\n*   Alho picado\n*   Batata-doce picada\n*   Ovos cozidos\n*   Farinha de trigo\n*   Leite\n*   Queijo de cabra\n\nA textura das Barrigas de Freira é geralmente suave e cremosa, graças à presença de ovos cozidos e leite, que ajudam a dar uma consistência mais homogênea e agradável ao paladar.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Embora use a palavra cremosa, classifica erradamente o doce como prato de carne e inventa uma extensa lista de ingredientes relevantes."
+      },
+      "rag": {
+        "answer": "Com base no contexto fornecido, as Barrigas de Freira de Coimbra são compostas por gemas, açúcar e pão. A sua textura é descrita como cremosa e delicada.",
+        "score": 2,
+        "label": "CORRECT",
+        "reason": "Indica corretamente gemas, açúcar e pão, bem como a textura cremosa e delicada.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "web-visitecoimbra-docaria-conventual-de-coimbra::c0005",
+            "document_id": "web-visitecoimbra-docaria-conventual-de-coimbra",
+            "section": "Doces a não perder > Barrigas de Freira",
+            "distance": 0.13703536987304688
+          },
+          {
+            "chunk_id": "viver-o-patrimonio-em-coimbra::c0019",
+            "document_id": "viver-o-patrimonio-em-coimbra",
+            "section": "13. LARGO DA FREIRIA",
+            "distance": 0.38045573234558105
+          },
+          {
+            "chunk_id": "web-visitecoimbra-gastronomia-em-coimbra::c0001",
+            "document_id": "web-visitecoimbra-gastronomia-em-coimbra",
+            "section": "(sem secção)",
+            "distance": 0.39166152477264404
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q15",
+      "question": "Quais são os ingredientes do Manjar Branco de Coimbra e com que pode ser aromatizado?",
+      "expected_answer": "É feito com leite, açúcar e arroz, e pode ser aromatizado com canela ou limão.",
+      "essential_facts": [
+        "O Manjar Branco é feito com leite, açúcar e arroz.",
+        "É aromatizado com canela ou limão."
+      ],
+      "score_guidance": "2 = apresenta leite, açúcar e arroz, mais canela ou limão; 1 = apresenta corretamente apenas os ingredientes-base ou apenas os aromas, ou omite um ingrediente; 0 = nenhum elemento essencial correto.",
+      "no_rag": {
+        "answer": "O Manjar Branco de Coimbra é um doce tradicional da região de Coimbra, na Portugal.\n\nOs ingredientes tradicionais do Manjar Branco de Coimbra incluem:\n\n* Arroz\n* Açúcar\n* Leite\n* Ovos\n* Canela\n* Noz-moscada\n* Amêndoas\n\nO Manjar Branco de Coimbra pode ser aromatizado com várias especiarias e sabores, como:\n\n* Canela em pó\n* Noz-moscada em pó\n* Cardamomo\n* Amêndoas torradas\n* Citrinos (como limão ou laranja)\n* Frutas secas (como amêndoas, nozes ou passas)\n\nÉ importante notar que a receita tradicional do Manjar Branco de Coimbra pode variar ligeiramente dependendo da região e da família. Além disso, alguns cozinheiros modernos podem adicionar ingredientes adicionais ou criar suas próprias variações do receita.",
+        "score": 1,
+        "label": "PARTIALLY CORRECT",
+        "reason": "Inclui leite, açúcar, arroz, canela e limão, mas acrescenta vários ingredientes e aromas não suportados, impedindo uma classificação totalmente correta."
+      },
+      "rag": {
+        "answer": "Com base no contexto fornecido, os ingredientes do Manjar Branco de Coimbra são:\n\n- Leite\n- Açúcar\n- Arroz\n\nO Manjar Branco pode ser aromatizado com:\n\n- Canela\n- Limão",
+        "score": 2,
+        "label": "CORRECT",
+        "reason": "Apresenta exatamente leite, açúcar e arroz, com canela ou limão como aromas.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "web-visitecoimbra-docaria-conventual-de-coimbra::c0007",
+            "document_id": "web-visitecoimbra-docaria-conventual-de-coimbra",
+            "section": "Doces a não perder > Manjar Branco",
+            "distance": 0.21497464179992676
+          },
+          {
+            "chunk_id": "web-visitecoimbra-gastronomia-em-coimbra::c0001",
+            "document_id": "web-visitecoimbra-gastronomia-em-coimbra",
+            "section": "(sem secção)",
+            "distance": 0.3823322057723999
+          },
+          {
+            "chunk_id": "web-visitecoimbra-docaria-conventual-de-coimbra::c0002",
+            "document_id": "web-visitecoimbra-docaria-conventual-de-coimbra",
+            "section": "(sem secção)",
+            "distance": 0.3960754871368408
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q16",
+      "question": "A que época remonta a tradição cervejeira de Coimbra, onde se concentrava a produção e para que fins era feita?",
+      "expected_answer": "Remonta aos tempos medievais. A produção ocorria especialmente em mosteiros e conventos, onde os monges faziam cerveja para consumo próprio e para comercialização.",
+      "essential_facts": [
+        "A ligação de Coimbra à cerveja remonta aos tempos medievais.",
+        "A produção ocorria especialmente nos mosteiros e conventos.",
+        "Os monges produziam cerveja para consumo próprio e comercialização."
+      ],
+      "score_guidance": "2 = refere a época medieval, os mosteiros/conventos e os dois fins da produção; 1 = apresenta corretamente um ou dois destes factos; 0 = nenhum facto essencial correto.",
+      "no_rag": {
+        "answer": "A tradição cervejeira de Coimbra remonta ao século XIII. Naquela época, a cerveja era produzida principalmente para fins religiosos e para a população universitária da época, que era composta por estudantes e professores da Universidade de Coimbra.",
+        "score": 1,
+        "label": "PARTIALLY CORRECT",
+        "reason": "Situa a tradição na época medieval através do século XIII, mas não refere mosteiros/conventos nem os fins corretos de consumo próprio e comercialização."
+      },
+      "rag": {
+        "answer": "A tradição cervejeira de Coimbra remonta aos tempos medievais. Na época, a produção de cerveja era realizada principalmente nos mosteiros e conventos, onde os monges produziam cervejas para consumo próprio e para comercialização.",
+        "score": 2,
+        "label": "CORRECT",
+        "reason": "Refere corretamente a época medieval, mosteiros e conventos, consumo próprio e comercialização.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira::c0001",
+            "document_id": "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira",
+            "section": "(sem secção)",
+            "distance": 0.11658203601837158
+          },
+          {
+            "chunk_id": "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira::c0002",
+            "document_id": "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira",
+            "section": "(sem secção)",
+            "distance": 0.23621779680252075
+          },
+          {
+            "chunk_id": "viver-o-patrimonio-em-coimbra::c0026",
+            "document_id": "viver-o-patrimonio-em-coimbra",
+            "section": "18. LARGO DO MARMELEIRO",
+            "distance": 0.3231871724128723
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q17",
+      "question": "Que duas atividades são explicitamente recomendadas nas margens do rio Ceira?",
+      "expected_answer": "Passeios e piqueniques.",
+      "essential_facts": [
+        "As margens do rio Ceira são indicadas para passeios.",
+        "As margens do rio Ceira são indicadas para piqueniques."
+      ],
+      "score_guidance": "2 = indica passeios e piqueniques; 1 = indica corretamente apenas uma atividade; 0 = nenhuma das duas ou recomendações sem suporte.",
+      "no_rag": {
+        "answer": "Não tenho informações específicas sobre atividades recomendadas nas margens do rio Ceira. Posso sugerir algumas opções de atividades que podem ser feitas nas margens de rios em geral, como caminhadas, observação da vida selvagem, observação de paisagens naturais, etc.",
+        "score": 1,
+        "label": "PARTIALLY CORRECT",
+        "reason": "Sugere caminhadas, equivalente a passeios, mas não refere piqueniques e assume não conhecer as recomendações específicas."
+      },
+      "rag": {
+        "answer": "As duas atividades recomendadas nas margens do rio Ceira são:\n\n1. Passeios e piqueniques\n2. Paddle no Rio Mondego",
+        "score": 1,
+        "label": "PARTIALLY CORRECT",
+        "reason": "Inclui corretamente passeios e piqueniques, mas acrescenta Paddle no rio Mondego como se fosse uma recomendação para as margens do Ceira.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "web-visitecoimbra-ceira::c0001",
+            "document_id": "web-visitecoimbra-ceira",
+            "section": "(sem secção)",
+            "distance": 0.2732738256454468
+          },
+          {
+            "chunk_id": "web-visitecoimbra-desporto::c0005",
+            "document_id": "web-visitecoimbra-desporto",
+            "section": "Aqui estão 10 atividades desportivas que pode praticar em Coimbra",
+            "distance": 0.406730592250824
+          },
+          {
+            "chunk_id": "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira::c0002",
+            "document_id": "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira",
+            "section": "(sem secção)",
+            "distance": 0.5188188552856445
+          }
+        ]
+      },
+      "better": "TIE"
+    },
+    {
+      "question_id": "Q18",
+      "question": "O que existia na Ínsua dos Bentos quando a Câmara a comprou em 1888 e quem ficou encarregado do projeto para a transformar em jardim público?",
+      "expected_answer": "Havia uma zona de laranjais, uma área descampada usada para corridas de cavalos e, a nascente, um campo de futebol onde jogava a Académica. O projeto do jardim público ficou a cargo de Jacinto de Matos.",
+      "essential_facts": [
+        "A Ínsua dos Bentos tinha uma zona de laranjais.",
+        "Tinha uma área descampada para corridas de cavalos e, a nascente, um campo de futebol onde a Académica jogava.",
+        "Jacinto de Matos ficou encarregado do projeto de transformação em jardim público."
+      ],
+      "score_guidance": "2 = refere laranjais, corridas/campo da Académica e Jacinto de Matos; 1 = apresenta corretamente um ou dois destes blocos factuais; 0 = nenhum elemento essencial correto.",
+      "no_rag": {
+        "answer": "Não tenho informações suficientes para responder com segurança à sua pergunta. Não sabia que a Câmara de Coimbra comprou a Ínsua dos Bentos em 1888. Se quiser mais informações sobre a história da Ínsua dos Bentos, posso tentar ajudar.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Declara não saber e não apresenta nenhum dos três blocos factuais."
+      },
+      "rag": {
+        "answer": "Com base no contexto fornecido, podemos dizer que, quando a Câmara Municipal de Coimbra comprou a Ínsua dos Bentos em 1888, existia uma zona de laranjais e uma área descampada. Além disso, a nascente ficava um campo de futebol, onde a Académica jogava. O projeto para transformar a Ínsua dos Bentos em jardim público ficou encarregue do paisagista floricultor portuense Jacinto de Matos.",
+        "score": 1,
+        "label": "PARTIALLY CORRECT",
+        "reason": "Refere os laranjais, a área descampada, o campo da Académica e Jacinto de Matos, mas omite que a área era usada para corridas de cavalos.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "jardins-historicos::c0005",
+            "document_id": "jardins-historicos",
+            "section": "3. PARQUE DR. MANUEL BRAGA",
+            "distance": 0.30947500467300415
+          },
+          {
+            "chunk_id": "coimbra-dos-escritores::c0002",
+            "document_id": "coimbra-dos-escritores",
+            "section": "2. PARQUE DR. MANUEL BRAGA",
+            "distance": 0.37376338243484497
+          },
+          {
+            "chunk_id": "jardins-historicos::c0018",
+            "document_id": "jardins-historicos",
+            "section": "8. JARDINS DA AVENIDA SÁ DA BANDEIRA",
+            "distance": 0.4959261417388916
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q19",
+      "question": "Quando e em que contexto universitário foi criado o Jardim Botânico de Coimbra, e que escritor o menciona numa obra?",
+      "expected_answer": "Foi criado em 1772, durante a Reforma Pombalina da Universidade de Coimbra; Miguel Torga menciona o jardim e a vista sobre o rio no *Terceiro Dia d’ A Criação do Mundo*.",
+      "essential_facts": [
+        "O Jardim Botânico foi criado em 1772 durante a Reforma Pombalina da Universidade de Coimbra.",
+        "Miguel Torga menciona o jardim e a vista sobre o rio no *Terceiro Dia d’ A Criação do Mundo*."
+      ],
+      "score_guidance": "2 = indica 1772/Reforma Pombalina e Miguel Torga com a obra; 1 = apresenta corretamente apenas um dos dois factos ou omite o título; 0 = nenhum elemento essencial correto.",
+      "no_rag": {
+        "answer": "O Jardim Botânico de Coimbra foi criado em 1881, no contexto da Universidade de Coimbra, como parte do Museu Botânico da Universidade. \n\nO escritor que menciona o Jardim Botânico de Coimbra numa obra é o poeta e escritor português Luís de Camões, no seu poema \"Os Lusíadas\".",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Erra a data, o contexto e o escritor/obra."
+      },
+      "rag": {
+        "answer": "O Jardim Botânico de Coimbra foi criado em 1772, durante a Reforma Pombalina da Universidade de Coimbra. Não há menção a um escritor específico que o mencione numa obra no contexto fornecido.",
+        "score": 1,
+        "label": "PARTIALLY CORRECT",
+        "reason": "Indica corretamente 1772 e a Reforma Pombalina, mas omite Miguel Torga e Terceiro Dia d’ A Criação do Mundo.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "coimbra-dos-escritores::c0007",
+            "document_id": "coimbra-dos-escritores",
+            "section": "4. JARDIM BOTÂNICO",
+            "distance": 0.1324777603149414
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0041",
+            "document_id": "universidade-alta-sofia-patrimonio-mundial",
+            "section": "16. JARDIM BOTÂNICO DA UNIVERSIDADE DE COIMBRA",
+            "distance": 0.18172544240951538
+          },
+          {
+            "chunk_id": "web-visitecoimbra-museus::c0021",
+            "document_id": "web-visitecoimbra-museus",
+            "section": "Jardim Botânico",
+            "distance": 0.24446171522140503
+          }
+        ]
+      },
+      "better": "RAG"
+    },
+    {
+      "question_id": "Q20",
+      "question": "Onde se realiza a Regata da Queima das Fitas, quem compete e o que o evento celebra?",
+      "expected_answer": "Realiza-se no rio Mondego; equipas de remo da Associação Académica de Coimbra competem com equipas convidadas; o evento celebra o desporto e o espírito académico.",
+      "essential_facts": [
+        "A Regata da Queima das Fitas realiza-se no rio Mondego.",
+        "Competem equipas de remo da Associação Académica de Coimbra e equipas convidadas.",
+        "O evento celebra o desporto e o espírito académico."
+      ],
+      "score_guidance": "2 = indica o Mondego, os dois grupos de equipas e a celebração do desporto/espírito académico; 1 = apresenta corretamente um ou dois destes factos; 0 = nenhum facto essencial correto.",
+      "no_rag": {
+        "answer": "A Regata da Queima das Fitas é um evento tradicional que se realiza na cidade de Coimbra, Portugal. \n\nO evento é realizado no rio Mondego, na cidade de Coimbra, e é uma competição de regatas entre as escolas de Coimbra. \n\nO que a Regata da Queima das Fitas celebra é a data da queima das fitas, que é uma tradição que remonta ao século XVII. As fitas são queimadas em uma cerimónia que marca o início da estação letiva e a abertura da nova universidade.",
+        "score": 1,
+        "label": "PARTIALLY CORRECT",
+        "reason": "Indica corretamente o rio Mondego, mas identifica erradamente os competidores e o que o evento celebra."
+      },
+      "rag": {
+        "answer": "Não tenho informação suficiente no contexto disponível para responder com segurança.\n\nO contexto menciona a \"Sé Velha\" e a \"Queima das Fitas\", mas não há informações sobre a Regata da Queima das Fitas. Além disso, não há menção a uma competição ou um evento específico que celebre a Regata da Queima das Fitas.",
+        "score": 0,
+        "label": "INCORRECT",
+        "reason": "Abstém-se porque o top-3 não contém o trecho sobre a Regata; não apresenta nenhum Essential Fact.",
+        "retrieved_chunks": [
+          {
+            "chunk_id": "fado-e-tradicoes-academicas::c0020",
+            "document_id": "fado-e-tradicoes-academicas",
+            "section": "11. PRAÇA DA CANÇÃO",
+            "distance": 0.3483574390411377
+          },
+          {
+            "chunk_id": "fado-e-tradicoes-academicas::c0014",
+            "document_id": "fado-e-tradicoes-academicas",
+            "section": "7. SÉ VELHA",
+            "distance": 0.4803459644317627
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0047",
+            "document_id": "universidade-alta-sofia-patrimonio-mundial",
+            "section": "21. SÉ VELHA",
+            "distance": 0.48798078298568726
+          }
+        ]
+      },
+      "better": "NO-RAG"
+    }
+  ],
+  "summary": {
+    "no_rag": {
+      "correct": 0,
+      "partially_correct": 7,
+      "incorrect": 13,
+      "correct_percentage": 0.0,
+      "partially_correct_percentage": 35.0,
+      "incorrect_percentage": 65.0,
+      "total_score": 7,
+      "maximum_score": 40,
+      "mean_score": 0.35
+    },
+    "rag": {
+      "correct": 12,
+      "partially_correct": 5,
+      "incorrect": 3,
+      "correct_percentage": 60.0,
+      "partially_correct_percentage": 25.0,
+      "incorrect_percentage": 15.0,
+      "total_score": 29,
+      "maximum_score": 40,
+      "mean_score": 1.45
+    },
+    "pairwise": {
+      "rag_better": 16,
+      "tie": 3,
+      "no_rag_better": 1,
+      "rag_better_percentage": 80.0,
+      "tie_percentage": 15.0,
+      "no_rag_better_percentage": 5.0
+    },
+    "mean_score_difference": 1.1
+  }
+}
