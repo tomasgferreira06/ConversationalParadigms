@@ -163,17 +163,59 @@ class StartupTests(unittest.TestCase):
     def test_startup_loads_each_component_once(self):
         with mock.patch.object(ia.AgentRouter, "load") as router_load, \
                 mock.patch.object(ia, "ElizaRudeAgent") as eliza_cls, \
-                mock.patch.object(ia.RAGAgent, "load") as rag_load:
+                mock.patch.object(ia.RAGAgent, "load") as rag_load, \
+                mock.patch.object(ia.expert_agent, "load_expert") as load_expert:
             agent = ia.IntegratedAgent.load()
         router_load.assert_called_once_with()
         eliza_cls.assert_called_once_with()
         rag_load.assert_called_once_with()
         self.assertIs(agent.router, router_load.return_value)
+        # D3: the "rag" label goes to the Coimbra Expert Agent, built over the D2 RAGAgent
+        load_expert.assert_called_once_with(rag_load.return_value, debug=None)
+        self.assertIs(agent.agents["rag"], load_expert.return_value)
+
+    def test_debug_agent_passes_the_debug_writer_to_the_expert(self):
+        with mock.patch.object(ia.AgentRouter, "load"), mock.patch.object(ia, "ElizaRudeAgent"), \
+                mock.patch.object(ia.RAGAgent, "load"), \
+                mock.patch.object(ia.expert_agent, "load_expert") as load_expert:
+            ia.IntegratedAgent.load(debug_agent=True, write=print)
+        self.assertIs(load_expert.call_args.kwargs["debug"], print)
+
+    def test_close_closes_the_expert_and_its_mcp_session(self):
+        with mock.patch.object(ia.AgentRouter, "load"), mock.patch.object(ia, "ElizaRudeAgent"), \
+                mock.patch.object(ia.RAGAgent, "load"), \
+                mock.patch.object(ia.expert_agent, "load_expert") as load_expert:
+            agent = ia.IntegratedAgent.load()
+        agent.close()
+        load_expert.return_value.close.assert_called_once_with()
 
     def test_startup_error_exits_with_code_2(self):
         with mock.patch.object(ia.IntegratedAgent, "load", side_effect=ia.RouterError("[router] missing")), \
                 mock.patch("sys.stderr"), mock.patch("builtins.print"):
             self.assertEqual(ia.main([]), 2)
+
+    def test_weather_mcp_startup_error_exits_with_code_2(self):
+        error = ia.expert_agent.WeatherMCPError("cannot start")
+        with mock.patch.object(ia.IntegratedAgent, "load", side_effect=error), \
+                mock.patch("sys.stderr"), mock.patch("builtins.print"):
+            self.assertEqual(ia.main([]), 2)
+
+    def test_main_closes_the_agent_on_exit(self):
+        agent = mock.Mock()
+        with mock.patch.object(ia.IntegratedAgent, "load", return_value=agent) as load, \
+                mock.patch.object(ia, "run"), mock.patch("builtins.print"):
+            self.assertEqual(ia.main(["--debug-agent"]), 0)
+        load.assert_called_once_with(debug_agent=True)
+        agent.close.assert_called_once_with()
+
+
+class ExpertErrorTests(unittest.TestCase):
+    def test_expert_error_is_shown_and_the_loop_continues(self):
+        agent, _eliza, rag = build("rag")
+        rag.respond.side_effect = [ia.expert_agent.ExpertAgentError("planner failed"), "Resposta RAG."]
+        output = chat(agent, ["primeira", "segunda"])
+        self.assertIn("Agente: [erro] planner failed", output)
+        self.assertIn("Agente: Resposta RAG.", output)
 
 
 if __name__ == "__main__":

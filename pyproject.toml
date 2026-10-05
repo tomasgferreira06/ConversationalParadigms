@@ -10,6 +10,7 @@ dependencies = [
     "langchain-huggingface>=1.2.2",
     "langchain-ollama>=1.1.0",
     "langchain-text-splitters>=1.1.2",
+    "mcp[cli]>=2.3.0",
     "nltk>=3.10.3",
     "pymupdf>=1.28.2",
     "scikit-learn>=1.9.1",

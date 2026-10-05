@@ -15,11 +15,12 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-for _path in (REPO_ROOT / "d1_rule_based_v2", REPO_ROOT / "d2_rag" / "scripts"):
+for _path in (REPO_ROOT / "d1_rule_based_v2", REPO_ROOT / "d2_rag" / "scripts", REPO_ROOT / "d3" / "coimbra_expert"):
     if str(_path) not in sys.path:
         sys.path.insert(0, str(_path))
 
 import eliza_rude as d1  # noqa: E402
+import expert_agent  # noqa: E402  (D3: planner + RAG / Weather MCP; wraps the RAGAgent below)
 import rag_pipeline  # noqa: E402
 
 
