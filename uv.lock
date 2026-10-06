@@ -631,7 +631,9 @@ dependencies = [
     { name = "langchain-text-splitters" },
     { name = "mcp", extra = ["cli"] },
     { name = "nltk" },
+    { name = "openai" },
     { name = "pymupdf" },
+    { name = "python-dotenv" },
     { name = "scikit-learn" },
     { name = "sentence-transformers" },
 ]
@@ -645,7 +647,9 @@ requires-dist = [
     { name = "langchain-text-splitters", specifier = ">=1.1.2" },
     { name = "mcp", extras = ["cli"], specifier = ">=2.3.0" },
     { name = "nltk", specifier = ">=3.10.3" },
+    { name = "openai", specifier = ">=3.19.2" },
     { name = "pymupdf", specifier = ">=1.28.2" },
+    { name = "python-dotenv", specifier = ">=1.2.3" },
     { name = "scikit-learn", specifier = ">=1.9.1" },
     { name = "sentence-transformers", specifier = ">=6.1.0" },
 ]

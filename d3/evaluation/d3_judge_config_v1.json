@@ -1,0 +1,180 @@
+{
+  "config_version": "D3_JUDGE_CONFIG_V1",
+  "status": "FROZEN",
+  "status_note": "Frozen judge configuration. Judge: OpenAI Responses API, gpt-5-mini-2025-08-07, reasoning_effort=medium; temperature is not sent (provider-controlled sampling, see D3_JUDGE_CONFIG_V1.md Section 5). The runner validates D3_JUDGE_CONFIG_V1.sha256 before any judge call.",
+  "protocol": "D3_EVALUATION_PROTOCOL_V1.md",
+  "source_run": {
+    "run_id": "20261006T172749+0100",
+    "raw_results_sha256": "ddf6823222266a93142d7576ac7b3af4514f2628b4683094cf5a9827d7f7ccfa",
+    "run_manifest_sha256": "5c82b5ab5443a2b548528a8bd661fae9b7df81aef3a3848149a6f64411c156e7",
+    "deterministic_scores_sha256": "e3dd4a0e147260f8554dc1073acdce9f3bfbcacff55db7d4b8eae35c7bf685e6",
+    "deterministic_report_sha256": "b0beba33402a25fbaa76bf316fecb16484ad2a0321d996a33d786b1151d0e232"
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "gpt-5-mini-2025-08-07",
+    "model_family": "GPT-5 mini",
+    "model_version_or_digest": "gpt-5-mini-2025-08-07",
+    "temperature": null,
+    "temperature_policy": "not_sent_provider_controlled",
+    "temperature_policy_meaning": "temperature (and top_p, logprobs) are not sent to the OpenAI Responses API for this judge; the provider/model sampling behaviour is used. Not configurable here.",
+    "reasoning_effort": "medium",
+    "max_output_tokens": 6000,
+    "max_attempts": 2,
+    "api": "responses",
+    "store": false,
+    "tools": "none",
+    "sdk_max_retries": 0,
+    "request_timeout_seconds": 120,
+    "structured_output": {
+      "type": "json_schema",
+      "name": "d3_judge_scores",
+      "strict": true
+    },
+    "model_availability": "The snapshot is deliberately frozen for this evaluation; availability is checked only at execution time. No fallback model: an unavailable model makes the judge run abort."
+  },
+  "dimensions": [
+    "correctness",
+    "faithfulness",
+    "relevance"
+  ],
+  "scale": [
+    0,
+    1,
+    2
+  ],
+  "scale_labels": {
+    "0": "Poor",
+    "1": "Partial",
+    "2": "Good"
+  },
+  "single_pass": true,
+  "no_answer_policy": {
+    "applies_when": "raw final_answer is null or an empty/whitespace string (no useful answer because the system ended with an execution error)",
+    "call_judge": false,
+    "evaluation_method": "protocol_deterministic_zero",
+    "scores": {
+      "correctness": 0,
+      "faithfulness": 0,
+      "relevance": 0
+    },
+    "reason": "No final answer was produced because the system ended with an execution error; protocol Section 10 assigns 0 to all three dimensions."
+  },
+  "retry_policy": {
+    "max_attempts": 2,
+    "retry_only_on": [
+      "transport_or_api_error",
+      "unparseable_output",
+      "output_outside_schema"
+    ],
+    "never_retry_on": [
+      "score_disagreement"
+    ],
+    "second_attempt_identical": "same system prompt, same user message, same configuration",
+    "on_final_failure": "judge run ABORTED; partial results preserved; no score is invented; no completion inside the same judge_run_id"
+  },
+  "input_policy": {
+    "include_question": true,
+    "include_gold_essential_facts": true,
+    "include_gold_evidence": true,
+    "include_answer_requirements": true,
+    "include_semantic_weather_places_requirements": true,
+    "include_actual_generation_evidence": true,
+    "include_raw_tool_outputs": true,
+    "include_final_answer": true,
+    "include_expected_tools": false,
+    "include_category_or_id": false,
+    "include_oracle_retrieval": false,
+    "include_actual_retrieval_records": false,
+    "include_planner_output": false,
+    "include_deterministic_metrics": false,
+    "include_other_questions": false
+  },
+  "secrets_policy": {
+    "api_key_env_var": "OPENAI_API_KEY",
+    "loaded_from": ".env at the repository root (python-dotenv, existing environment variables take precedence) only on --execute",
+    "persisted": false
+  },
+  "system_prompt": "You are an evaluator (judge) of answers produced by a Coimbra tourism assistant. You do not answer the user's question and you do not rewrite or improve the answer. Use ONLY the materials in the user message: do not use external or general knowledge, and do not infer information that is absent from them.\n\nScore the FINAL ANSWER on three independent dimensions, each with an integer 0, 1 or 2, following the rubric literally.\n\nCORRECTNESS: is the answer correct with respect to the GOLD material and the dynamic data? Source of truth: for stable facts, the gold Essential Facts and their evidence excerpts; for weather and places values, the raw tool outputs of this run.\n2 Good: satisfies correctly the relevant requirements of the question; stable facts are correct with respect to the gold; the weather/places values used are correct with respect to the raw tool outputs; no important part of the question is missing.\n1 Partial: mostly correct but omits a relevant part, contains a minor inaccuracy, answers a need only partially, or gives a reasonable but incomplete conclusion.\n0 Poor: substantially wrong, does not answer the request, contradicts the data, or fails an essential part.\n\nFAITHFULNESS / GROUNDEDNESS: is every relevant factual claim supported by the ACTUAL GENERATION EVIDENCE (the RAG context, weather data and places data the assistant actually received, and the raw tool outputs)? The gold material is NOT evidence for faithfulness: a claim that matches the gold but is absent from the actual evidence is unsupported.\n2 Good: all relevant factual claims are supported by the actual evidence.\n1 Partial: a minor extrapolation or weakly supported claim, while the core of the answer remains grounded.\n0 Poor: relevant hallucination; values absent from the data; invented relations; a distance that was not obtained; invented weather; claims contradicting the evidence; or a substantially ungrounded answer.\n\nRELEVANCE: does the answer address the QUESTION?\n2 Good: answers directly all relevant needs with useful content and no material digressions.\n1 Partial: contains the main answer but includes irrelevant content, is excessively vague, or omits a secondary part.\n0 Poor: does not answer the main request, or most of the answer is irrelevant.\n\nRules:\n- Score each dimension independently. A faithful reproduction of wrong tool data can be faithful but incorrect; a correct fact that is absent from the actual evidence can be correct but unfaithful.\n- Weather recommendations (umbrella, running, being outdoors, 'good weather') have no fixed yes/no answer: judge whether the weather data used are correct with respect to the raw output and whether the recommendation is coherent with them. Do not penalise a different but reasonable recommendation.\n- Distances returned by the places tool are straight-line (geodesic) distances.\n- Do not reward length, style or a confident tone. Do not penalise a concise answer that is complete.\n- Source lines at the end of the answer ('Fontes:', 'Fonte meteorológica', 'Fonte geográfica') are attribution and part of the answer.\n- Do not evaluate which tools or capabilities the assistant chose; evaluate only the final answer.\n- For each dimension give a short reason (at most 2-3 sentences) that points to the concrete part of the answer and of the evidence justifying the score. Do not write step-by-step reasoning.\n- Reply with JSON only, exactly matching the required schema.",
+  "user_message_template": "[A] QUESTION\n{question}\n\n[B] GOLD ANSWER REQUIREMENTS (source of truth for Correctness of stable facts; not evidence for Faithfulness)\n{gold}\n\n[C] ACTUAL GENERATION EVIDENCE (what the assistant actually received; source of truth for Faithfulness; the raw tool outputs are also the source of truth for weather/places values)\n{evidence}\n\n[D] FINAL ANSWER\n{final_answer}\n\nReturn the JSON evaluation of [D].",
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "correctness": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "score",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "faithfulness": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "score",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "relevance": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "score",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "correctness",
+      "faithfulness",
+      "relevance"
+    ],
+    "additionalProperties": false
+  },
+  "reason_max_chars": 800,
+  "aggregation": {
+    "per_dimension": "mean over all 35 questions (deterministic zeros included) on the 0-2 scale, plus the count of 0/1/2",
+    "by_category": "the same mean and distribution per category (breakdown, not new metrics)",
+    "composite_score": null
+  }
+}
