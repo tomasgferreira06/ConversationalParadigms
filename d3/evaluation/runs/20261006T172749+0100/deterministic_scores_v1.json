@@ -1,0 +1,2824 @@
+{
+  "category_breakdown": {
+    "exact_capability_match": {
+      "PLACES": {
+        "correct": 2,
+        "percentage": 40.0,
+        "total": 5,
+        "value": 0.4
+      },
+      "RAG": {
+        "correct": 5,
+        "percentage": 100.0,
+        "total": 5,
+        "value": 1.0
+      },
+      "RAG+PLACES": {
+        "correct": 5,
+        "percentage": 100.0,
+        "total": 5,
+        "value": 1.0
+      },
+      "RAG+WEATHER": {
+        "correct": 5,
+        "percentage": 100.0,
+        "total": 5,
+        "value": 1.0
+      },
+      "RAG+WEATHER+PLACES": {
+        "correct": 3,
+        "percentage": 60.0,
+        "total": 5,
+        "value": 0.6
+      },
+      "WEATHER": {
+        "correct": 5,
+        "percentage": 100.0,
+        "total": 5,
+        "value": 1.0
+      },
+      "WEATHER+PLACES": {
+        "correct": 1,
+        "percentage": 20.0,
+        "total": 5,
+        "value": 0.2
+      }
+    },
+    "note": "breakdown of ECM, not a separate primary metric"
+  },
+  "descriptive_run_summary": {
+    "error_ids_by_stage": {
+      "places": [
+        "D3_Q22",
+        "D3_Q24",
+        "D3_Q35"
+      ],
+      "weather": [
+        "D3_Q34"
+      ]
+    },
+    "errors_by_stage": {
+      "places": 3,
+      "weather": 1
+    },
+    "final_answer_produced": 31,
+    "no_final_answer": 4,
+    "no_final_answer_ids": [
+      "D3_Q22",
+      "D3_Q24",
+      "D3_Q34",
+      "D3_Q35"
+    ],
+    "note": "descriptive counts, NOT official metrics",
+    "oracle_retrieval_errors": [],
+    "planner_failures": 0,
+    "tool_execution": {
+      "places": {
+        "executed": 18,
+        "failed": 3,
+        "failed_ids": [
+          "D3_Q22",
+          "D3_Q24",
+          "D3_Q35"
+        ],
+        "planned": 18,
+        "succeeded": 15
+      },
+      "weather": {
+        "executed": 19,
+        "failed": 1,
+        "failed_ids": [
+          "D3_Q34"
+        ],
+        "planned": 19,
+        "succeeded": 18
+      }
+    }
+  },
+  "error_analysis": {
+    "agency_errors": [
+      {
+        "category": "PLACES",
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": false
+        },
+        "id": "D3_Q11",
+        "observations": [
+          "RAG capability added although gold=false"
+        ],
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Casa-Museu Bissaya Barreto, Coimbra"
+            },
+            "server": "places",
+            "tool": "search_place"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      {
+        "category": "PLACES",
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": false
+        },
+        "id": "D3_Q14",
+        "observations": [
+          "RAG capability added although gold=false"
+        ],
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "destination": "Parque Dr. Manuel Braga, Portugal",
+              "origin": "Mata Nacional do Choupal, Portugal"
+            },
+            "server": "places",
+            "tool": "get_distance_between_places"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      {
+        "category": "PLACES",
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": false
+        },
+        "id": "D3_Q15",
+        "observations": [
+          "RAG capability added although gold=false"
+        ],
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "destination": "Praça da Canção, Coimbra",
+              "origin": "Seminário Maior, Coimbra"
+            },
+            "server": "places",
+            "tool": "get_distance_between_places"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      {
+        "category": "WEATHER+PLACES",
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": true
+        },
+        "id": "D3_Q26",
+        "observations": [
+          "RAG capability added although gold=false"
+        ],
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Pátio da Inquisição, Coimbra"
+            },
+            "server": "places",
+            "tool": "search_place"
+          },
+          {
+            "arguments": {
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_current_weather"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        }
+      },
+      {
+        "category": "WEATHER+PLACES",
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": true
+        },
+        "id": "D3_Q27",
+        "observations": [
+          "RAG capability added although gold=false",
+          "Weather capability absent although gold=true"
+        ],
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "destination": "Museu da Água, Coimbra",
+              "origin": "Estádio Universitário de Coimbra, Coimbra"
+            },
+            "server": "places",
+            "tool": "get_distance_between_places"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      {
+        "category": "WEATHER+PLACES",
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": true
+        },
+        "id": "D3_Q28",
+        "observations": [
+          "RAG capability added although gold=false"
+        ],
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "days": 2,
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_weather_forecast"
+          },
+          {
+            "arguments": {
+              "country_code": "pt",
+              "destination": "Mata Nacional de Vale de Canas, Coimbra",
+              "origin": "Praça do Comércio, Coimbra"
+            },
+            "server": "places",
+            "tool": "get_distance_between_places"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        }
+      },
+      {
+        "category": "WEATHER+PLACES",
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": true
+        },
+        "id": "D3_Q29",
+        "observations": [
+          "RAG capability added although gold=false"
+        ],
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "days": 3,
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_weather_forecast"
+          },
+          {
+            "arguments": {
+              "country_code": "pt",
+              "destination": "Ponte Pedonal Pedro e Inês, Coimbra",
+              "origin": "Convento São Francisco, Coimbra"
+            },
+            "server": "places",
+            "tool": "get_distance_between_places"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        }
+      },
+      {
+        "category": "RAG+WEATHER+PLACES",
+        "gold_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        },
+        "id": "D3_Q32",
+        "observations": [
+          "RAG capability absent although gold=true",
+          "Places capability absent although gold=true"
+        ],
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_current_weather"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": false,
+          "weather": true
+        }
+      },
+      {
+        "category": "RAG+WEATHER+PLACES",
+        "gold_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        },
+        "id": "D3_Q34",
+        "observations": [
+          "Places capability absent although gold=true"
+        ],
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_current_weather"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": true
+        }
+      }
+    ],
+    "retrieval_imperfect": [
+      {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "viver-o-patrimonio-em-coimbra::c0003",
+          "fado-e-tradicoes-academicas::c0006",
+          "universidade-alta-sofia-patrimonio-mundial::c0013"
+        ],
+        "gold_retrieved": [
+          "universidade-alta-sofia-patrimonio-mundial::c0013",
+          "viver-o-patrimonio-em-coimbra::c0003"
+        ],
+        "hit_at_3": 1,
+        "id": "D3_Q01",
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0013",
+            "cosine_distance": 0.24341696500778198,
+            "rank": 1
+          },
+          {
+            "chunk_id": "viver-o-patrimonio-em-coimbra::c0003",
+            "cosine_distance": 0.30810296535491943,
+            "rank": 2
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0003",
+            "cosine_distance": 0.34179359674453735,
+            "rank": 3
+          }
+        ],
+        "query": "sinos da Torre da Universidade de Coimbra: número, nomes e datas",
+        "recall_at_3": 0.6666666666666666,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "universidade-alta-sofia-patrimonio-mundial::c0013",
+          "viver-o-patrimonio-em-coimbra::c0003",
+          "universidade-alta-sofia-patrimonio-mundial::c0003"
+        ]
+      },
+      {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0004",
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0002"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0004"
+        ],
+        "hit_at_3": 1,
+        "id": "D3_Q04",
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-docaria-conventual-de-coimbra::c0004",
+            "cosine_distance": 0.20006024837493896,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-coimbra-muralhada::c0001",
+            "cosine_distance": 0.4210999608039856,
+            "rank": 2
+          },
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0027",
+            "cosine_distance": 0.42615807056427,
+            "rank": 3
+          }
+        ],
+        "query": "descrição da Arrufada de Coimbra",
+        "recall_at_3": 0.5,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0004",
+          "web-visitecoimbra-coimbra-muralhada::c0001",
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0027"
+        ]
+      },
+      {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "viver-o-patrimonio-em-coimbra::c0002",
+          "fado-e-tradicoes-academicas::c0005",
+          "universidade-alta-sofia-patrimonio-mundial::c0009"
+        ],
+        "gold_retrieved": [
+          "fado-e-tradicoes-academicas::c0005",
+          "viver-o-patrimonio-em-coimbra::c0002"
+        ],
+        "hit_at_3": 1,
+        "id": "D3_Q20",
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "fado-e-tradicoes-academicas::c0005",
+            "cosine_distance": 0.4852534532546997,
+            "rank": 1
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0015",
+            "cosine_distance": 0.49806416034698486,
+            "rank": 2
+          },
+          {
+            "chunk_id": "viver-o-patrimonio-em-coimbra::c0002",
+            "cosine_distance": 0.5096355676651001,
+            "rank": 3
+          }
+        ],
+        "query": "função histórica da Sala dos Capelos",
+        "recall_at_3": 0.6666666666666666,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "fado-e-tradicoes-academicas::c0005",
+          "universidade-alta-sofia-patrimonio-mundial::c0015",
+          "viver-o-patrimonio-em-coimbra::c0002"
+        ]
+      },
+      {
+        "first_gold_rank": 2,
+        "gold_chunks": [
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0026",
+          "fado-e-tradicoes-academicas::c0012",
+          "coimbra-dos-escritores::c0020"
+        ],
+        "gold_retrieved": [
+          "fado-e-tradicoes-academicas::c0012",
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0026"
+        ],
+        "hit_at_3": 1,
+        "id": "D3_Q32",
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-museus::c0013",
+            "cosine_distance": 0.25522148609161377,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0026",
+            "cosine_distance": 0.3789404630661011,
+            "rank": 2
+          },
+          {
+            "chunk_id": "fado-e-tradicoes-academicas::c0012",
+            "cosine_distance": 0.42498594522476196,
+            "rank": 3
+          }
+        ],
+        "query": "o que é a Torre de Anto e a origem do seu nome",
+        "recall_at_3": 0.6666666666666666,
+        "reciprocal_rank": 0.5,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-museus::c0013",
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0026",
+          "fado-e-tradicoes-academicas::c0012"
+        ]
+      },
+      {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "viver-o-patrimonio-em-coimbra::c0023",
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0006"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0006"
+        ],
+        "hit_at_3": 1,
+        "id": "D3_Q34",
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-docaria-conventual-de-coimbra::c0006",
+            "cosine_distance": 0.34453505277633667,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0008",
+            "cosine_distance": 0.4282877445220947,
+            "rank": 2
+          },
+          {
+            "chunk_id": "fundacao-da-nacionalidade::c0002",
+            "cosine_distance": 0.4728811979293823,
+            "rank": 3
+          }
+        ],
+        "query": "o doce associado ao Café Santa Cruz (Crúzios) e a sua composição",
+        "recall_at_3": 0.5,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0006",
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0008",
+          "fundacao-da-nacionalidade::c0002"
+        ]
+      }
+    ],
+    "tool_selection_errors": [
+      {
+        "category": "RAG+PLACES",
+        "expected_tool": "get_distance_between_places",
+        "id": "D3_Q25",
+        "observation": "search_place selected instead of get_distance_between_places",
+        "selected_tool": "search_place",
+        "server": "places"
+      },
+      {
+        "category": "WEATHER+PLACES",
+        "expected_tool": "get_current_weather",
+        "id": "D3_Q27",
+        "observation": "no weather call in the plan",
+        "selected_tool": null,
+        "server": "weather"
+      },
+      {
+        "category": "RAG+WEATHER+PLACES",
+        "expected_tool": "get_distance_between_places",
+        "id": "D3_Q32",
+        "observation": "no places call in the plan",
+        "selected_tool": null,
+        "server": "places"
+      },
+      {
+        "category": "RAG+WEATHER+PLACES",
+        "expected_tool": "get_distance_between_places",
+        "id": "D3_Q34",
+        "observation": "no places call in the plan",
+        "selected_tool": null,
+        "server": "places"
+      }
+    ]
+  },
+  "inputs": {
+    "dataset_sha256": {
+      "D3_EVALUATION_SET_AUDIT_V1.md": "7171c366cd15c8e0b7bc13c5baa20c31ab94b28d062a84d9486cfc3cf805afaa",
+      "D3_EVALUATION_SET_V1.md": "d15356000ee620fe6341396d7699653638a34685411f8ab0df37f5e7710f1f01",
+      "d3_evaluation_set_v1.json": "3cef162c592e3e18c18103a970b926f949dc9e1115f971bfea3c5595674e0528"
+    },
+    "protocol_sha256": "1dd9974ee18e000326b58e30902d8bf3810155d23961ea0c62677f464e6a1e59",
+    "raw_results_sha256": "ddf6823222266a93142d7576ac7b3af4514f2628b4683094cf5a9827d7f7ccfa",
+    "run_manifest_sha256": "5c82b5ab5443a2b548528a8bd661fae9b7df81aef3a3848149a6f64411c156e7",
+    "run_sha256_file_sha256": "54250ea9e8a5d5f55fd01c3ccb55273e86c2edf034f02ac2ba00dc5b523cfbec"
+  },
+  "integrity": {
+    "expected_mcp_tool_needs": 40,
+    "questions": 35,
+    "rag_questions": 20,
+    "status": "PASS"
+  },
+  "official_metrics": {
+    "exact_capability_match": {
+      "correct": 26,
+      "percentage": 74.28571428571429,
+      "total": 35,
+      "value": 0.7428571428571429
+    },
+    "retrieval": {
+      "hit_at_3": {
+        "hits": 20,
+        "percentage": 100.0,
+        "total": 20,
+        "value": 1.0
+      },
+      "macro_recall_at_3": {
+        "percentage": 90.0,
+        "total": 20,
+        "value": 0.9
+      },
+      "mrr": {
+        "total": 20,
+        "value": 0.975
+      },
+      "query_source": "dataset rag.information_need (oracle retrieval captured in the run)",
+      "questions": 20
+    },
+    "tool_accuracy": {
+      "breakdown": {
+        "places": {
+          "correct": 17,
+          "percentage": 85.0,
+          "total": 20,
+          "value": 0.85
+        },
+        "weather": {
+          "correct": 19,
+          "percentage": 95.0,
+          "total": 20,
+          "value": 0.95
+        }
+      },
+      "breakdown_note": "informative breakdown of Tool Accuracy, not separate primary metrics",
+      "correct": 36,
+      "percentage": 90.0,
+      "total": 40,
+      "value": 0.9
+    }
+  },
+  "per_question": [
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "RAG",
+      "id": "D3_Q01",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "viver-o-patrimonio-em-coimbra::c0003",
+          "fado-e-tradicoes-academicas::c0006",
+          "universidade-alta-sofia-patrimonio-mundial::c0013"
+        ],
+        "gold_retrieved": [
+          "universidade-alta-sofia-patrimonio-mundial::c0013",
+          "viver-o-patrimonio-em-coimbra::c0003"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0013",
+            "cosine_distance": 0.24341696500778198,
+            "rank": 1
+          },
+          {
+            "chunk_id": "viver-o-patrimonio-em-coimbra::c0003",
+            "cosine_distance": 0.30810296535491943,
+            "rank": 2
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0003",
+            "cosine_distance": 0.34179359674453735,
+            "rank": 3
+          }
+        ],
+        "query": "sinos da Torre da Universidade de Coimbra: número, nomes e datas",
+        "recall_at_3": 0.6666666666666666,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "universidade-alta-sofia-patrimonio-mundial::c0013",
+          "viver-o-patrimonio-em-coimbra::c0003",
+          "universidade-alta-sofia-patrimonio-mundial::c0003"
+        ]
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "RAG",
+      "id": "D3_Q02",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-ceramica-de-coimbra::c0001",
+          "web-visitecoimbra-ceramica-de-coimbra::c0002"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-ceramica-de-coimbra::c0001",
+          "web-visitecoimbra-ceramica-de-coimbra::c0002"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-ceramica-de-coimbra::c0001",
+            "cosine_distance": 0.22529196739196777,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-ceramica-de-coimbra::c0002",
+            "cosine_distance": 0.2618682384490967,
+            "rank": 2
+          },
+          {
+            "chunk_id": "web-visitecoimbra-ceramica-de-coimbra::c0005",
+            "cosine_distance": 0.2876393795013428,
+            "rank": 3
+          }
+        ],
+        "query": "as duas vertentes da louça de Coimbra e as suas diferenças",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-ceramica-de-coimbra::c0001",
+          "web-visitecoimbra-ceramica-de-coimbra::c0002",
+          "web-visitecoimbra-ceramica-de-coimbra::c0005"
+        ]
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "RAG",
+      "id": "D3_Q03",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-sesnando-david::c0001",
+          "web-visitecoimbra-sesnando-david::c0002"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-sesnando-david::c0001",
+          "web-visitecoimbra-sesnando-david::c0002"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-sesnando-david::c0001",
+            "cosine_distance": 0.16058027744293213,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-sesnando-david::c0002",
+            "cosine_distance": 0.20994579792022705,
+            "rank": 2
+          },
+          {
+            "chunk_id": "web-visitecoimbra-sesnando-david::c0003",
+            "cosine_distance": 0.2939138412475586,
+            "rank": 3
+          }
+        ],
+        "query": "identidade de D. Sesnando e o seu papel na reconquista e governo de Coimbra",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-sesnando-david::c0001",
+          "web-visitecoimbra-sesnando-david::c0002",
+          "web-visitecoimbra-sesnando-david::c0003"
+        ]
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "RAG",
+      "id": "D3_Q04",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0004",
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0002"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0004"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-docaria-conventual-de-coimbra::c0004",
+            "cosine_distance": 0.20006024837493896,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-coimbra-muralhada::c0001",
+            "cosine_distance": 0.4210999608039856,
+            "rank": 2
+          },
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0027",
+            "cosine_distance": 0.42615807056427,
+            "rank": 3
+          }
+        ],
+        "query": "descrição da Arrufada de Coimbra",
+        "recall_at_3": 0.5,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0004",
+          "web-visitecoimbra-coimbra-muralhada::c0001",
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0027"
+        ]
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "RAG",
+      "id": "D3_Q05",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-heranca-judaica::c0001",
+          "web-visitecoimbra-heranca-judaica::c0002"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-heranca-judaica::c0001",
+          "web-visitecoimbra-heranca-judaica::c0002"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-heranca-judaica::c0001",
+            "cosine_distance": 0.352810263633728,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-heranca-judaica::c0002",
+            "cosine_distance": 0.4755373001098633,
+            "rank": 2
+          },
+          {
+            "chunk_id": "web-visitecoimbra-heranca-judaica::c0003",
+            "cosine_distance": 0.577194094657898,
+            "rank": 3
+          }
+        ],
+        "query": "caracterização da Judiaria Velha medieval e vestígios materiais da comunidade judaica",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-heranca-judaica::c0001",
+          "web-visitecoimbra-heranca-judaica::c0002",
+          "web-visitecoimbra-heranca-judaica::c0003"
+        ]
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": false,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_current_weather"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": false,
+          "weather": true
+        }
+      },
+      "category": "WEATHER",
+      "id": "D3_Q06",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_current_weather",
+          "selected_tool": "get_current_weather"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": false,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_current_weather"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": false,
+          "weather": true
+        }
+      },
+      "category": "WEATHER",
+      "id": "D3_Q07",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_current_weather",
+          "selected_tool": "get_current_weather"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": false,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "location": "Figueira da Foz, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_current_weather"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": false,
+          "weather": true
+        }
+      },
+      "category": "WEATHER",
+      "id": "D3_Q08",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_current_weather",
+          "selected_tool": "get_current_weather"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": false,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "days": 4,
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_weather_forecast"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": false,
+          "weather": true
+        }
+      },
+      "category": "WEATHER",
+      "id": "D3_Q09",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_weather_forecast",
+          "selected_tool": "get_weather_forecast"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": false,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "days": 2,
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_weather_forecast"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": false,
+          "weather": true
+        }
+      },
+      "category": "WEATHER",
+      "id": "D3_Q10",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_weather_forecast",
+          "selected_tool": "get_weather_forecast"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 0,
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Casa-Museu Bissaya Barreto, Coimbra"
+            },
+            "server": "places",
+            "tool": "search_place"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "PLACES",
+      "id": "D3_Q11",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "search_place",
+          "selected_tool": "search_place"
+        },
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "destination": "Igreja de Santo António dos Olivais, Coimbra",
+              "origin": "Mosteiro de Celas, Coimbra"
+            },
+            "server": "places",
+            "tool": "get_distance_between_places"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": false
+        }
+      },
+      "category": "PLACES",
+      "id": "D3_Q12",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "get_distance_between_places",
+          "selected_tool": "get_distance_between_places"
+        },
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Casa da Escrita, Coimbra"
+            },
+            "server": "places",
+            "tool": "search_place"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": false
+        }
+      },
+      "category": "PLACES",
+      "id": "D3_Q13",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "search_place",
+          "selected_tool": "search_place"
+        },
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 0,
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "destination": "Parque Dr. Manuel Braga, Portugal",
+              "origin": "Mata Nacional do Choupal, Portugal"
+            },
+            "server": "places",
+            "tool": "get_distance_between_places"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "PLACES",
+      "id": "D3_Q14",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "get_distance_between_places",
+          "selected_tool": "get_distance_between_places"
+        },
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 0,
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "destination": "Praça da Canção, Coimbra",
+              "origin": "Seminário Maior, Coimbra"
+            },
+            "server": "places",
+            "tool": "get_distance_between_places"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "PLACES",
+      "id": "D3_Q15",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "get_distance_between_places",
+          "selected_tool": "get_distance_between_places"
+        },
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "days": 1,
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_weather_forecast"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": true
+        }
+      },
+      "category": "RAG+WEATHER",
+      "id": "D3_Q16",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-gastronomia-em-coimbra::c0001"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-gastronomia-em-coimbra::c0001"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-gastronomia-em-coimbra::c0001",
+            "cosine_distance": 0.16952645778656006,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira::c0001",
+            "cosine_distance": 0.3071209788322449,
+            "rank": 2
+          },
+          {
+            "chunk_id": "web-visitecoimbra-restauracao::c0005",
+            "cosine_distance": 0.3085898160934448,
+            "rank": 3
+          }
+        ],
+        "query": "influência do rio Mondego na gastronomia tradicional de Coimbra",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-gastronomia-em-coimbra::c0001",
+          "web-visitecoimbra-coimbra-uma-cidade-com-tradicao-cervejeira::c0001",
+          "web-visitecoimbra-restauracao::c0005"
+        ]
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_weather_forecast",
+          "selected_tool": "get_weather_forecast"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_current_weather"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": true
+        }
+      },
+      "category": "RAG+WEATHER",
+      "id": "D3_Q17",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-cancao-de-coimbra::c0002"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-cancao-de-coimbra::c0002"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-cancao-de-coimbra::c0002",
+            "cosine_distance": 0.23068559169769287,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-ceramica-de-coimbra::c0001",
+            "cosine_distance": 0.38688743114471436,
+            "rank": 2
+          },
+          {
+            "chunk_id": "web-visitecoimbra-ceramica-de-coimbra::c0002",
+            "cosine_distance": 0.42406052350997925,
+            "rank": 3
+          }
+        ],
+        "query": "diferenças entre a guitarra de Coimbra e a guitarra de Lisboa",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-cancao-de-coimbra::c0002",
+          "web-visitecoimbra-ceramica-de-coimbra::c0001",
+          "web-visitecoimbra-ceramica-de-coimbra::c0002"
+        ]
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_current_weather",
+          "selected_tool": "get_current_weather"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "days": 2,
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_weather_forecast"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": true
+        }
+      },
+      "category": "RAG+WEATHER",
+      "id": "D3_Q18",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-rainha-santa-isabel::c0001"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-rainha-santa-isabel::c0001"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-rainha-santa-isabel::c0001",
+            "cosine_distance": 0.29970091581344604,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-docaria-conventual-de-coimbra::c0010",
+            "cosine_distance": 0.46352505683898926,
+            "rank": 2
+          },
+          {
+            "chunk_id": "web-visitecoimbra-rainha-santa-isabel::c0003",
+            "cosine_distance": 0.5012016296386719,
+            "rank": 3
+          }
+        ],
+        "query": "a lenda do Milagre das Rosas",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-rainha-santa-isabel::c0001",
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0010",
+          "web-visitecoimbra-rainha-santa-isabel::c0003"
+        ]
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_weather_forecast",
+          "selected_tool": "get_weather_forecast"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_current_weather"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": true
+        }
+      },
+      "category": "RAG+WEATHER",
+      "id": "D3_Q19",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-desporto::c0004"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-desporto::c0004"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-desporto::c0004",
+            "cosine_distance": 0.1950136423110962,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-coimbra-by-night::c0001",
+            "cosine_distance": 0.40094858407974243,
+            "rank": 2
+          },
+          {
+            "chunk_id": "web-visitecoimbra-desporto::c0003",
+            "cosine_distance": 0.40251243114471436,
+            "rank": 3
+          }
+        ],
+        "query": "a prova de corrida de fim de ano emblemática de Coimbra (São Silvestre)",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-desporto::c0004",
+          "web-visitecoimbra-coimbra-by-night::c0001",
+          "web-visitecoimbra-desporto::c0003"
+        ]
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_current_weather",
+          "selected_tool": "get_current_weather"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "days": 5,
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_weather_forecast"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": true
+        }
+      },
+      "category": "RAG+WEATHER",
+      "id": "D3_Q20",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "viver-o-patrimonio-em-coimbra::c0002",
+          "fado-e-tradicoes-academicas::c0005",
+          "universidade-alta-sofia-patrimonio-mundial::c0009"
+        ],
+        "gold_retrieved": [
+          "fado-e-tradicoes-academicas::c0005",
+          "viver-o-patrimonio-em-coimbra::c0002"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "fado-e-tradicoes-academicas::c0005",
+            "cosine_distance": 0.4852534532546997,
+            "rank": 1
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0015",
+            "cosine_distance": 0.49806416034698486,
+            "rank": 2
+          },
+          {
+            "chunk_id": "viver-o-patrimonio-em-coimbra::c0002",
+            "cosine_distance": 0.5096355676651001,
+            "rank": 3
+          }
+        ],
+        "query": "função histórica da Sala dos Capelos",
+        "recall_at_3": 0.6666666666666666,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "fado-e-tradicoes-academicas::c0005",
+          "universidade-alta-sofia-patrimonio-mundial::c0015",
+          "viver-o-patrimonio-em-coimbra::c0002"
+        ]
+      },
+      "tool_accuracy": {
+        "places": null,
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_weather_forecast",
+          "selected_tool": "get_weather_forecast"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Aqueduto de São Sebastião, Coimbra"
+            },
+            "server": "places",
+            "tool": "search_place"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "RAG+PLACES",
+      "id": "D3_Q21",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0023"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0023"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0023",
+            "cosine_distance": 0.18148159980773926,
+            "rank": 1
+          },
+          {
+            "chunk_id": "fado-e-tradicoes-academicas::c0018",
+            "cosine_distance": 0.531853199005127,
+            "rank": 2
+          },
+          {
+            "chunk_id": "jardins-historicos::c0015",
+            "cosine_distance": 0.5416725873947144,
+            "rank": 3
+          }
+        ],
+        "query": "quem mandou construir o Aqueduto de São Sebastião e com que finalidade",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0023",
+          "fado-e-tradicoes-academicas::c0018",
+          "jardins-historicos::c0015"
+        ]
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "search_place",
+          "selected_tool": "search_place"
+        },
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Palçio de Sub-Ripas, Coimbra"
+            },
+            "server": "places",
+            "tool": "search_place"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "RAG+PLACES",
+      "id": "D3_Q22",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0024",
+          "universidade-alta-sofia-patrimonio-mundial::c0049"
+        ],
+        "gold_retrieved": [
+          "universidade-alta-sofia-patrimonio-mundial::c0049",
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0024"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0024",
+            "cosine_distance": 0.30384719371795654,
+            "rank": 1
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0049",
+            "cosine_distance": 0.3657134771347046,
+            "rank": 2
+          },
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0060",
+            "cosine_distance": 0.5636223554611206,
+            "rank": 3
+          }
+        ],
+        "query": "origem do Palácio de Sub-Ripas",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0024",
+          "universidade-alta-sofia-patrimonio-mundial::c0049",
+          "universidade-alta-sofia-patrimonio-mundial::c0060"
+        ]
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "search_place",
+          "selected_tool": "search_place"
+        },
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "destination": "Jardim da Manga, Coimbra",
+              "origin": "Largo da Portagem, Coimbra"
+            },
+            "server": "places",
+            "tool": "get_distance_between_places"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "RAG+PLACES",
+      "id": "D3_Q23",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "jardins-historicos::c0021"
+        ],
+        "gold_retrieved": [
+          "jardins-historicos::c0021"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "jardins-historicos::c0021",
+            "cosine_distance": 0.2489224076271057,
+            "rank": 1
+          },
+          {
+            "chunk_id": "jardins-historicos::c0023",
+            "cosine_distance": 0.5798722505569458,
+            "rank": 2
+          },
+          {
+            "chunk_id": "coimbra-dos-escritores::c0001",
+            "cosine_distance": 0.5829997658729553,
+            "rank": 3
+          }
+        ],
+        "query": "origem do nome do Jardim/Claustro da Manga e autoria do desenho",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "jardins-historicos::c0021",
+          "jardins-historicos::c0023",
+          "coimbra-dos-escritores::c0001"
+        ]
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "get_distance_between_places",
+          "selected_tool": "get_distance_between_places"
+        },
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Ruías de Conímbriga, Coimbra"
+            },
+            "server": "places",
+            "tool": "search_place"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "RAG+PLACES",
+      "id": "D3_Q24",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-coimbra-muralhada::c0001"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-coimbra-muralhada::c0001"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-coimbra-muralhada::c0001",
+            "cosine_distance": 0.41947680711746216,
+            "rank": 1
+          },
+          {
+            "chunk_id": "viver-o-patrimonio-em-coimbra::c0017",
+            "cosine_distance": 0.5741103887557983,
+            "rank": 2
+          },
+          {
+            "chunk_id": "fado-e-tradicoes-academicas::c0013",
+            "cosine_distance": 0.5807050466537476,
+            "rank": 3
+          }
+        ],
+        "query": "razão da migração dos habitantes de Conímbriga para Æminium",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-coimbra-muralhada::c0001",
+          "viver-o-patrimonio-em-coimbra::c0017",
+          "fado-e-tradicoes-academicas::c0013"
+        ]
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "search_place",
+          "selected_tool": "search_place"
+        },
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Casa-Museu Miguel Torga, Coimbra"
+            },
+            "server": "places",
+            "tool": "search_place"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "RAG+PLACES",
+      "id": "D3_Q25",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "coimbra-dos-escritores::c0022",
+          "web-visitecoimbra-museus::c0024"
+        ],
+        "gold_retrieved": [
+          "coimbra-dos-escritores::c0022",
+          "web-visitecoimbra-museus::c0024"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-museus::c0024",
+            "cosine_distance": 0.30051273107528687,
+            "rank": 1
+          },
+          {
+            "chunk_id": "coimbra-dos-escritores::c0022",
+            "cosine_distance": 0.3402729034423828,
+            "rank": 2
+          },
+          {
+            "chunk_id": "coimbra-dos-escritores::c0001",
+            "cosine_distance": 0.44987982511520386,
+            "rank": 3
+          }
+        ],
+        "query": "autoria do projeto e abertura ao público da Casa-Museu Miguel Torga",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-museus::c0024",
+          "coimbra-dos-escritores::c0022",
+          "coimbra-dos-escritores::c0001"
+        ]
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 0,
+          "expected_tool": "get_distance_between_places",
+          "selected_tool": "search_place"
+        },
+        "weather": null
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 0,
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Pátio da Inquisição, Coimbra"
+            },
+            "server": "places",
+            "tool": "search_place"
+          },
+          {
+            "arguments": {
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_current_weather"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        }
+      },
+      "category": "WEATHER+PLACES",
+      "id": "D3_Q26",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "search_place",
+          "selected_tool": "search_place"
+        },
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_current_weather",
+          "selected_tool": "get_current_weather"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 0,
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "destination": "Museu da Água, Coimbra",
+              "origin": "Estádio Universitário de Coimbra, Coimbra"
+            },
+            "server": "places",
+            "tool": "get_distance_between_places"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": false
+        }
+      },
+      "category": "WEATHER+PLACES",
+      "id": "D3_Q27",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "get_distance_between_places",
+          "selected_tool": "get_distance_between_places"
+        },
+        "weather": {
+          "correct": 0,
+          "expected_tool": "get_current_weather",
+          "selected_tool": null
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 0,
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "days": 2,
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_weather_forecast"
+          },
+          {
+            "arguments": {
+              "country_code": "pt",
+              "destination": "Mata Nacional de Vale de Canas, Coimbra",
+              "origin": "Praça do Comércio, Coimbra"
+            },
+            "server": "places",
+            "tool": "get_distance_between_places"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        }
+      },
+      "category": "WEATHER+PLACES",
+      "id": "D3_Q28",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "get_distance_between_places",
+          "selected_tool": "get_distance_between_places"
+        },
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_weather_forecast",
+          "selected_tool": "get_weather_forecast"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 0,
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "days": 3,
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_weather_forecast"
+          },
+          {
+            "arguments": {
+              "country_code": "pt",
+              "destination": "Ponte Pedonal Pedro e Inês, Coimbra",
+              "origin": "Convento São Francisco, Coimbra"
+            },
+            "server": "places",
+            "tool": "get_distance_between_places"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        }
+      },
+      "category": "WEATHER+PLACES",
+      "id": "D3_Q29",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "get_distance_between_places",
+          "selected_tool": "get_distance_between_places"
+        },
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_weather_forecast",
+          "selected_tool": "get_weather_forecast"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Exploratório – Centro Ciência Viva de Coimbra, Coimbra"
+            },
+            "server": "places",
+            "tool": "search_place"
+          },
+          {
+            "arguments": {
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_current_weather"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": false,
+          "weather": true
+        }
+      },
+      "category": "WEATHER+PLACES",
+      "id": "D3_Q30",
+      "retrieval": {
+        "included": false
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "search_place",
+          "selected_tool": "search_place"
+        },
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_current_weather",
+          "selected_tool": "get_current_weather"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "days": 2,
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_weather_forecast"
+          },
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Torre de Almedina, Coimbra"
+            },
+            "server": "places",
+            "tool": "search_place"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        }
+      },
+      "category": "RAG+WEATHER+PLACES",
+      "id": "D3_Q31",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "coimbra-para-os-pequenitos::c0007",
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0027",
+          "web-visitecoimbra-museus::c0012"
+        ],
+        "gold_retrieved": [
+          "coimbra-para-os-pequenitos::c0007",
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0027",
+          "web-visitecoimbra-museus::c0012"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0027",
+            "cosine_distance": 0.36981499195098877,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-museus::c0012",
+            "cosine_distance": 0.4204407334327698,
+            "rank": 2
+          },
+          {
+            "chunk_id": "coimbra-para-os-pequenitos::c0007",
+            "cosine_distance": 0.4571433663368225,
+            "rank": 3
+          }
+        ],
+        "query": "funções históricas da Torre de Almedina",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0027",
+          "web-visitecoimbra-museus::c0012",
+          "coimbra-para-os-pequenitos::c0007"
+        ]
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "search_place",
+          "selected_tool": "search_place"
+        },
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_weather_forecast",
+          "selected_tool": "get_weather_forecast"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 0,
+        "gold_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_current_weather"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": false,
+          "weather": true
+        }
+      },
+      "category": "RAG+WEATHER+PLACES",
+      "id": "D3_Q32",
+      "retrieval": {
+        "first_gold_rank": 2,
+        "gold_chunks": [
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0026",
+          "fado-e-tradicoes-academicas::c0012",
+          "coimbra-dos-escritores::c0020"
+        ],
+        "gold_retrieved": [
+          "fado-e-tradicoes-academicas::c0012",
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0026"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-museus::c0013",
+            "cosine_distance": 0.25522148609161377,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0026",
+            "cosine_distance": 0.3789404630661011,
+            "rank": 2
+          },
+          {
+            "chunk_id": "fado-e-tradicoes-academicas::c0012",
+            "cosine_distance": 0.42498594522476196,
+            "rank": 3
+          }
+        ],
+        "query": "o que é a Torre de Anto e a origem do seu nome",
+        "recall_at_3": 0.6666666666666666,
+        "reciprocal_rank": 0.5,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-museus::c0013",
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0026",
+          "fado-e-tradicoes-academicas::c0012"
+        ]
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 0,
+          "expected_tool": "get_distance_between_places",
+          "selected_tool": null
+        },
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_current_weather",
+          "selected_tool": "get_current_weather"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "days": 2,
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_weather_forecast"
+          },
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Almalaguês, Portugal"
+            },
+            "server": "places",
+            "tool": "search_place"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        }
+      },
+      "category": "RAG+WEATHER+PLACES",
+      "id": "D3_Q33",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "web-visitecoimbra-tecelagem-de-almalagues::c0001"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-tecelagem-de-almalagues::c0001"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-tecelagem-de-almalagues::c0001",
+            "cosine_distance": 0.15905511379241943,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-tecelagem-de-almalagues::c0003",
+            "cosine_distance": 0.22676563262939453,
+            "rank": 2
+          },
+          {
+            "chunk_id": "web-visitecoimbra-tecelagem-de-almalagues::c0002",
+            "cosine_distance": 0.3563523292541504,
+            "rank": 3
+          }
+        ],
+        "query": "características da tecelagem de Almalaguês",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-tecelagem-de-almalagues::c0001",
+          "web-visitecoimbra-tecelagem-de-almalagues::c0003",
+          "web-visitecoimbra-tecelagem-de-almalagues::c0002"
+        ]
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "search_place",
+          "selected_tool": "search_place"
+        },
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_weather_forecast",
+          "selected_tool": "get_weather_forecast"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 0,
+        "gold_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_current_weather"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": false,
+          "rag": true,
+          "weather": true
+        }
+      },
+      "category": "RAG+WEATHER+PLACES",
+      "id": "D3_Q34",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "viver-o-patrimonio-em-coimbra::c0023",
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0006"
+        ],
+        "gold_retrieved": [
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0006"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "web-visitecoimbra-docaria-conventual-de-coimbra::c0006",
+            "cosine_distance": 0.34453505277633667,
+            "rank": 1
+          },
+          {
+            "chunk_id": "web-visitecoimbra-heranca-cultural-e-religiosa::c0008",
+            "cosine_distance": 0.4282877445220947,
+            "rank": 2
+          },
+          {
+            "chunk_id": "fundacao-da-nacionalidade::c0002",
+            "cosine_distance": 0.4728811979293823,
+            "rank": 3
+          }
+        ],
+        "query": "o doce associado ao Café Santa Cruz (Crúzios) e a sua composição",
+        "recall_at_3": 0.5,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "web-visitecoimbra-docaria-conventual-de-coimbra::c0006",
+          "web-visitecoimbra-heranca-cultural-e-religiosa::c0008",
+          "fundacao-da-nacionalidade::c0002"
+        ]
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 0,
+          "expected_tool": "get_distance_between_places",
+          "selected_tool": null
+        },
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_current_weather",
+          "selected_tool": "get_current_weather"
+        }
+      }
+    },
+    {
+      "agency": {
+        "exact_capability_match": 1,
+        "gold_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        },
+        "planner_success": true,
+        "planner_tool_calls": [
+          {
+            "arguments": {
+              "days": 7,
+              "location": "Coimbra, Portugal"
+            },
+            "server": "weather",
+            "tool": "get_weather_forecast"
+          },
+          {
+            "arguments": {
+              "country_code": "pt",
+              "query": "Departamento de Matemática da Universidade de Coimbra, Coimbra"
+            },
+            "server": "places",
+            "tool": "search_place"
+          }
+        ],
+        "predicted_capabilities": {
+          "places": true,
+          "rag": true,
+          "weather": true
+        }
+      },
+      "category": "RAG+WEATHER+PLACES",
+      "id": "D3_Q35",
+      "retrieval": {
+        "first_gold_rank": 1,
+        "gold_chunks": [
+          "universidade-alta-sofia-patrimonio-mundial::c0029"
+        ],
+        "gold_retrieved": [
+          "universidade-alta-sofia-patrimonio-mundial::c0029"
+        ],
+        "hit_at_3": 1,
+        "included": true,
+        "oracle_error": null,
+        "oracle_failed": false,
+        "oracle_top3": [
+          {
+            "chunk_id": "universidade-alta-sofia-patrimonio-mundial::c0029",
+            "cosine_distance": 0.3445202708244324,
+            "rank": 1
+          },
+          {
+            "chunk_id": "fado-e-tradicoes-academicas::c0003",
+            "cosine_distance": 0.6018277406692505,
+            "rank": 2
+          },
+          {
+            "chunk_id": "fado-e-tradicoes-academicas::c0010",
+            "cosine_distance": 0.6066621541976929,
+            "rank": 3
+          }
+        ],
+        "query": "significado histórico da inauguração do Departamento de Matemática",
+        "recall_at_3": 1.0,
+        "reciprocal_rank": 1.0,
+        "retrieved_chunk_ids": [
+          "universidade-alta-sofia-patrimonio-mundial::c0029",
+          "fado-e-tradicoes-academicas::c0003",
+          "fado-e-tradicoes-academicas::c0010"
+        ]
+      },
+      "tool_accuracy": {
+        "places": {
+          "correct": 1,
+          "expected_tool": "search_place",
+          "selected_tool": "search_place"
+        },
+        "weather": {
+          "correct": 1,
+          "expected_tool": "get_weather_forecast",
+          "selected_tool": "get_weather_forecast"
+        }
+      }
+    }
+  ],
+  "run": {
+    "finished_at": "2026-10-06T17:32:09.430910+01:00",
+    "git": {
+      "commit": "d9d6cb84cc56f5692f65a4ccece2b6c384e4a5c6",
+      "dirty": false
+    },
+    "run_date": "2026-10-06",
+    "started_at": "2026-10-06T17:27:49.030683+01:00",
+    "status": "COMPLETED",
+    "valid_experimental_run": true
+  },
+  "run_dir": "d3/evaluation/runs/20261006T172749+0100",
+  "run_id": "20261006T172749+0100",
+  "scoring_version": "D3_DETERMINISTIC_SCORING_V1"
+}

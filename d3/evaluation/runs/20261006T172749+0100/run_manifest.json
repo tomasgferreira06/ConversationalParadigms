@@ -1,0 +1,100 @@
+{
+  "run_id": "20261006T172749+0100",
+  "status": "COMPLETED",
+  "valid_experimental_run": true,
+  "started_at": "2026-10-06T17:27:49.030683+01:00",
+  "finished_at": "2026-10-06T17:32:09.430910+01:00",
+  "abort_stage": null,
+  "abort_error": null,
+  "protocol": {
+    "path": "C:\\Users\\35191\\Documents\\GitHub\\ConversationalParadigms\\d3\\evaluation\\D3_EVALUATION_PROTOCOL_V1.md",
+    "sha256": "1dd9974ee18e000326b58e30902d8bf3810155d23961ea0c62677f464e6a1e59"
+  },
+  "dataset": {
+    "path": "C:\\Users\\35191\\Documents\\GitHub\\ConversationalParadigms\\d3\\evaluation\\d3_evaluation_set_v1.json",
+    "sha256": {
+      "D3_EVALUATION_SET_V1.md": "d15356000ee620fe6341396d7699653638a34685411f8ab0df37f5e7710f1f01",
+      "d3_evaluation_set_v1.json": "3cef162c592e3e18c18103a970b926f949dc9e1115f971bfea3c5595674e0528",
+      "D3_EVALUATION_SET_AUDIT_V1.md": "7171c366cd15c8e0b7bc13c5baa20c31ab94b28d062a84d9486cfc3cf805afaa"
+    }
+  },
+  "git": {
+    "commit": "d9d6cb84cc56f5692f65a4ccece2b6c384e4a5c6",
+    "dirty": false
+  },
+  "python": {
+    "version": "3.13.0 (tags/v3.13.0:60403a5, Oct  7 2024, 09:38:07) [MSC v.1941 64 bit (AMD64)]",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "packages": {
+    "langchain-core": "1.6.5",
+    "langchain-ollama": "1.1.0",
+    "langchain-chroma": "1.1.0",
+    "langchain-huggingface": "1.2.2",
+    "chromadb": "1.5.9",
+    "sentence-transformers": "6.1.0",
+    "transformers": "5.17.0",
+    "torch": "2.14.0",
+    "mcp": "2.3.0",
+    "ollama": "0.6.2",
+    "httpx": "0.28.1",
+    "nltk": "3.10.3"
+  },
+  "system": {
+    "run_date": "2026-10-06",
+    "planner": {
+      "model": "llama3.2:3b",
+      "temperature": 0.0
+    },
+    "generator": {
+      "model": "llama3.2:3b",
+      "temperature": 0.1
+    },
+    "retrieval": {
+      "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+      "query_prompt_name": "query",
+      "top_k": 3,
+      "collection_name": "coimbra_rag_frozen_v2",
+      "distance_space": "cosine",
+      "indexed_roles": [
+        "content"
+      ]
+    },
+    "vector_store": {
+      "original_path": "C:\\Users\\35191\\Documents\\GitHub\\ConversationalParadigms\\d2_rag\\data\\chroma_frozen_v2",
+      "runtime_copy_path": "C:\\Users\\35191\\AppData\\Local\\Temp\\d3_eval_store_cnxk2g3n\\chroma_frozen_v2_runtime_copy",
+      "original_digest_before": {
+        "sha256": "b8f6a0219e8f4874c50b050295dbd6a6b243c4bb351761a2192e0d9d2b271e4b",
+        "files": 5,
+        "bytes": 5363876
+      },
+      "collection_count": 348
+    },
+    "mcp": {
+      "weather_mcp": {
+        "server_path": "C:\\Users\\35191\\Documents\\GitHub\\ConversationalParadigms\\d3\\weather_mcp\\server.py",
+        "server_sha256": "f4f07a316412537477dcd8d5dcbe04a9ca9413be5a8ea205bc6d11b2986ee103",
+        "service_sha256": "81c7f46fe44544e08d550dd8cf494b04ff9b5205025183b69b504952b2fbf2fd",
+        "version": null
+      },
+      "places_mcp": {
+        "server_path": "C:\\Users\\35191\\Documents\\GitHub\\ConversationalParadigms\\d3\\places_mcp\\server.py",
+        "server_sha256": "b659b7eb17efa62542977b8c7be9900bf85389fcdd88838b341c29bbe30632e0",
+        "service_sha256": "f5529238b33033623718ad19159391d1fd875fc54b968614fb7fccf33d403cda",
+        "version": null
+      }
+    },
+    "ollama_model_digests": {
+      "llama3.2:3b": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72"
+    },
+    "vector_store_original_digest_after": {
+      "sha256": "b8f6a0219e8f4874c50b050295dbd6a6b243c4bb351761a2192e0d9d2b271e4b",
+      "files": 5,
+      "bytes": 5363876
+    }
+  },
+  "question_count_expected": 35,
+  "question_count_completed": 35,
+  "close_error": null
+}
