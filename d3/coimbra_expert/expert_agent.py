@@ -1,14 +1,16 @@
-"""Coimbra Expert Agent: LLM planner -> RAG / WEATHER / BOTH -> final answer.
+"""Coimbra Expert Agent: LLM planner -> RAG and/or MCP tools (Weather, Places) -> final answer.
 
-    question -> Planner (LLM) -> RAG     : the D2 RAGAgent.respond(question), unchanged
-                              -> WEATHER : Weather MCP tool -> final generation
-                              -> BOTH    : RAG retrieval + Weather MCP tool -> ONE final generation
+    question -> Planner (LLM) -> use_rag only        : the D2 RAGAgent.respond(question), unchanged
+                              -> any tool call(s)    : the planned MCP calls (+ RAG retrieval if use_rag)
+                                                       -> ONE final generation with a block per capability
 
-The route is whatever the planner returns; nothing here looks at the question text.
+The plan decides everything (nothing here looks at the question text): Python only validates
+(planner.py) and executes it. There is one long-lived MCP session per server for the whole run.
 """
 
 from __future__ import annotations
 
+import json
 import sys
 from datetime import date
 from pathlib import Path
@@ -20,11 +22,15 @@ for _path in (REPO_ROOT / "d2_rag" / "scripts", Path(__file__).resolve().parent)
         sys.path.insert(0, str(_path))
 
 import rag_pipeline  # noqa: E402
+from mcp_stdio_client import MCPClientError  # noqa: E402
+from places_mcp_client import PlacesMCPClient, PlacesMCPError  # noqa: E402
 from planner import Plan, Planner, PlannerError  # noqa: E402
 from prompts import final_messages  # noqa: E402
 from weather_mcp_client import WeatherMCPClient, WeatherMCPError  # noqa: E402
 
 WEATHER_SOURCE = "Fonte meteorológica: Open-Meteo via Weather MCP"
+PLACES_SOURCE_PREFIX = "Fonte geográfica: "
+PLACES_ATTRIBUTION = "© OpenStreetMap contributors (data and geocoding via Nominatim)"
 
 
 class ExpertAgentError(RuntimeError):
@@ -32,19 +38,28 @@ class ExpertAgentError(RuntimeError):
 
 
 class CoimbraExpertAgent:
-    def __init__(self, rag, planner: Planner, weather: WeatherMCPClient,
-                 generate: Callable | None = None, pipeline=rag_pipeline,
-                 today: Callable[[], date] = date.today, debug: Callable[[str], None] | None = None):
+    def __init__(self, rag, planner: Planner, clients: dict, generate: Callable | None = None,
+                 pipeline=rag_pipeline, today: Callable[[], date] = date.today,
+                 debug: Callable[[str], None] | None = None):
         self.rag = rag  # D2 RAGAgent: .respond(question), .store, .config
         self.planner = planner
-        self.weather = weather
+        self.clients = clients  # server name ("weather", "places") -> started MCP client
         self.pipeline = pipeline
         self.generate = generate or (lambda messages: pipeline.generate(messages, rag.config))
         self.today = today
         self.debug = debug
 
     def close(self) -> None:
-        self.weather.close()
+        """Close every MCP session, even if one of them fails to close."""
+
+        errors = []
+        for client in self.clients.values():
+            try:
+                client.close()
+            except Exception as exc:  # keep closing the others
+                errors.append(exc)
+        if errors:
+            raise errors[0]
 
     def _log(self, text: str) -> None:
         if self.debug:
@@ -56,19 +71,24 @@ class CoimbraExpertAgent:
         except PlannerError as exc:
             raise ExpertAgentError(str(exc)) from exc
         self._log_plan(plan)
-        if plan.route == "RAG":
+        if plan.use_rag and not plan.tool_calls:
             return self.rag.respond(question)  # exactly the D2 behaviour, sources included
-        weather_data = self._call_weather(plan)
+        tool_data = self._run_tool_calls(plan)
         rag_context, results = None, []
-        if plan.route == "BOTH":
+        if plan.use_rag:
             results = self.pipeline.retrieve(self.rag.store, plan.rag_query, k=self.rag.config.top_k)
             self._log(f"[rag]\nretrieved={len(results)} chunks")
             rag_context = self._rag_context(results)
-        answer = self.generate(final_messages(question, self.today(), weather_data, rag_context))
-        parts = [answer]
+        messages = final_messages(question, self.today(), rag_context,
+                                  weather_data=tool_data.get("weather"), places_data=tool_data.get("places"))
+        parts = [self.generate(messages)]
         if results:
             parts.append(f"Fontes:\n{self.pipeline.format_sources(results)}")
-        parts.append(WEATHER_SOURCE)
+        if "weather" in tool_data:
+            parts.append(WEATHER_SOURCE)
+        if "places" in tool_data:
+            attribution = tool_data["places"].get("attribution") or PLACES_ATTRIBUTION
+            parts.append(f"{PLACES_SOURCE_PREFIX}{attribution} via Places MCP")
         return "\n\n".join(parts)
 
     def _rag_context(self, results) -> str:
@@ -76,36 +96,43 @@ class CoimbraExpertAgent:
         note = self.pipeline.conflict_note(results)
         return f"{context}\n\n{note}" if note else context
 
-    def _call_weather(self, plan: Plan) -> dict:
-        request = plan.weather
-        try:
-            if request.tool == "get_current_weather":
-                data = self.weather.get_current_weather(request.location)
-            else:
-                data = self.weather.get_weather_forecast(request.location, request.days)
-        except WeatherMCPError as exc:
-            self._log(f"[weather]\ntool={request.tool}\nsuccess=false")
-            raise ExpertAgentError(str(exc)) from exc
-        self._log(f"[weather]\ntool={request.tool}\nsuccess=true")
+    def _run_tool_calls(self, plan: Plan) -> dict[str, dict]:
+        """Execute the planned MCP calls in order; the first failure is a controlled error."""
+
+        data: dict[str, dict] = {}
+        for call in plan.tool_calls:
+            try:
+                data[call.server] = self.clients[call.server].call_tool(call.tool, call.arguments)
+            except MCPClientError as exc:
+                self._log(f"[{call.server}]\nsuccess=false")
+                raise ExpertAgentError(str(exc)) from exc
+            self._log(f"[{call.server}]\nsuccess=true")
         return data
 
     def _log_plan(self, plan: Plan) -> None:
-        lines = ["[expert-plan]", f"route={plan.route}"]
+        lines = ["[expert-plan]", f"use_rag={str(plan.use_rag).lower()}"]
         if plan.rag_query:
             lines.append(f'rag_query="{plan.rag_query}"')
-        if plan.weather:
-            lines += [f"weather_tool={plan.weather.tool}", f'location="{plan.weather.location}"']
-            if plan.weather.days is not None:
-                lines.append(f"days={plan.weather.days}")
+        lines.append(f"tool_calls={len(plan.tool_calls)}")
+        for number, call in enumerate(plan.tool_calls, start=1):
+            arguments = json.dumps(call.arguments, ensure_ascii=False, separators=(",", ":"))
+            lines += ["", f"[tool-call {number}]", f"server={call.server}", f"tool={call.tool}", f"arguments={arguments}"]
         self._log("\n".join(lines))
 
 
 def load_expert(rag, debug: Callable[[str], None] | None = None) -> CoimbraExpertAgent:
-    """Start the Weather MCP (one session for the whole run) and build the agent.
+    """Start the Weather and Places MCP servers (one session each for the whole run) and build the agent.
 
-    Raises WeatherMCPError if the server does not start or lacks a required tool.
+    Raises MCPClientError (WeatherMCPError / PlacesMCPError) if a server does not start or lacks a
+    required tool; a server already started is closed again.
     """
 
     weather = WeatherMCPClient()
     weather.start()
-    return CoimbraExpertAgent(rag, Planner(), weather, debug=debug)
+    places = PlacesMCPClient()
+    try:
+        places.start()
+    except BaseException:
+        weather.close()
+        raise
+    return CoimbraExpertAgent(rag, Planner(), {"weather": weather, "places": places}, debug=debug)

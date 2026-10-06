@@ -209,6 +209,39 @@ class StartupTests(unittest.TestCase):
         agent.close.assert_called_once_with()
 
 
+class DebugOrderTests(unittest.TestCase):
+    def test_router_debug_is_written_before_the_expert_runs(self):
+        agent, _eliza, rag = build("rag")
+        written = []
+        rag.respond.side_effect = lambda text: written.append("[expert-plan]") or "Resposta RAG."
+        lines = iter(["Que museus há em Coimbra?"])
+
+        def read(_prompt):
+            try:
+                return next(lines)
+            except StopIteration:
+                raise EOFError from None
+
+        ia.run(agent, debug_routing=True, read=read, write=written.append)
+        text = "\n".join(written)
+        self.assertLess(text.index("[router]"), text.index("[expert-plan]"))
+        self.assertLess(text.index("[expert-plan]"), text.index("Agente: Resposta RAG."))
+
+    def test_router_debug_is_still_shown_when_the_expert_fails(self):
+        agent, _eliza, rag = build("rag")
+        rag.respond.side_effect = ia.expert_agent.ExpertAgentError("planner failed")
+        output = chat(agent, ["Que museus há em Coimbra?"], debug_routing=True)
+        self.assertIn("[router]", output)
+        self.assertIn("Agente: [erro] planner failed", output)
+
+    def test_on_route_is_called_with_the_classifier_label_before_the_agent(self):
+        agent, eliza, _rag = build("eliza_rude")
+        seen = []
+        eliza.respond.side_effect = lambda text: seen.append("agent") or "ok"
+        agent.respond("Olá", on_route=lambda route: seen.append(route))
+        self.assertEqual(seen, ["eliza_rude", "agent"])
+
+
 class ExpertErrorTests(unittest.TestCase):
     def test_expert_error_is_shown_and_the_loop_continues(self):
         agent, _eliza, rag = build("rag")

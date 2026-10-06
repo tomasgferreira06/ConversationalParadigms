@@ -52,10 +52,15 @@ class IntegratedAgent:
         if self._on_close:
             self._on_close()
 
-    def respond(self, text: str) -> tuple[str, str]:
-        """(selected label, reply): the classifier picks the agent, the agent answers."""
+    def respond(self, text: str, on_route: Callable[[str], None] | None = None) -> tuple[str, str]:
+        """(selected label, reply): the classifier picks the agent, the agent answers.
+
+        `on_route(label)` is called after the classifier and before the agent runs (debug output order).
+        """
 
         route = self.router.classify(text)
+        if on_route:
+            on_route(route)
         return route, self.agents[route].respond(text)
 
 
@@ -76,13 +81,17 @@ def run(agent: IntegratedAgent, debug_routing: bool = False,
             break
         if not text.strip():
             continue
+        text = text.strip()
+
+        def show_routing(route: str) -> None:  # before the agent runs, so [router] precedes [expert-plan]
+            if debug_routing:
+                write(format_routing(agent.router.predict_proba(text), route))
+
         try:
-            route, reply = agent.respond(text.strip())
+            _route, reply = agent.respond(text, on_route=show_routing)
         except expert_agent.ExpertAgentError as exc:
             write(f"Agente: [erro] {exc}")
             continue
-        if debug_routing:
-            write(format_routing(agent.router.predict_proba(text.strip()), route))
         write(f"Agente: {reply}")
 
 
@@ -95,13 +104,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--debug-routing", action="store_true",
                         help="show the class probabilities and the selected agent for each message")
     parser.add_argument("--debug-agent", action="store_true",
-                        help="show the Coimbra Expert plan (RAG / WEATHER / BOTH) and the capabilities used")
+                        help="show the Coimbra Expert plan (RAG and/or Weather/Places MCP calls) and the capabilities used")
     args = parser.parse_args(argv)
 
-    print("A carregar o router, a ELIZA_RUDE, o RAG (modelo de embeddings e vector store) e o Weather MCP...")
+    print("A carregar o router, a ELIZA_RUDE, o RAG (modelo de embeddings e vector store), o Weather MCP e o Places MCP...")
     try:
         agent = IntegratedAgent.load(debug_agent=args.debug_agent)
-    except (RouterError, rag_pipeline.BaselineError, expert_agent.WeatherMCPError) as exc:
+    except (RouterError, rag_pipeline.BaselineError, expert_agent.MCPClientError) as exc:
         print(f"\nERROR {exc}", file=sys.stderr)
         return 2
     try:

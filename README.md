@@ -33,20 +33,34 @@ uv run python -m unittest discover -s d3/weather_mcp/tests
 
 Status: connected to the integrated agent through the Coimbra Expert Agent (below).
 
-### Coimbra Expert Agent (RAG / WEATHER / BOTH)
+### Places MCP
 
-The classifier's `rag` label now goes to the Coimbra Expert Agent (`d3/coimbra_expert/`). An LLM planner
-(`llama3.2:3b`, structured output; no keyword routing) decides whether a question needs the RAG, the
-Weather MCP or both, then the answer is produced (RAG-only keeps the D2 behaviour). The integrated agent
-starts one Weather MCP server (stdio) per run. Details: `d3/coimbra_expert/AGENTIC_INTEGRATION_REPORT.md`.
+A second MCP server (stdio) with `search_place` and `get_distance_between_places` (straight-line
+distance), backed by OpenStreetMap Nominatim with its usage policy (≤1 req/s, own User-Agent, cache,
+attribution). Path: `d3/places_mcp/` (see its `README.md`).
 
 ```bash
-# run the integrated agent (needs Ollama + llama3.2:3b); --debug-agent shows the plan and capabilities used
-uv run python integration/integrated_agent.py --debug-agent
+uv run python -m unittest discover -s d3/places_mcp/tests
+```
+
+### Coimbra Expert Agent (RAG + Weather MCP + Places MCP)
+
+The classifier's `rag` label goes to the Coimbra Expert Agent (`d3/coimbra_expert/`). An LLM planner
+(`llama3.2:3b`, structured output; no keyword routing) returns `use_rag` plus up to two MCP `tool_calls`
+(at most one Weather and one Places call), so the agent can compose RAG, Weather MCP and Places MCP in any
+combination (RAG-only keeps the D2 behaviour; otherwise one final generation uses all the results). The
+integrated agent starts one Weather MCP and one Places MCP server (stdio) per run. Details and the
+(mixed) smoke-test results: `d3/coimbra_expert/AGENTIC_INTEGRATION_REPORT.md`.
+
+```bash
+# run the integrated agent (needs Ollama + llama3.2:3b); --debug-routing shows the classifier,
+# --debug-agent shows the Expert's plan, tool calls and capabilities used
+uv run python integration/integrated_agent.py --debug-routing --debug-agent
 
 # tests (no Ollama, no Internet)
 uv run python -m unittest discover -s d3/coimbra_expert/tests
 
-# manual smoke test: real Ollama + Open-Meteo, on a runtime copy of the frozen Chroma store
-uv run python d3/coimbra_expert/smoke_test.py
+# manual smoke test: real Ollama + Open-Meteo + Nominatim, on a runtime copy of the frozen Chroma store
+uv run python d3/coimbra_expert/smoke_test.py             # the LLM planner chooses
+uv run python d3/coimbra_expert/smoke_test.py --scripted  # fixed plans: execution-path check only
 ```
