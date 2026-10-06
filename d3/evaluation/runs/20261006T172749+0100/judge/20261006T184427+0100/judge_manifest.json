@@ -1,0 +1,63 @@
+{
+  "judge_run_id": "20261006T184427+0100",
+  "status": "COMPLETED",
+  "started_at": "2026-10-06T18:44:27.272712+01:00",
+  "finished_at": "2026-10-06T18:48:13.231189+01:00",
+  "source_run_id": "20261006T172749+0100",
+  "source_raw_results_sha256": "ddf6823222266a93142d7576ac7b3af4514f2628b4683094cf5a9827d7f7ccfa",
+  "source_run_manifest_sha256": "5c82b5ab5443a2b548528a8bd661fae9b7df81aef3a3848149a6f64411c156e7",
+  "dataset_sha256": {
+    "D3_EVALUATION_SET_V1.md": "d15356000ee620fe6341396d7699653638a34685411f8ab0df37f5e7710f1f01",
+    "d3_evaluation_set_v1.json": "3cef162c592e3e18c18103a970b926f949dc9e1115f971bfea3c5595674e0528",
+    "D3_EVALUATION_SET_AUDIT_V1.md": "7171c366cd15c8e0b7bc13c5baa20c31ab94b28d062a84d9486cfc3cf805afaa"
+  },
+  "protocol_sha256": "1dd9974ee18e000326b58e30902d8bf3810155d23961ea0c62677f464e6a1e59",
+  "deterministic_scoring_sha256": {
+    "deterministic_scores_v1.json": "e3dd4a0e147260f8554dc1073acdce9f3bfbcacff55db7d4b8eae35c7bf685e6",
+    "D3_DETERMINISTIC_SCORING_REPORT_V1.md": "b0beba33402a25fbaa76bf316fecb16484ad2a0321d996a33d786b1151d0e232"
+  },
+  "judge_config_sha256": {
+    "D3_JUDGE_CONFIG_V1.md": "306c24b632418cd8c2d506e62d8a44d3d175fc0f0f28308ab9b9d02450a45ee2",
+    "d3_judge_config_v1.json": "ed59e57abe1cbfbe2b3054e056a928e746e98e217b3c1d297cacbee9ae7e7017"
+  },
+  "provider": "openai",
+  "model": "gpt-5-mini-2025-08-07",
+  "model_version_or_digest": "gpt-5-mini-2025-08-07",
+  "client_description": {
+    "provider": "openai",
+    "api": "responses",
+    "model": "gpt-5-mini-2025-08-07",
+    "openai_sdk_version": "3.19.2",
+    "reasoning_effort": "medium",
+    "max_output_tokens": 6000,
+    "store": false,
+    "tools": "none",
+    "sdk_max_retries": 0
+  },
+  "temperature": null,
+  "temperature_policy": "not_sent_provider_controlled",
+  "reasoning_effort": "medium",
+  "max_attempts": 2,
+  "request_settings": {
+    "model_family": "GPT-5 mini",
+    "api": "responses",
+    "reasoning_effort": "medium",
+    "max_output_tokens": 6000,
+    "store": false,
+    "tools": "none",
+    "sdk_max_retries": 0,
+    "structured_output": {
+      "type": "json_schema",
+      "name": "d3_judge_scores",
+      "strict": true
+    }
+  },
+  "expected_total_questions": 35,
+  "deterministic_zero_count": 4,
+  "llm_judge_expected_count": 31,
+  "llm_judge_completed_count": 31,
+  "records_written": 35,
+  "technical_retries": 0,
+  "abort_stage": null,
+  "abort_error": null
+}
